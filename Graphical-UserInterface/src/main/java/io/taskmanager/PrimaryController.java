@@ -1,4 +1,4 @@
-package org.example;
+package io.taskmanager;
 
 import java.io.IOException;
 import javafx.fxml.FXML;
