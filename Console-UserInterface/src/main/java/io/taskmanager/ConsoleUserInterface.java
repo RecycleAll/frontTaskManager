@@ -1,7 +1,4 @@
-import io.taskmanager.Dev;
-import io.taskmanager.Project;
-import io.taskmanager.Task;
-import io.taskmanager.UserInterface;
+package io.taskmanager;
 
 public class ConsoleUserInterface implements UserInterface {
 

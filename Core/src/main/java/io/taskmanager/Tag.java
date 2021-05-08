@@ -1,3 +1,5 @@
+package io.taskmanager;
+
 public class Tag {
     private final int id;
     private String name;

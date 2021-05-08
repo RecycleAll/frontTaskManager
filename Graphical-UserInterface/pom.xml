@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>Graphical-UserInterface</artifactId>
+    <artifactId>Graphical-io.taskmanager.UserInterface</artifactId>
 
     <properties>
         <maven.compiler.source>15</maven.compiler.source>
