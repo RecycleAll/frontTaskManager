@@ -1,3 +1,5 @@
+package io.taskmanager;
+
 import java.util.ArrayList;
 
 public class Project {
