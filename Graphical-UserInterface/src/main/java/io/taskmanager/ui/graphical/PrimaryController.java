@@ -1,4 +1,4 @@
-package io.taskmanager;
+package io.taskmanager.ui.graphical;
 
 import java.io.IOException;
 import javafx.fxml.FXML;

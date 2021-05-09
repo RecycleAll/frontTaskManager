@@ -1,4 +1,4 @@
-package io.taskmanager;
+package io.taskmanager.ui.graphical;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

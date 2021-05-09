@@ -1,7 +1,8 @@
-module io.taskmanager {
+module Graphical.UserInterface {
     requires javafx.controls;
     requires javafx.fxml;
+    requires Core;
 
-    opens io.taskmanager to javafx.fxml;
-    exports io.taskmanager;
+    opens io.taskmanager.ui.graphical to javafx.fxml;
+    exports io.taskmanager.ui.graphical;
 }
