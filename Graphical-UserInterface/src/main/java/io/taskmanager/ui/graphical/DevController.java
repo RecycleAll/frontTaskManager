@@ -78,7 +78,9 @@ public class DevController {
 
     }
 
-    public void OnPasswordChange(ActionEvent actionEvent) {
+    public void OnPasswordChange(ActionEvent actionEvent) throws IOException {
+        PasswordChangeDialog dialog = new PasswordChangeDialog(dev);
+        dialog.showAndWait();
     }
 
     public DialogPane getDialogPane() {
