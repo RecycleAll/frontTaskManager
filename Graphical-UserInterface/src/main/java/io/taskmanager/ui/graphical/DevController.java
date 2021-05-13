@@ -4,10 +4,7 @@ import io.taskmanager.test.Dev;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.DialogPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.io.IOException;
 
@@ -39,6 +36,58 @@ public class DevController {
 
     private Dev dev;
 
+    @FXML
+    public void initialize() {
+        Button applyButton = (Button) dialogPane.lookupButton(ButtonType.APPLY);
+        applyButton.addEventFilter(ActionEvent.ACTION, actionEvent -> {
+            if( dev == null)
+            {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Internal error dev is null", ButtonType.OK);
+                alert.showAndWait();
+                actionEvent.consume();
+            }
+            else if( firstNameField.getText().isEmpty())
+            {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Your first name can't be empty", ButtonType.OK);
+                alert.showAndWait();
+                actionEvent.consume();
+            }
+            else if( lastNameField.getText().isEmpty())
+            {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Your last name can't be empty", ButtonType.OK);
+                alert.showAndWait();
+                actionEvent.consume();
+            }
+            else if( emailField.getText().isEmpty())
+            {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Your email can't be empty", ButtonType.OK);
+                alert.showAndWait();
+                actionEvent.consume();
+            }
+            else if( githubField.getText().isEmpty() )
+            {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Your github id can't be empty", ButtonType.OK);
+                alert.showAndWait();
+                actionEvent.consume();
+            }
+            else
+            {
+                try {
+                    dev.setGithub_id( Integer.parseInt(githubField.getText()));
+                } catch (NumberFormatException e) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "\""+githubField.getText()+"\" is not a number", ButtonType.OK);
+                    alert.showAndWait();
+                    actionEvent.consume();
+                }
+            }
+
+            dev.setFirstName( firstNameField.getText());
+            dev.setLastName( lastNameField.getText());
+            dev.setEmail( emailField.getText());
+
+        });
+    }
+
     public void setDev(Dev newDev){
         if( newDev == null){
             this.dev = new Dev();
@@ -47,33 +96,9 @@ public class DevController {
         }
 
         firstNameField.setText(this.dev.getFirstName());
-        firstNameField.textProperty().addListener((observableValue, oldValue, newValue) -> {
-            dev.setFirstName(newValue);
-        });
-
         lastNameField.setText(this.dev.getLastName());
-        lastNameField.textProperty().addListener((observableValue, oldValue, newValue) -> {
-            dev.setLastName(newValue);
-        });
-
         emailField.setText(this.dev.getEmail());
-        emailField.textProperty().addListener((observableValue, oldValue, newValue) -> {
-            dev.setEmail(newValue);
-        });
-
         githubField.setText( String.valueOf(this.dev.getGithub_id()));
-        githubField.textProperty().addListener((observableValue, oldValue, newValue) -> {
-
-            if( !newValue.isEmpty()) {
-                try {
-                    dev.setGithub_id(Integer.parseInt(newValue));
-                } catch (NumberFormatException e) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR, "\""+newValue + "\" is not a valid number", ButtonType.OK);
-                    alert.showAndWait();
-                    githubField.setText(oldValue);
-                }
-            }
-        });
 
     }
 
