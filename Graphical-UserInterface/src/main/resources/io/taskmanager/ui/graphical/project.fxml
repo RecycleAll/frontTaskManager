@@ -9,7 +9,7 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label fx:id="projectNameLabel" layoutX="14.0" layoutY="14.0" text="io.taskmanager.Project Name">
+      <Label fx:id="projectNameLabel" layoutX="14.0" layoutY="14.0" text="io.taskmanager.test.Project Name">
          <font>
             <Font size="36.0" />
          </font>

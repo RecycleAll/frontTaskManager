@@ -1,4 +1,4 @@
-package io.taskmanager;
+package io.taskmanager.test;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,6 +27,15 @@ public class Task {
 
     public Task(int id, String name, String description, LocalDateTime limitDate, ArrayList<Dev> devs) {
         this(id, name, description, LocalDateTime.now(), limitDate, null, devs, new ArrayList<>());
+    }
+
+    public Task(int id, String name, String description, LocalDateTime limitDate) {
+        this(id, name, description, LocalDateTime.now(), limitDate, null, new ArrayList<>(), new ArrayList<>());
+    }
+
+
+    public ArrayList<Dev> getDevs() {
+        return devs;
     }
 
     public int getId() {
@@ -87,5 +96,10 @@ public class Task {
 
     public void setLastUpdateDate(LocalDateTime lastUpdateDate) {
         this.lastUpdateDate = lastUpdateDate;
+    }
+
+    @Override
+    public String toString(){
+        return name;
     }
 }

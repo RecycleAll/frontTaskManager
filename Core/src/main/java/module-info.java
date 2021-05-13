@@ -1,3 +1,3 @@
 module Core {
-    exports io.taskmanager;
+    exports io.taskmanager.test;
 }

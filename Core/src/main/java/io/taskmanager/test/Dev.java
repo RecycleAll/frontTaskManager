@@ -1,4 +1,4 @@
-package io.taskmanager;
+package io.taskmanager.test;
 
 import java.util.ArrayList;
 
@@ -20,6 +20,10 @@ public class Dev {
         setPassword(password);
         setGithub_id(github_id);
         this.projects = projects;
+    }
+
+    public Dev(int id, String firstName, String lastName, String email, String password, int github_id){
+        this(id, firstName, lastName, email, password, github_id, new ArrayList<>());
     }
 
     public int getId() {
@@ -72,5 +76,10 @@ public class Dev {
 
     public void setGithub_id(int github_id) {
         this.github_id = github_id;
+    }
+
+    @Override
+    public String toString(){
+        return firstName;
     }
 }

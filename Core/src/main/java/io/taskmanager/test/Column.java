@@ -1,4 +1,4 @@
-package io.taskmanager;
+package io.taskmanager.test;
 
 import java.util.ArrayList;
 
