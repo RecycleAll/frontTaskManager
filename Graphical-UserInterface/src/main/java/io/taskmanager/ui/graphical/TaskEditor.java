@@ -12,6 +12,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class TaskEditor{
 
@@ -94,12 +95,19 @@ public class TaskEditor{
         task.removeDev(devButton.dev);
     }
 
+    private void addDev(Dev dev){
+        addDevToFlowPane(dev);
+        task.addDev(dev);
+    }
+
     private void addDevToFlowPane(Dev dev){
         devsFlowPane.getChildren().add(devsFlowPane.getChildren().size() - 1, new DevButton(this, dev));
     }
 
-    public void OnAddDev(ActionEvent actionEvent) {
-
+    public void OnAddDev(ActionEvent actionEvent) throws IOException {
+        DevDialog devDialog = new DevDialog();
+        Optional<Dev> res =devDialog.showAndWait();
+        res.ifPresent(this::addDev);
     }
 
     static class DevButton extends Button{

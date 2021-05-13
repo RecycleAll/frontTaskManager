@@ -26,6 +26,14 @@ public class Dev {
         this(id, firstName, lastName, email, password, github_id, new ArrayList<>());
     }
 
+    public Dev(Dev dev){
+        this(dev.id, dev.firstName, dev.lastName, dev.email, dev.password, -dev.github_id, dev.projects);
+    }
+
+    public Dev(){
+        this(-1, "", "", "", "", 0);
+    }
+
     public int getId() {
         return id;
     }
