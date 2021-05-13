@@ -21,7 +21,6 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-       //scene = new Scene(loadFXML("primary"), 640, 480);
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( "ColumnViewer.fxml"));
 
         Dev dev = new Dev(0, "dev1", "", "", "", 0);

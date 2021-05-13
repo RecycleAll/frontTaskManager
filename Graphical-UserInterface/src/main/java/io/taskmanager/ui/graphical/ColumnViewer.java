@@ -1,10 +1,13 @@
 package io.taskmanager.ui.graphical;
-
 import io.taskmanager.test.Column;
+import io.taskmanager.test.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+
+import java.io.IOException;
+import java.util.Optional;
 
 public class ColumnViewer {
 
@@ -17,7 +20,7 @@ public class ColumnViewer {
 
     public ColumnViewer(){}
 
-    public ColumnViewer(Column column) {
+    public ColumnViewer(Column column) throws IOException {
         setColumn(column);
     }
 
@@ -25,13 +28,30 @@ public class ColumnViewer {
         return column;
     }
 
-    public void setColumn(Column column) {
+    public void setColumn(Column column) throws IOException {
         this.column = column;
         ColumnTitleLabel.setText(column.getName());
         //TODO add task preview to TaskVBox
+        for (Task task: column.getTasks()) {
+            addTaskToTaskVBox(task);
+        }
     }
 
-    public void OnAddTask(ActionEvent actionEvent) {
+    private void addTask(Task task) throws IOException {
+        column.addTask(task);
+        addTaskToTaskVBox(task);
+    }
+
+    private void addTaskToTaskVBox(Task task) throws IOException {
+        TaskVBox.getChildren().add( ColumnTaskViewer.loadNew(task) );
+    }
+
+    public void OnAddTask(ActionEvent actionEvent) throws IOException {
+        TaskEditorDialog dialog = new TaskEditorDialog();
+        Optional<Task> res = dialog.showAndWait();
+        if(res.isPresent()){
+            addTask(res.get());
+        }
     }
 
 

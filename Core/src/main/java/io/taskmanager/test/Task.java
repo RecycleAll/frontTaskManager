@@ -33,6 +33,15 @@ public class Task {
         this(id, name, description, LocalDateTime.now(), limitDate, null, new ArrayList<>(), new ArrayList<>());
     }
 
+    public Task(){
+        this(0, "", "", null, null, null,new ArrayList<>(), new ArrayList<>());
+    }
+
+    public Task(Task task){
+        this(task.getId(), task.getName(), task.getDescription(), task.getCreationDate(), task.getLimitDate(), task.getLastUpdateDate(), task.getDevs(), task.tags);
+        System.out.println("dev size from copy: "+ devs.size());
+    }
+
 
     public ArrayList<Dev> getDevs() {
         return devs;
