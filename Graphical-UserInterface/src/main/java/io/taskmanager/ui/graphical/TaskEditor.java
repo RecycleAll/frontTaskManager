@@ -11,6 +11,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class TaskEditor{
@@ -39,6 +40,44 @@ public class TaskEditor{
 
     private Task task;
 
+    private final ArrayList<Dev> devToAdd, devToRemove;
+
+    public TaskEditor() {
+        devToAdd = new ArrayList<>();
+        devToRemove = new ArrayList<>();
+    }
+
+    @FXML
+    public void initialize() {
+        Button applyButton = (Button) dialogPane.lookupButton(ButtonType.APPLY);
+        applyButton.addEventFilter(ActionEvent.ACTION, actionEvent -> {
+            if( task == null)
+            {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Internal error task is null", ButtonType.OK);
+                alert.showAndWait();
+                actionEvent.consume();
+            }
+            else if( taskNameField.getText().isEmpty() )
+            {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "task name can't be empty", ButtonType.OK);
+                alert.showAndWait();
+                actionEvent.consume();
+            }
+            else if(task.getDevs().size() - devToRemove.size() + devToAdd.size() <= 0)
+            {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "You need to have at least 1 dev assigned too a task.\nyou have currently: "+ (task.getDevs().size() - devToRemove.size() + devToAdd.size())+ "dev assigned!", ButtonType.OK);
+                alert.showAndWait();
+                actionEvent.consume();
+            }else{
+                task.setName( taskNameField.getText());
+                task.setDescription( taskDescriptionArea.getText());
+                task.getDevs().removeAll( devToRemove);
+                task.getDevs().addAll( devToAdd);
+            }
+
+        });
+    }
+
     public Task getTask() {
         return task;
     }
@@ -49,6 +88,10 @@ public class TaskEditor{
         }else{
             this.task = new Task(newTask);
         }
+
+        devToAdd.clear();
+        devToRemove.clear();
+
         taskNameField.setText(this.task.getName());
         taskDescriptionArea.setText(this.task.getDescription());
         taskNameField.textProperty().addListener((observableValue, oldValue, newValue) -> {
@@ -65,12 +108,12 @@ public class TaskEditor{
 
     private void removeDev(DevButton devButton){
         devsFlowPane.getChildren().remove(devButton);
-        task.removeDev(devButton.dev);
+        devToRemove.add(devButton.dev);
     }
 
     private void addDev(Dev dev){
         addDevToFlowPane(dev);
-        task.addDev(dev);
+        devToAdd.add(dev);
     }
 
     private void addDevToFlowPane(Dev dev){
@@ -79,28 +122,30 @@ public class TaskEditor{
 
     public void OnAddDev(ActionEvent actionEvent) throws IOException {
         DevDialog devDialog = new DevDialog();
-        Optional<Dev> res =devDialog.showAndWait();
+        Optional<Dev> res = devDialog.showAndWait();
         res.ifPresent(this::addDev);
     }
 
     static class DevButton extends Button{
         public Dev dev;
         public DevButton(TaskEditor editor, Dev dev) {
+            super();
             this.dev = dev;
-            HBox hBox = new HBox();
+            this.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+
+            HBox hBox = new HBox(10); // 10 spacing
+            hBox.setAlignment(Pos.CENTER_LEFT);
             Label label = new Label(dev.getFirstName());
             Button button = new Button("remove");
             button.setOnAction(actionEvent -> {
                 editor.removeDev(this);
             });
             hBox.getChildren().addAll(label, button);
+            this.setGraphic(hBox);
 
             this.setOnAction(actionEvent -> {
                 //TODO open dev viewer
             });
-            this.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-            this.setGraphic(hBox);
-            this.setAlignment(Pos.CENTER_LEFT);
         }
 
     }

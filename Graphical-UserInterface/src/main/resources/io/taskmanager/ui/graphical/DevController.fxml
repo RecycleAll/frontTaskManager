@@ -46,7 +46,7 @@
             <TextField fx:id="githubField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <Label text="github id" GridPane.rowIndex="3" />
             <Label text="password" GridPane.rowIndex="4" />
-            <Button mnemonicParsing="false" onAction="#OnPasswordChange" text="change password" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Button mnemonicParsing="false" onAction="#OnPasswordChange" text="change password" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
          </children>
       </GridPane>
    </content>
