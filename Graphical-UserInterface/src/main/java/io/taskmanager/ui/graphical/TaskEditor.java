@@ -2,7 +2,6 @@ package io.taskmanager.ui.graphical;
 
 import io.taskmanager.test.Dev;
 import io.taskmanager.test.Task;
-import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -29,24 +28,6 @@ public class TaskEditor{
     }
     public static TaskEditor loadNew() throws IOException {
         return loadNew(null);
-    }
-
-    public static DialogPane loadNewPane(Task task) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
-        DialogPane pane = fxmlLoader.load();
-        TaskEditor taskEditor = fxmlLoader.getController();
-        taskEditor.setTask(task);
-        return pane;
-    }
-
-    public static Dialog<ButtonType> loadNewDialog(Task task) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
-        DialogPane pane = fxmlLoader.load();
-        TaskEditor taskEditor = fxmlLoader.getController();
-        taskEditor.setTask(task);
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setDialogPane(pane);
-        return dialog;
     }
 
     @FXML

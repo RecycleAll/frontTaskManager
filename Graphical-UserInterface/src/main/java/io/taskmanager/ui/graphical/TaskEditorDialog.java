@@ -21,15 +21,6 @@ public class TaskEditorDialog extends Dialog<Task> {
         });
     }
     public TaskEditorDialog() throws IOException {
-        TaskEditor controller = TaskEditor.loadNew();
-        setDialogPane(controller.getPane());
-
-        setResultConverter(buttonType -> {
-            if( buttonType == ButtonType.APPLY){
-                return controller.getTask();
-            }else{
-                return null;
-            }
-        });
+        this(null);
     }
 }
