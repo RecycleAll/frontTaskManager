@@ -10,7 +10,7 @@ public class TaskEditorDialog extends Dialog<Task> {
 
     public TaskEditorDialog(Task task) throws IOException {
         TaskEditor controller = TaskEditor.loadNew(task);
-        setDialogPane(controller.getPane());
+        setDialogPane(controller.dialogPane);
 
         setResultConverter(buttonType -> {
             if( buttonType == ButtonType.APPLY){

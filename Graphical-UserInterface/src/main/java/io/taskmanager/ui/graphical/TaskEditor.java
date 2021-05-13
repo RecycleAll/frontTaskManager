@@ -16,14 +16,12 @@ import java.util.Optional;
 public class TaskEditor{
 
     private static final String FXML_FILE = "TaskEditor.fxml";
-    public FlowPane devsFlowPane;
 
     public static TaskEditor loadNew(Task task) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
-        DialogPane pane = fxmlLoader.load();
+        fxmlLoader.load();
         TaskEditor taskEditor = fxmlLoader.getController();
         taskEditor.setTask(task);
-        taskEditor.setPane(pane);
         return taskEditor;
     }
     public static TaskEditor loadNew() throws IOException {
@@ -34,18 +32,12 @@ public class TaskEditor{
     public TextArea taskDescriptionArea;
     @FXML
     public TextField taskNameField;
-
-    private DialogPane pane;
+    @FXML
+    public FlowPane devsFlowPane;
+    @FXML
+    public DialogPane dialogPane;
 
     private Task task;
-
-    public DialogPane getPane() {
-        return pane;
-    }
-
-    public void setPane(DialogPane pane) {
-        this.pane = pane;
-    }
 
     public Task getTask() {
         return task;

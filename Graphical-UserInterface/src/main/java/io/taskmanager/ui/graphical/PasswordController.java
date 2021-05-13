@@ -5,14 +5,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
-import javafx.scene.layout.FlowPane;
 
 import java.io.IOException;
 
 public class PasswordController {
 
     private static final String FXML_FILE = "PasswordController.fxml";
-    public FlowPane devsFlowPane;
 
     public static PasswordController loadNew(Dev dev) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));

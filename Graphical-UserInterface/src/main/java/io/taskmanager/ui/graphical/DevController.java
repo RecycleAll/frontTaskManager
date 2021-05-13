@@ -17,18 +17,17 @@ public class DevController {
 
     public static DevController loadNew(Dev dev) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
-        DialogPane pane = fxmlLoader.load();
+        fxmlLoader.load();
         DevController devController = fxmlLoader.getController();
         devController.setDev(dev);
-        devController.dialogPane = pane;
         return devController;
     }
     public static DevController loadNew() throws IOException {
         return loadNew(null);
     }
 
+    @FXML
     private DialogPane dialogPane;
-
     @FXML
     public TextField firstNameField;
     @FXML
