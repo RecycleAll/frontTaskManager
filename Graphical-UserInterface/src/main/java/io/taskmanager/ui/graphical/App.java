@@ -1,5 +1,6 @@
 package io.taskmanager.ui.graphical;
 
+import io.taskmanager.test.Column;
 import io.taskmanager.test.Dev;
 import io.taskmanager.test.Task;
 import javafx.application.Application;
@@ -21,17 +22,19 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
        //scene = new Scene(loadFXML("primary"), 640, 480);
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( "task.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( "ColumnViewer.fxml"));
 
         Dev dev = new Dev(0, "dev1", "", "", "", 0);
         Dev dev2 = new Dev(0, "dev2", "", "", "", 0);
         Task task = new Task(0, "task1", "", LocalDateTime.now());
         task.addDev(dev);
         task.addDev(dev2);
-        scene = new Scene( fxmlLoader.load() );
-        TaskController controller = fxmlLoader.getController();
-        controller.setTask(task);
+        Column column = new Column(0, "column 1");
+        column.addTask(task);
 
+        scene = new Scene( fxmlLoader.load() );
+        ColumnViewer controller = fxmlLoader.getController();
+        controller.setColumn(column);
         stage.setScene(scene);
         stage.show();
 

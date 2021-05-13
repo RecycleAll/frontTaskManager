@@ -26,6 +26,10 @@ public class Column {
         tasks.remove(task);
     }
 
+    public ArrayList<Task> getTasks(){
+        return tasks;
+    }
+
     public int getId() {
         return id;
     }
@@ -37,4 +41,6 @@ public class Column {
     public void setName(String name) {
         this.name = name;
     }
+
+
 }
