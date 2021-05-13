@@ -14,18 +14,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class TaskEditor{
+public class TaskController {
 
-    private static final String FXML_FILE = "TaskEditor.fxml";
+    private static final String FXML_FILE = "TaskController.fxml";
 
-    public static TaskEditor loadNew(Task task) throws IOException {
+    public static TaskController loadNew(Task task) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.load();
-        TaskEditor taskEditor = fxmlLoader.getController();
-        taskEditor.setTask(task);
-        return taskEditor;
+        TaskController taskController = fxmlLoader.getController();
+        taskController.setTask(task);
+        return taskController;
     }
-    public static TaskEditor loadNew() throws IOException {
+    public static TaskController loadNew() throws IOException {
         return loadNew(null);
     }
 
@@ -42,7 +42,7 @@ public class TaskEditor{
 
     private final ArrayList<Dev> devToAdd, devToRemove;
 
-    public TaskEditor() {
+    public TaskController() {
         devToAdd = new ArrayList<>();
         devToRemove = new ArrayList<>();
     }
@@ -128,7 +128,7 @@ public class TaskEditor{
 
     static class DevButton extends Button{
         public Dev dev;
-        public DevButton(TaskEditor editor, Dev dev) {
+        public DevButton(TaskController editor, Dev dev) {
             super();
             this.dev = dev;
             this.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);

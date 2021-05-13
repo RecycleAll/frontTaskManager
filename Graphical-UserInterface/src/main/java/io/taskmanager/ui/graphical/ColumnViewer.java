@@ -47,7 +47,7 @@ public class ColumnViewer {
     }
 
     public void OnAddTask(ActionEvent actionEvent) throws IOException {
-        TaskEditorDialog dialog = new TaskEditorDialog();
+        TaskDialog dialog = new TaskDialog();
         Optional<Task> res = dialog.showAndWait();
         if(res.isPresent()){
             addTask(res.get());

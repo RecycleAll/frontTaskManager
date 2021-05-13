@@ -6,10 +6,10 @@ import javafx.scene.control.Dialog;
 
 import java.io.IOException;
 
-public class TaskEditorDialog extends Dialog<Task> {
+public class TaskDialog extends Dialog<Task> {
 
-    public TaskEditorDialog(Task task) throws IOException {
-        TaskEditor controller = TaskEditor.loadNew(task);
+    public TaskDialog(Task task) throws IOException {
+        TaskController controller = TaskController.loadNew(task);
         setDialogPane(controller.dialogPane);
 
         setResultConverter(buttonType -> {
@@ -20,7 +20,7 @@ public class TaskEditorDialog extends Dialog<Task> {
             }
         });
     }
-    public TaskEditorDialog() throws IOException {
+    public TaskDialog() throws IOException {
         this(null);
     }
 }

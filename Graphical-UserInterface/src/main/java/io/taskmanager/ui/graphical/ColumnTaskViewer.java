@@ -43,7 +43,7 @@ public class ColumnTaskViewer {
     }
 
     public void OnView(ActionEvent actionEvent) throws IOException {
-        TaskEditorDialog dialog = new TaskEditorDialog(task);
+        TaskDialog dialog = new TaskDialog(task);
         Optional<Task> res = dialog.showAndWait();
         res.ifPresent(this::setTask);
     }
