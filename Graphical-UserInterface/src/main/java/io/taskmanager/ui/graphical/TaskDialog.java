@@ -9,8 +9,8 @@ import java.io.IOException;
 public class TaskDialog extends Dialog<Task> {
 
     public TaskDialog(Task task) throws IOException {
-        TaskController controller = TaskController.loadNew(task);
-        setDialogPane(controller.dialogPane);
+        TaskController controller = new TaskController(task);
+        setDialogPane(controller);
 
         setResultConverter(buttonType -> {
             if( buttonType == ButtonType.APPLY){

@@ -14,20 +14,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class TaskController {
+public class TaskController extends DialogPane {
 
     private static final String FXML_FILE = "TaskController.fxml";
-
-    public static TaskController loadNew(Task task) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
-        fxmlLoader.load();
-        TaskController taskController = fxmlLoader.getController();
-        taskController.setTask(task);
-        return taskController;
-    }
-    public static TaskController loadNew() throws IOException {
-        return loadNew(null);
-    }
 
     @FXML
     public TextArea taskDescriptionArea;
@@ -35,21 +24,28 @@ public class TaskController {
     public TextField taskNameField;
     @FXML
     public FlowPane devsFlowPane;
-    @FXML
-    public DialogPane dialogPane;
 
     private Task task;
 
     private final ArrayList<Dev> devToAdd, devToRemove;
 
-    public TaskController() {
+    public TaskController() throws IOException {
+        this(null);
+    }
+
+    public TaskController(Task task) throws IOException {
         devToAdd = new ArrayList<>();
         devToRemove = new ArrayList<>();
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
+        fxmlLoader.setController(this);
+        fxmlLoader.setRoot(this);
+        fxmlLoader.load();
+        setTask(task);
     }
 
     @FXML
     public void initialize() {
-        Button applyButton = (Button) dialogPane.lookupButton(ButtonType.APPLY);
+        Button applyButton = (Button) this.lookupButton(ButtonType.APPLY);
         applyButton.addEventFilter(ActionEvent.ACTION, actionEvent -> {
             if( task == null)
             {
