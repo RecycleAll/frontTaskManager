@@ -2,6 +2,8 @@ package io.taskmanager.ui.graphical;
 
 import io.taskmanager.test.Dev;
 import io.taskmanager.test.Task;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,6 +28,7 @@ public class TaskController extends DialogPane {
     public FlowPane devsFlowPane;
 
     private Task task;
+    private final SimpleBooleanProperty isNewTask;
 
     private final ArrayList<Dev> devToAdd, devToRemove;
 
@@ -34,6 +37,7 @@ public class TaskController extends DialogPane {
     }
 
     public TaskController(Task task) throws IOException {
+        isNewTask = new SimpleBooleanProperty(false);
         devToAdd = new ArrayList<>();
         devToRemove = new ArrayList<>();
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
@@ -45,6 +49,11 @@ public class TaskController extends DialogPane {
 
     @FXML
     public void initialize() {
+        ButtonType removeButtonType = new ButtonType("delete", ButtonBar.ButtonData.OTHER);
+        this.getButtonTypes().add(removeButtonType);
+        Button removeButton = (Button) this.lookupButton(removeButtonType);
+        removeButton.visibleProperty().bind(Bindings.createBooleanBinding(() -> !isNewTask.get(), isNewTask));
+
         Button applyButton = (Button) this.lookupButton(ButtonType.APPLY);
         applyButton.addEventFilter(ActionEvent.ACTION, actionEvent -> {
             if( task == null)
@@ -81,6 +90,7 @@ public class TaskController extends DialogPane {
     public void setTask(Task newTask) {
         if( newTask == null){
             this.task = new Task();
+            isNewTask.set(true);
         }else{
             this.task = newTask;
         }

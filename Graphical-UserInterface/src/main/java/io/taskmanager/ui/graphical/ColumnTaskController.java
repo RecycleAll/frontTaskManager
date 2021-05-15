@@ -49,9 +49,16 @@ public class ColumnTaskController extends BorderPane {
         }
     }
 
+    public Task getTask() {
+        return task;
+    }
+
     public void OnView(ActionEvent actionEvent) throws IOException {
         TaskDialog dialog = new TaskDialog(task);
         Optional<Task> res = dialog.showAndWait();
+        if( res.isEmpty() && dialog.isShouldBeDelete()){
+            projectColumnController.removeTask(this);
+        }
     }
 }
 

@@ -58,6 +58,11 @@ public class ProjectColumnController extends ScrollPane{
         this.projectController = projectController;
     }
 
+    public void removeTask( ColumnTaskController taskController){
+        column.removeTask(taskController.getTask());
+        TaskVBox.getChildren().remove(taskController);
+    }
+
     private void addTask(Task task) throws IOException {
         column.addTask(task);
         addTaskToTaskVBox(task);
