@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.taskmanager.ui.graphical.ProjectController">
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.taskmanager.ui.graphical.ProjectController">
    <top>
       <Label fx:id="projectTitle" text="Project Title" BorderPane.alignment="BOTTOM_LEFT">
          <font>
@@ -27,7 +27,7 @@
                   <Button mnemonicParsing="false" onAction="#OnAddColumn" text="add column" AnchorPane.rightAnchor="0.0" />
                </children>
             </AnchorPane>
-            <ScrollPane>
+            <ScrollPane VBox.vgrow="ALWAYS">
                <content>
                   <HBox fx:id="columnHBox" spacing="15.0">
                      <padding>
