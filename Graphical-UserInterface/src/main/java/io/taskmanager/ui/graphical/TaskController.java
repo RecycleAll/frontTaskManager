@@ -41,7 +41,6 @@ public class TaskController extends DialogPane {
 
     public TaskController(Project project, Task task) throws IOException {
         isNewTask = new SimpleBooleanProperty(false);
-        newDevList = task.getDevs();
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
