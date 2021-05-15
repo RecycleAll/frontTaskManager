@@ -34,10 +34,16 @@ public class DevController {
     @FXML
     public TextField githubField;
 
+    private boolean isNewDev = false;
     private Dev dev;
 
     @FXML
     public void initialize() {
+        if( !isNewDev) {
+            ButtonType removeButton = new ButtonType("delete", ButtonBar.ButtonData.OTHER);
+            dialogPane.getButtonTypes().add(removeButton);
+        }
+
         Button applyButton = (Button) dialogPane.lookupButton(ButtonType.APPLY);
         applyButton.addEventFilter(ActionEvent.ACTION, actionEvent -> {
             if( dev == null)
@@ -91,8 +97,9 @@ public class DevController {
     public void setDev(Dev newDev){
         if( newDev == null){
             this.dev = new Dev();
+            isNewDev = true;
         }else{
-            this.dev = new Dev(newDev);
+            this.dev = newDev;
         }
 
         firstNameField.setText(this.dev.getFirstName());

@@ -14,8 +14,13 @@ public class Column {
         this.tasks = tasks;
     }
 
+
     public Column(int id, String name) {
         this(id, name, new ArrayList<>());
+    }
+
+    public Column() {
+        this(-1, "");
     }
 
     public void addTask(Task task){

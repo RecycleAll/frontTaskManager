@@ -24,6 +24,18 @@ public class Project {
         this(id, name, gitHubUrl, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
     }
 
+    public Project() {
+        this(0, "", "");
+    }
+
+    public ArrayList<Dev> getDevs() {
+        return devs;
+    }
+
+    public ArrayList<Column> getColumns() {
+        return columns;
+    }
+
     public int getId() {
         return id;
     }
