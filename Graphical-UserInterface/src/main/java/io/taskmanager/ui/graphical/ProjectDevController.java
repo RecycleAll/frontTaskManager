@@ -6,7 +6,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -48,6 +47,13 @@ public class ProjectDevController {
     public void OnView(ActionEvent actionEvent) throws IOException {
         DevDialog devDialog = new DevDialog(dev);
         Optional<Dev> res = devDialog.showAndWait();
+        if( res.isEmpty() && devDialog.isShouldBeDelete()){
+            projectController.removeDev(this);
+        }
+    }
+
+    public Dev getDev() {
+        return dev;
     }
 }
 

@@ -1,6 +1,8 @@
 package io.taskmanager.ui.graphical;
 
 import io.taskmanager.test.Dev;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -34,15 +36,16 @@ public class DevController {
     @FXML
     public TextField githubField;
 
-    private boolean isNewDev = false;
+    private final SimpleBooleanProperty isNewDev = new SimpleBooleanProperty(false);
     private Dev dev;
 
     @FXML
     public void initialize() {
-        if( !isNewDev) {
-            ButtonType removeButton = new ButtonType("delete", ButtonBar.ButtonData.OTHER);
-            dialogPane.getButtonTypes().add(removeButton);
-        }
+
+        ButtonType removeButtonType = new ButtonType("delete", ButtonBar.ButtonData.OTHER);
+        dialogPane.getButtonTypes().add(removeButtonType);
+        Button removeButton = (Button) dialogPane.lookupButton(removeButtonType);
+        removeButton.visibleProperty().bind(Bindings.createBooleanBinding(() -> !isNewDev.get(), isNewDev));
 
         Button applyButton = (Button) dialogPane.lookupButton(ButtonType.APPLY);
         applyButton.addEventFilter(ActionEvent.ACTION, actionEvent -> {
@@ -97,10 +100,12 @@ public class DevController {
     public void setDev(Dev newDev){
         if( newDev == null){
             this.dev = new Dev();
-            isNewDev = true;
+            isNewDev.set(true);
         }else{
             this.dev = newDev;
+            isNewDev.set(false);
         }
+        System.out.println("dev new: "+ isNewDev);
 
         firstNameField.setText(this.dev.getFirstName());
         lastNameField.setText(this.dev.getLastName());

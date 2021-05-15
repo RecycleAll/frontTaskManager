@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
@@ -61,6 +62,11 @@ public class ProjectController {
 
     }
 
+    public void removeDev( ProjectDevController dev){
+        project.removeDev(dev.getDev());
+        devsVBox.getChildren().remove(dev.anchorPane);
+    }
+
     private void addDev(Dev dev) throws IOException {
         project.addDev(dev);
         devsVBox.getChildren().add( ProjectDevController.loadNew(this, dev).anchorPane );
@@ -73,6 +79,7 @@ public class ProjectController {
     @FXML
     public void OnAddColumn(ActionEvent actionEvent) {
     }
+
 
     public void OnAddDev(ActionEvent actionEvent) throws IOException {
         DevDialog devDialog = new DevDialog();
