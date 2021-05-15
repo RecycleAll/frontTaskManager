@@ -1,7 +1,6 @@
 package io.taskmanager.ui.graphical;
 import io.taskmanager.test.Column;
 import io.taskmanager.test.Task;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,19 +11,19 @@ import javafx.scene.layout.VBox;
 import java.io.IOException;
 import java.util.Optional;
 
-public class ColumnViewer {
+public class ProjectColumnController {
 
-    private static final String FXML_FILE = "ColumnViewer.fxml";
+    private static final String FXML_FILE = "ProjectColumnController.fxml";
 
-    public static ColumnViewer loadNew(ProjectController projectController, Column column) throws IOException {
+    public static ProjectColumnController loadNew(ProjectController projectController, Column column) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.load();
-        ColumnViewer columnViewer = fxmlLoader.getController();
-        columnViewer.setColumn(column);
-        columnViewer.setProjectController(projectController);
-        return columnViewer;
+        ProjectColumnController projectColumnController = fxmlLoader.getController();
+        projectColumnController.setColumn(column);
+        projectColumnController.setProjectController(projectController);
+        return projectColumnController;
     }
-    public static ColumnViewer loadNew(ProjectController projectController) throws IOException {
+    public static ProjectColumnController loadNew(ProjectController projectController) throws IOException {
         return loadNew(projectController,null);
     }
 

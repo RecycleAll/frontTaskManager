@@ -7,7 +7,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
@@ -57,14 +56,14 @@ public class ProjectController {
         }
 
         for (Column col:project.getColumns()) {
-            columnHBox.getChildren().add( ColumnViewer.loadNew(this, col).scrollPane);
+            columnHBox.getChildren().add( ProjectColumnController.loadNew(this, col).scrollPane);
         }
 
     }
 
-    public void removeColumn(ColumnViewer columnViewer){
-        project.removeColumn(columnViewer.getColumn());
-        columnHBox.getChildren().remove(columnViewer.scrollPane);
+    public void removeColumn(ProjectColumnController projectColumnController){
+        project.removeColumn(projectColumnController.getColumn());
+        columnHBox.getChildren().remove(projectColumnController.scrollPane);
     }
 
     public void removeDev( ProjectDevController dev){

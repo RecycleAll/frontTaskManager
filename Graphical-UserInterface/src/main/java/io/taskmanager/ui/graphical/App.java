@@ -22,7 +22,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( "ColumnViewer.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( "ProjectColumnController.fxml"));
 
         Project project = new Project(0, "project test", "gitURL");
 
@@ -43,7 +43,7 @@ public class App extends Application {
         project.addDev(dev2);
 
         scene = new Scene( ProjectController.loadNew(project).borderPane );
-        //scene = new Scene( ColumnViewer.loadNew(column).scrollPane );
+        //scene = new Scene( ProjectColumnController.loadNew(column).scrollPane );
 
         stage.setScene(scene);
         stage.show();
