@@ -82,7 +82,7 @@ public class TaskController extends DialogPane {
         if( newTask == null){
             this.task = new Task();
         }else{
-            this.task = new Task(newTask);
+            this.task = newTask;
         }
 
         devToAdd.clear();
@@ -90,12 +90,6 @@ public class TaskController extends DialogPane {
 
         taskNameField.setText(this.task.getName());
         taskDescriptionArea.setText(this.task.getDescription());
-        taskNameField.textProperty().addListener((observableValue, oldValue, newValue) -> {
-            task.setName(newValue);
-        });
-        taskDescriptionArea.textProperty().addListener((observableValue, oldValue, newValue) -> {
-            task.setName(newValue);
-        });
 
         for (Dev dev: task.getDevs()) {
             addDevToFlowPane(dev);
