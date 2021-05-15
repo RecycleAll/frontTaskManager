@@ -33,7 +33,7 @@ public class TaskController extends DialogPane {
 
     private final SimpleBooleanProperty isNewTask;
 
-    private final ArrayList<Dev> devToAdd, devToRemove;
+    private ArrayList<Dev>  newDevList;
 
     public TaskController(Project project) throws IOException {
         this(project, null);
@@ -41,8 +41,7 @@ public class TaskController extends DialogPane {
 
     public TaskController(Project project, Task task) throws IOException {
         isNewTask = new SimpleBooleanProperty(false);
-        devToAdd = new ArrayList<>();
-        devToRemove = new ArrayList<>();
+        newDevList = task.getDevs();
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
@@ -72,16 +71,16 @@ public class TaskController extends DialogPane {
                 alert.showAndWait();
                 actionEvent.consume();
             }
-            else if(task.getDevs().size() - devToRemove.size() + devToAdd.size() <= 0)
+            else if( newDevList.size() <= 0)
             {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "You need to have at least 1 dev assigned too a task.\nyou have currently: "+ (task.getDevs().size() - devToRemove.size() + devToAdd.size())+ "dev assigned!", ButtonType.OK);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "You need to have at least 1 dev assigned too a task.", ButtonType.OK);
                 alert.showAndWait();
                 actionEvent.consume();
             }else{
                 task.setName( taskNameField.getText());
                 task.setDescription( taskDescriptionArea.getText());
-                task.getDevs().removeAll( devToRemove);
-                task.getDevs().addAll( devToAdd);
+                //task.getDevs().removeAll( devToRemove);
+                //task.getDevs().addAll( devToAdd);
             }
 
         });
@@ -98,9 +97,7 @@ public class TaskController extends DialogPane {
         }else{
             this.task = newTask;
         }
-
-        devToAdd.clear();
-        devToRemove.clear();
+        newDevList = this.task.getDevs();
 
         taskNameField.setText(this.task.getName());
         taskDescriptionArea.setText(this.task.getDescription());
@@ -112,12 +109,19 @@ public class TaskController extends DialogPane {
 
     private void removeDev(DevButton devButton){
         devsFlowPane.getChildren().remove(devButton);
-        devToRemove.add(devButton.dev);
     }
 
     private void addDev(Dev dev){
         addDevToFlowPane(dev);
-        devToAdd.add(dev);
+    }
+
+    private void setDevs(ArrayList<Dev> devs){
+        devsFlowPane.getChildren().remove(0, devsFlowPane.getChildren().size() - 1);
+
+        for (Dev dev: devs ) {
+            addDevToFlowPane(dev);
+        }
+        newDevList = devs;
     }
 
     private void addDevToFlowPane(Dev dev){
@@ -126,8 +130,13 @@ public class TaskController extends DialogPane {
 
     @FXML
     public void OnAddDev(ActionEvent actionEvent) throws IOException {
-        DevSelectorDialog dialog = new DevSelectorDialog( project, task);
-        dialog.showAndWait();
+        DevSelectorDialog dialog = new DevSelectorDialog( project, newDevList);
+        Optional<ArrayList<Dev>> res = dialog.showAndWait();
+
+        if( res.isPresent()){
+            System.out.println(res.get().size());
+            this.setDevs(res.get());
+        }
 
        /* DevDialog devDialog = new DevDialog();
         Optional<Dev> res = devDialog.showAndWait();
