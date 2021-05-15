@@ -12,6 +12,7 @@ public class ColumnEditorDialog extends Dialog<Column> {
     private boolean shouldBeDelete;
 
     public ColumnEditorDialog(Column column) throws IOException {
+        shouldBeDelete = false;
         ColumnEditor controller = new ColumnEditor(column);
         this.setDialogPane( controller);
 

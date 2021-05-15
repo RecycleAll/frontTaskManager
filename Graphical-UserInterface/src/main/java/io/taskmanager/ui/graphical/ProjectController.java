@@ -63,7 +63,7 @@ public class ProjectController {
 
     public void removeColumn( ProjectColumnController projectColumnController){
         project.removeColumn(projectColumnController.getColumn());
-        columnHBox.getChildren().remove(projectColumnController.scrollPane);
+        columnHBox.getChildren().remove(projectColumnController);
     }
 
     private void addColumn(Column column) throws IOException {

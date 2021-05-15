@@ -31,8 +31,6 @@ public class ProjectColumnController extends ScrollPane{
     public Label ColumnTitleLabel;
     @FXML
     public VBox TaskVBox;
-    @FXML
-    public ScrollPane scrollPane;
 
     private Column column;
     private ProjectController projectController;
@@ -84,10 +82,12 @@ public class ProjectColumnController extends ScrollPane{
     public void OnEdit(ActionEvent actionEvent) throws IOException {
         ColumnEditorDialog dialog = new ColumnEditorDialog(column);
         Optional<Column> res = dialog.showAndWait();
+        System.out.println(res);
         if( res.isPresent()){
             ColumnTitleLabel.setText( res.get().getName());
         }
-        else if( dialog.isShouldBeDelete()){
+        else if( dialog.isShouldBeDelete() ){
+            System.out.println("test");
             projectController.removeColumn(this);
         }
 
