@@ -56,7 +56,7 @@ public class ProjectController {
         }
 
         for (Column col:project.getColumns()) {
-            columnHBox.getChildren().add( ProjectColumnController.loadNew(this, col).scrollPane);
+            columnHBox.getChildren().add( new ProjectColumnController(this, col));
         }
 
     }

@@ -11,20 +11,20 @@ import javafx.scene.layout.VBox;
 import java.io.IOException;
 import java.util.Optional;
 
-public class ProjectColumnController {
+public class ProjectColumnController extends ScrollPane{
 
     private static final String FXML_FILE = "ProjectColumnController.fxml";
 
-    public static ProjectColumnController loadNew(ProjectController projectController, Column column) throws IOException {
+    public ProjectColumnController( ProjectController projectController, Column column) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
+        fxmlLoader.setController(this);
+        fxmlLoader.setRoot(this);
         fxmlLoader.load();
-        ProjectColumnController projectColumnController = fxmlLoader.getController();
-        projectColumnController.setColumn(column);
-        projectColumnController.setProjectController(projectController);
-        return projectColumnController;
+        setColumn(column);
+        this.projectController = projectController;
     }
-    public static ProjectColumnController loadNew(ProjectController projectController) throws IOException {
-        return loadNew(projectController,null);
+    public ProjectColumnController( ProjectController projectController) throws IOException {
+        this(projectController, null);
     }
 
     @FXML
