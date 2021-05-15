@@ -79,8 +79,7 @@ public class TaskController extends DialogPane {
             }else{
                 task.setName( taskNameField.getText());
                 task.setDescription( taskDescriptionArea.getText());
-                //task.getDevs().removeAll( devToRemove);
-                //task.getDevs().addAll( devToAdd);
+                task.setDevs(newDevList);
             }
 
         });

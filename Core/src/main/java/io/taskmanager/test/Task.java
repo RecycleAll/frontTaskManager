@@ -11,7 +11,7 @@ public class Task {
     private LocalDateTime limitDate;
     private LocalDateTime lastUpdateDate;
 
-    private final ArrayList<Dev> devs;
+    private ArrayList<Dev> devs;
     private final ArrayList<Tag> tags;
 
     public Task(int id, String name, String description, LocalDateTime creationDate, LocalDateTime limitDate, LocalDateTime lastUpdateDate, ArrayList<Dev> devs, ArrayList<Tag> tags) {
@@ -42,6 +42,9 @@ public class Task {
         System.out.println("dev size from copy: "+ devs.size());
     }
 
+    public void setDevs(ArrayList<Dev> devs) {
+        this.devs = devs;
+    }
 
     public ArrayList<Dev> getDevs() {
         return devs;

@@ -41,13 +41,19 @@ public class ColumnTaskController extends BorderPane {
 
     public void setTask(Task task) {
         this.task = task;
-        this.taskTitleLabel.setText(task.getName());
+        updateUI();
+    }
+
+    private void updateUI(){
+        taskTitleLabel.setText(task.getName());
         DevsFlowPane.getChildren().clear();
 
         for (Dev dev :task.getDevs() ) {
             DevsFlowPane.getChildren().add( new DevButton(dev));
         }
     }
+
+
 
     public Task getTask() {
         return task;
@@ -56,7 +62,11 @@ public class ColumnTaskController extends BorderPane {
     public void OnView(ActionEvent actionEvent) throws IOException {
         TaskDialog dialog = new TaskDialog(projectColumnController.getProject(), task);
         Optional<Task> res = dialog.showAndWait();
-        if( res.isEmpty() && dialog.isShouldBeDelete()){
+
+        if( res.isPresent()){
+            updateUI();
+        }
+        else if(dialog.isShouldBeDelete()){
             projectColumnController.removeTask(this);
         }
     }
