@@ -64,7 +64,7 @@ public class ProjectColumnController extends ScrollPane{
     }
 
     private void addTaskToTaskVBox(Task task) throws IOException {
-        TaskVBox.getChildren().add( ColumnTaskViewer.loadNew(task) );
+        TaskVBox.getChildren().add( ColumnTaskController.loadNew(task) );
     }
 
     public void OnAddTask(ActionEvent actionEvent) throws IOException {

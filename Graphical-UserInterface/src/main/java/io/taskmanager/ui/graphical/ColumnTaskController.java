@@ -13,14 +13,14 @@ import javafx.scene.layout.Pane;
 import java.io.IOException;
 import java.util.Optional;
 
-public class ColumnTaskViewer {
+public class ColumnTaskController {
 
-    private static final String FXML_FILE = "ColumnTaskViewer.fxml";
+    private static final String FXML_FILE = "ColumnTaskController.fxml";
 
     public static Pane loadNew(Task task) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         Pane pane = fxmlLoader.load();
-        ((ColumnTaskViewer)fxmlLoader.getController()).setTask(task);
+        ((ColumnTaskController)fxmlLoader.getController()).setTask(task);
         return pane;
     }
 
