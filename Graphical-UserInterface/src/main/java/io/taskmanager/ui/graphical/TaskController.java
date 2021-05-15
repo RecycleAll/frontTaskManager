@@ -136,27 +136,13 @@ public class TaskController extends DialogPane {
             this.setDevs(res.get());
         }
 
-       /* DevDialog devDialog = new DevDialog();
-        Optional<Dev> res = devDialog.showAndWait();
-        res.ifPresent(this::addDev);*/
     }
 
     static class DevButton extends Button{
         public Dev dev;
         public DevButton(TaskController editor, Dev dev) {
-            super();
+            super(dev.getFirstName());
             this.dev = dev;
-            this.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-
-            HBox hBox = new HBox(10); // 10 spacing
-            hBox.setAlignment(Pos.CENTER_LEFT);
-            Label label = new Label(dev.getFirstName());
-            Button button = new Button("remove");
-            button.setOnAction(actionEvent -> {
-                editor.removeDev(this);
-            });
-            hBox.getChildren().addAll(label, button);
-            this.setGraphic(hBox);
 
             this.setOnAction(actionEvent -> {
                 //TODO open dev viewer
