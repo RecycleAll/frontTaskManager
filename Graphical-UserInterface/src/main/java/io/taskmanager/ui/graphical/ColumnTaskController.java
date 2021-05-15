@@ -7,22 +7,15 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Pane;
 
 import java.io.IOException;
 import java.util.Optional;
 
-public class ColumnTaskController {
+public class ColumnTaskController extends BorderPane {
 
     private static final String FXML_FILE = "ColumnTaskController.fxml";
-
-    public static Pane loadNew(Task task) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
-        Pane pane = fxmlLoader.load();
-        ((ColumnTaskController)fxmlLoader.getController()).setTask(task);
-        return pane;
-    }
 
     @FXML
     public FlowPane DevsFlowPane;
@@ -31,6 +24,20 @@ public class ColumnTaskController {
     public Label taskTitleLabel;
 
     private Task task;
+    private ProjectColumnController projectColumnController;
+
+    public ColumnTaskController(ProjectColumnController projectColumnController, Task task) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
+        fxmlLoader.setController(this);
+        fxmlLoader.setRoot(this);
+        fxmlLoader.load();
+        setTask(task);
+        this.projectColumnController = projectColumnController;
+    }
+
+    public ColumnTaskController(ProjectColumnController projectColumnController) throws IOException {
+        this(projectColumnController, null);
+    }
 
     public void setTask(Task task) {
         this.task = task;

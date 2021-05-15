@@ -8,8 +8,7 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.text.Font?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-radius: 5; -fx-background-color: gray; -fx-border-color: black; -fx-border-radius: 5;" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.taskmanager.ui.graphical.ColumnTaskController">
+<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-radius: 5; -fx-background-color: gray; -fx-border-color: black; -fx-border-radius: 5;" type="BorderPane" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <FlowPane fx:id="DevsFlowPane" hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWrapLength="200.0" vgap="10.0" BorderPane.alignment="CENTER">
          <BorderPane.margin>
@@ -38,4 +37,4 @@
          </BorderPane.margin>
       </AnchorPane>
    </top>
-</BorderPane>
+</fx:root>
