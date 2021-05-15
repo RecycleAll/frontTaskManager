@@ -26,6 +26,9 @@ public class ColumnEditorDialog extends Dialog<Column> {
             }
         });
     }
+    public ColumnEditorDialog() throws IOException {
+        this(null);
+    }
 
     public boolean isShouldBeDelete() {
         return shouldBeDelete;

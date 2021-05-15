@@ -61,9 +61,14 @@ public class ProjectController {
 
     }
 
-    public void removeColumn(ProjectColumnController projectColumnController){
+    public void removeColumn( ProjectColumnController projectColumnController){
         project.removeColumn(projectColumnController.getColumn());
         columnHBox.getChildren().remove(projectColumnController.scrollPane);
+    }
+
+    private void addColumn(Column column) throws IOException {
+        project.addColumn(column);
+        columnHBox.getChildren().add( new ProjectColumnController(this, column));
     }
 
     public void removeDev( ProjectDevController dev){
@@ -81,7 +86,12 @@ public class ProjectController {
     }
 
     @FXML
-    public void OnAddColumn(ActionEvent actionEvent) {
+    public void OnAddColumn(ActionEvent actionEvent) throws IOException {
+        ColumnEditorDialog dialog = new ColumnEditorDialog();
+        Optional<Column> res = dialog.showAndWait();
+        if(res.isPresent()){
+            addColumn(res.get());
+        }
     }
 
 
