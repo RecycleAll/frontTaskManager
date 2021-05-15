@@ -1,6 +1,7 @@
 package io.taskmanager.ui.graphical;
 
 import io.taskmanager.test.Dev;
+import io.taskmanager.test.Project;
 import io.taskmanager.test.Task;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -28,15 +29,17 @@ public class TaskController extends DialogPane {
     public FlowPane devsFlowPane;
 
     private Task task;
+    private Project project;
+
     private final SimpleBooleanProperty isNewTask;
 
     private final ArrayList<Dev> devToAdd, devToRemove;
 
-    public TaskController() throws IOException {
-        this(null);
+    public TaskController(Project project) throws IOException {
+        this(project, null);
     }
 
-    public TaskController(Task task) throws IOException {
+    public TaskController(Project project, Task task) throws IOException {
         isNewTask = new SimpleBooleanProperty(false);
         devToAdd = new ArrayList<>();
         devToRemove = new ArrayList<>();
@@ -45,6 +48,7 @@ public class TaskController extends DialogPane {
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
         setTask(task);
+        this.project = project;
     }
 
     @FXML
@@ -120,10 +124,14 @@ public class TaskController extends DialogPane {
         devsFlowPane.getChildren().add(devsFlowPane.getChildren().size() - 1, new DevButton(this, dev));
     }
 
+    @FXML
     public void OnAddDev(ActionEvent actionEvent) throws IOException {
-        DevDialog devDialog = new DevDialog();
+        DevSelectorDialog dialog = new DevSelectorDialog( project, task);
+        dialog.showAndWait();
+
+       /* DevDialog devDialog = new DevDialog();
         Optional<Dev> res = devDialog.showAndWait();
-        res.ifPresent(this::addDev);
+        res.ifPresent(this::addDev);*/
     }
 
     static class DevButton extends Button{

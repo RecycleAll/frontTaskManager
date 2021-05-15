@@ -1,5 +1,6 @@
 package io.taskmanager.ui.graphical;
 
+import io.taskmanager.test.Project;
 import io.taskmanager.test.Task;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -11,9 +12,9 @@ public class TaskDialog extends Dialog<Task> {
 
     private boolean shouldBeDelete;
 
-    public TaskDialog(Task task) throws IOException {
+    public TaskDialog(Project project, Task task) throws IOException {
         shouldBeDelete = false;
-        TaskController controller = new TaskController(task);
+        TaskController controller = new TaskController(project, task);
         setDialogPane(controller);
 
         setResultConverter(buttonType -> {
@@ -27,8 +28,8 @@ public class TaskDialog extends Dialog<Task> {
             }
         });
     }
-    public TaskDialog() throws IOException {
-        this(null);
+    public TaskDialog(Project project) throws IOException {
+        this(project,null);
     }
 
     public boolean isShouldBeDelete() {

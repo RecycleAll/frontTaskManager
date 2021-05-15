@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ButtonType?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+
+<fx:root type="DialogPane" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <buttonTypes>
+      <ButtonType fx:constant="APPLY" />
+      <ButtonType fx:constant="CANCEL" />
+   </buttonTypes>
+   <content>
+      <TableView fx:id="table" minHeight="-Infinity" minWidth="-Infinity">
+        <columns>
+          <TableColumn fx:id="firstNameColumn" prefWidth="75.0" text="first name" />
+          <TableColumn fx:id="lastNameColumn" prefWidth="75.0" text="last name" />
+            <TableColumn fx:id="presentColumn" prefWidth="75.0" text="is present" />
+        </columns>
+      </TableView>
+   </content>
+</fx:root>

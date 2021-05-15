@@ -1,5 +1,6 @@
 package io.taskmanager.ui.graphical;
 import io.taskmanager.test.Column;
+import io.taskmanager.test.Project;
 import io.taskmanager.test.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -71,13 +72,16 @@ public class ProjectColumnController extends ScrollPane{
     }
 
     public void OnAddTask(ActionEvent actionEvent) throws IOException {
-        TaskDialog dialog = new TaskDialog();
+        TaskDialog dialog = new TaskDialog(getProject());
         Optional<Task> res = dialog.showAndWait();
         if(res.isPresent()){
             addTask(res.get());
         }
     }
 
+    public Project getProject(){
+        return projectController.getProject();
+    }
 
     public void OnEdit(ActionEvent actionEvent) throws IOException {
         ColumnEditorDialog dialog = new ColumnEditorDialog(column);

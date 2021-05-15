@@ -61,7 +61,11 @@ public class ProjectController {
 
     }
 
-    public void removeColumn( ProjectColumnController projectColumnController){
+    public Project getProject() {
+        return project;
+    }
+
+    public void removeColumn(ProjectColumnController projectColumnController){
         project.removeColumn(projectColumnController.getColumn());
         columnHBox.getChildren().remove(projectColumnController);
     }
