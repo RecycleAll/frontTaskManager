@@ -57,9 +57,14 @@ public class ProjectController {
         }
 
         for (Column col:project.getColumns()) {
-            columnHBox.getChildren().add( ColumnViewer.loadNew(col).scrollPane);
+            columnHBox.getChildren().add( ColumnViewer.loadNew(this, col).scrollPane);
         }
 
+    }
+
+    public void removeColumn(ColumnViewer columnViewer){
+        project.removeColumn(columnViewer.getColumn());
+        columnHBox.getChildren().remove(columnViewer.scrollPane);
     }
 
     public void removeDev( ProjectDevController dev){

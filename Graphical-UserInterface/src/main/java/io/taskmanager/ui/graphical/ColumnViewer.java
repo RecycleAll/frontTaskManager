@@ -1,6 +1,7 @@
 package io.taskmanager.ui.graphical;
 import io.taskmanager.test.Column;
 import io.taskmanager.test.Task;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,15 +16,16 @@ public class ColumnViewer {
 
     private static final String FXML_FILE = "ColumnViewer.fxml";
 
-    public static ColumnViewer loadNew(Column column) throws IOException {
+    public static ColumnViewer loadNew(ProjectController projectController, Column column) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.load();
         ColumnViewer columnViewer = fxmlLoader.getController();
         columnViewer.setColumn(column);
+        columnViewer.setProjectController(projectController);
         return columnViewer;
     }
-    public static ColumnViewer loadNew() throws IOException {
-        return loadNew(null);
+    public static ColumnViewer loadNew(ProjectController projectController) throws IOException {
+        return loadNew(projectController,null);
     }
 
     @FXML
@@ -34,6 +36,7 @@ public class ColumnViewer {
     public ScrollPane scrollPane;
 
     private Column column;
+    private ProjectController projectController;
 
     public Column getColumn() {
         return column;
@@ -50,6 +53,10 @@ public class ColumnViewer {
         for (Task task: column.getTasks()) {
             addTaskToTaskVBox(task);
         }
+    }
+
+    public void setProjectController(ProjectController projectController) {
+        this.projectController = projectController;
     }
 
     private void addTask(Task task) throws IOException {
@@ -70,4 +77,15 @@ public class ColumnViewer {
     }
 
 
+    public void OnEdit(ActionEvent actionEvent) throws IOException {
+        ColumnEditorDialog dialog = new ColumnEditorDialog(column);
+        Optional<Column> res = dialog.showAndWait();
+        if( res.isPresent()){
+            ColumnTitleLabel.setText( res.get().getName());
+        }
+        else if( dialog.isShouldBeDelete()){
+            projectController.removeColumn(this);
+        }
+
+    }
 }
