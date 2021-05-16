@@ -89,8 +89,8 @@ public class ProjectController extends BorderPane{
     @FXML
     @SuppressWarnings("unused") //used by fxml
     public void OnAddDev(ActionEvent actionEvent) throws IOException {
-        DevDialog devDialog = new DevDialog();
-        Optional<Dev> res = devDialog.showAndWait();
+        DevEditorDialog devEditorDialog = new DevEditorDialog();
+        Optional<Dev> res = devEditorDialog.showAndWait();
         if(res.isPresent()){
             this.addDev(res.get());
         }

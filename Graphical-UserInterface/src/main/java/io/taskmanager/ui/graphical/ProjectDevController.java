@@ -47,12 +47,12 @@ public class ProjectDevController extends AnchorPane{
     }
 
     public void OnView(ActionEvent actionEvent) throws IOException {
-        DevDialog devDialog = new DevDialog(dev);
-        Optional<Dev> res = devDialog.showAndWait();
+        DevEditorDialog devEditorDialog = new DevEditorDialog(dev);
+        Optional<Dev> res = devEditorDialog.showAndWait();
         if(res.isPresent()){
             updateUI();
         }
-        else if( devDialog.isShouldBeDelete()){
+        else if( devEditorDialog.isShouldBeDelete()){
             projectController.removeDev(this);
         }
     }

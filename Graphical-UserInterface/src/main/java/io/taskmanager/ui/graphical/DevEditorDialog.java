@@ -6,13 +6,13 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import java.io.IOException;
 
-public class DevDialog extends Dialog<Dev> {
+public class DevEditorDialog extends Dialog<Dev> {
 
     private boolean shouldBeDelete;
 
-    public DevDialog(Dev dev) throws IOException {
+    public DevEditorDialog(Dev dev) throws IOException {
         shouldBeDelete = false;
-        DevController controller = new DevController(dev);
+        DevEditorController controller = new DevEditorController(dev);
         this.setDialogPane(controller);
 
         setResultConverter(buttonType -> {
@@ -31,7 +31,7 @@ public class DevDialog extends Dialog<Dev> {
         return shouldBeDelete;
     }
 
-    public DevDialog() throws IOException {
+    public DevEditorDialog() throws IOException {
         this(null);
     }
 

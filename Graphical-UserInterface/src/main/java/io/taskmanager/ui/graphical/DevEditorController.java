@@ -10,9 +10,9 @@ import javafx.scene.control.*;
 
 import java.io.IOException;
 
-public class DevController extends DialogPane{
+public class DevEditorController extends DialogPane{
 
-    private static final String FXML_FILE = "DevController.fxml";
+    private static final String FXML_FILE = "DevEditorController.fxml";
 
     @FXML
     public TextField firstNameField;
@@ -26,7 +26,7 @@ public class DevController extends DialogPane{
     private final SimpleBooleanProperty isNewDev = new SimpleBooleanProperty(false);
     private Dev dev;
 
-    public DevController(Dev dev) throws IOException {
+    public DevEditorController(Dev dev) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
