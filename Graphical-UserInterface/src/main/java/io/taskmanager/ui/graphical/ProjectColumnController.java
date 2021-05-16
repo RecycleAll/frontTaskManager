@@ -5,6 +5,7 @@ import io.taskmanager.test.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
@@ -15,6 +16,14 @@ import java.util.Optional;
 public class ProjectColumnController extends ScrollPane{
 
     private static final String FXML_FILE = "ProjectColumnController.fxml";
+
+    @FXML
+    public Label ColumnTitleLabel;
+    @FXML
+    public VBox TaskVBox;
+
+    private Column column;
+    private ProjectController projectController;
 
     public ProjectColumnController( ProjectController projectController, Column column) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
@@ -27,14 +36,6 @@ public class ProjectColumnController extends ScrollPane{
     public ProjectColumnController( ProjectController projectController) throws IOException {
         this(projectController, null);
     }
-
-    @FXML
-    public Label ColumnTitleLabel;
-    @FXML
-    public VBox TaskVBox;
-
-    private Column column;
-    private ProjectController projectController;
 
     public Column getColumn() {
         return column;

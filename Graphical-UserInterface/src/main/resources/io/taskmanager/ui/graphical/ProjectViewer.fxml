@@ -4,11 +4,13 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.taskmanager.ui.graphical.ProjectController">
    <top>
@@ -24,7 +26,20 @@
             <AnchorPane minWidth="200.0">
                <children>
                   <Label text="Columns" AnchorPane.leftAnchor="0.0" />
-                  <Button mnemonicParsing="false" onAction="#OnAddColumn" text="add column" AnchorPane.rightAnchor="0.0" />
+                  <Button contentDisplay="GRAPHIC_ONLY" ellipsisString="" mnemonicParsing="false" onAction="#OnAddColumn" text="add column" AnchorPane.rightAnchor="0.0">
+                     <graphic>
+                        <FontIcon iconLiteral="anto-plus-circle" iconSize="18" />
+                     </graphic>
+                     <tooltip>
+                        <Tooltip text="Add a new Column">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Tooltip>
+                     </tooltip>
+                     <padding>
+                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                     </padding></Button>
                </children>
             </AnchorPane>
             <ScrollPane VBox.vgrow="ALWAYS">
@@ -48,7 +63,20 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <Button mnemonicParsing="false" onAction="#OnAddDev" text="add Dev" AnchorPane.rightAnchor="0.0" />
+                  <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#OnAddDev" text="add Dev" AnchorPane.rightAnchor="0.0">
+                     <graphic>
+                        <FontIcon iconLiteral="anto-plus-circle" iconSize="18" />
+                     </graphic>
+                     <tooltip>
+                        <Tooltip text="add a new developer">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Tooltip>
+                     </tooltip>
+                     <padding>
+                        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+                     </padding></Button>
                </children>
             </AnchorPane>
          </children>
