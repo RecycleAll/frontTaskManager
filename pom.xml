@@ -10,6 +10,7 @@
         <module>Core</module>
         <module>Console-UserInterface</module>
         <module>TaskManager-Application</module>
+        <module>TaskRepository-Api</module>
     </modules>
 
     <properties>
