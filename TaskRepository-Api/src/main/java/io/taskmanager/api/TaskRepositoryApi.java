@@ -235,7 +235,7 @@ public class TaskRepositoryApi implements TaskRepository {
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString("{ \"name\":\""+name+"\"," +
                         "\"description\":\""+description+"\"," +
-                        "\"Duration\":\""+limitDate+"\"," +
+                        "\"limitDate\":\""+limitDate+"\"," +
                         "\"columnId\":\""+columnId+"\"}"))
                 .build();
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request,
@@ -243,6 +243,19 @@ public class TaskRepositoryApi implements TaskRepository {
         System.out.print(response.get().body());
     }
 
+    @Override
+    public void postColumn(String name, int projectId) throws ExecutionException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/column/"))
+                .timeout(Duration.ofSeconds(10))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString("{ \"name\":\""+name+"\"," +
+                        "\"projectId\":\""+projectId+"\"}"))
+                .build();
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request,
+                HttpResponse.BodyHandlers.ofString());
+        System.out.print(response.get().body());
+    }
 }
 
 
