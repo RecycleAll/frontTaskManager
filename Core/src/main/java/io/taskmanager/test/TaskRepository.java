@@ -18,4 +18,6 @@ public interface TaskRepository {
     List<Task> getTasks(Project project) throws ExecutionException, InterruptedException;
 
     Task getTask(Column column) throws ExecutionException, InterruptedException;
+
+    void postProject(Dev dev, String name) throws ExecutionException, InterruptedException;
 }

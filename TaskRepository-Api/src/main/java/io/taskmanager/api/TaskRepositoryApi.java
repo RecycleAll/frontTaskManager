@@ -196,6 +196,19 @@ public class TaskRepositoryApi implements TaskRepository {
                 .thenApply(HttpResponse::body);
         return g.fromJson(taskAsJson.get(), Task.class);
     }
+
+    @Override
+    public void postProject(Dev dev, String name) throws ExecutionException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/project/"))
+                .timeout(Duration.ofSeconds(10))
+                .POST(HttpRequest.BodyPublishers.ofString("{ \"name\":\""+name+"\",\"devId\":"+dev.getId() +"}"))
+                .build();
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request,
+                HttpResponse.BodyHandlers.ofString());
+        response.get().body();
+    }
+
 }
 
 
