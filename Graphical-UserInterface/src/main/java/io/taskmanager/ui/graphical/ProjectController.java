@@ -16,20 +16,9 @@ import javafx.scene.paint.Paint;
 import java.io.IOException;
 import java.util.Optional;
 
-public class ProjectController {
+public class ProjectController extends BorderPane{
 
-    private static final String FXML_FILE = "ProjectViewer.fxml";
-
-    public static ProjectController loadNew(Project project) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
-        fxmlLoader.load();
-        ProjectController projectController = fxmlLoader.getController();
-        projectController.setProject(project);
-        return projectController;
-    }
-    public static ProjectController loadNew() throws IOException {
-        return loadNew(null);
-    }
+    private static final String FXML_FILE = "ProjectController.fxml";
 
     @FXML
     public VBox devsVBox;
@@ -37,10 +26,16 @@ public class ProjectController {
     public Label projectTitle;
     @FXML
     public HBox columnHBox;
-    @FXML
-    public BorderPane borderPane;
 
     private Project project;
+
+    public ProjectController(Project project) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
+        fxmlLoader.setController(this);
+        fxmlLoader.setRoot(this);
+        fxmlLoader.load();
+        setProject(project);
+    }
 
     public void setProject(Project newProject) throws IOException {
         if( newProject == null){

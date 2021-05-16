@@ -42,7 +42,7 @@ public class App extends Application {
         project.addDev(dev);
         project.addDev(dev2);
 
-        scene = new Scene( ProjectController.loadNew(project).borderPane );
+        scene = new Scene( new ProjectController(project) );
         //scene = new Scene( ProjectColumnController.loadNew(column).scrollPane );
 
         stage.setScene(scene);

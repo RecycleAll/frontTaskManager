@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.taskmanager.ui.graphical.ProjectController">
+<fx:root maxHeight="-Infinity" maxWidth="-Infinity" type="BorderPane" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <top>
       <Label fx:id="projectTitle" text="Project Title" BorderPane.alignment="BOTTOM_LEFT">
          <font>
@@ -88,4 +88,4 @@
          </padding>
       </VBox>
    </right>
-</BorderPane>
+</fx:root>
