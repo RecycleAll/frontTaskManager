@@ -19,5 +19,7 @@ public interface TaskRepository {
 
     Task getTask(Column column) throws ExecutionException, InterruptedException;
 
-    void postProject(Dev dev, String name) throws ExecutionException, InterruptedException;
+    public void postProject(Dev dev, String name) throws ExecutionException, InterruptedException;
+
+    void registerDev(String firstname, String lastname, String email, String password, String githubId) throws ExecutionException, InterruptedException ;
 }
