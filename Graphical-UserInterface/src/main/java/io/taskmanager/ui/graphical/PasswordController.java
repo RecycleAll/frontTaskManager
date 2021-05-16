@@ -8,17 +8,9 @@ import javafx.scene.control.*;
 
 import java.io.IOException;
 
-public class PasswordController {
+public class PasswordController extends DialogPane{
 
     private static final String FXML_FILE = "PasswordController.fxml";
-
-    public static PasswordController loadNew(Dev dev) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
-        fxmlLoader.load();
-        PasswordController passwordController = fxmlLoader.getController();
-        passwordController.setDev(dev);
-        return passwordController;
-    }
 
     @FXML
     public PasswordField passwordField;
@@ -26,14 +18,21 @@ public class PasswordController {
     public PasswordField newPasswordField;
     @FXML
     public PasswordField confirmPasswordField;
-    @FXML
-    public DialogPane dialogPane;
 
     private Dev dev;
 
+    public PasswordController(Dev dev) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
+        fxmlLoader.setController(this);
+        fxmlLoader.setRoot(this);
+        fxmlLoader.load();
+        this.dev = dev;
+    }
+
     @FXML
+    @SuppressWarnings("unused") //used by fxml loader
     public void initialize(){
-        Button applyButton = (Button) dialogPane.lookupButton(ButtonType.APPLY);
+        Button applyButton = (Button) this.lookupButton(ButtonType.APPLY);
         applyButton.addEventFilter(ActionEvent.ACTION, actionEvent -> {
             if( dev == null)
             {

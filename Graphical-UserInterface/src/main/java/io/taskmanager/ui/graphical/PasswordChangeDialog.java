@@ -8,8 +8,8 @@ import java.io.IOException;
 public class PasswordChangeDialog extends Dialog<Void> {
 
     public PasswordChangeDialog(Dev dev) throws IOException {
-        PasswordController controller = PasswordController.loadNew(dev);
-        this.setDialogPane(controller.dialogPane);
+        PasswordController controller = new PasswordController(dev);
+        this.setDialogPane(controller);
     }
 
 }
