@@ -16,11 +16,11 @@ public class Project {
     private List<Tag> tags;
     private List<Dev> devs;
 
-    public static Project loadFromApi(TaskRepository api, int projectID) throws ExecutionException, InterruptedException {
+    public static Project loadFromApi(TaskRepository api, int projectID) throws Exception {
         return api.getProject(projectID);
     }
 
-    public Project(TaskRepository api, int id, String name, String gitHubUrl, ArrayList<Column> columns, ArrayList<Tag> tags, ArrayList<Dev> devs) {
+    public Project(TaskRepository api, int id, String name, String gitHubUrl, List<Column> columns, List<Tag> tags, List<Dev> devs) {
         this.api = api;
         this.id = id;
         setName(name);

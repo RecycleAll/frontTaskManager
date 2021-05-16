@@ -16,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -120,7 +121,7 @@ public class TaskRepositoryApi implements TaskRepository {
     }
 
     @Override
-    public Project getProject(int projectID) throws ExecutionException, InterruptedException {
+    public Project getProject(int projectID) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiUrl + "/project/one/" + projectID))
                 .timeout(Duration.ofSeconds(10))
@@ -128,16 +129,43 @@ public class TaskRepositoryApi implements TaskRepository {
                 .build();
         CompletableFuture<String> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body);
-        Project project = g.fromJson(projectsAsJson.get(), Project.class);
-        project.setApi(this);
+        ProjectModel projectModel = g.fromJson(projectsAsJson.get(), ProjectModel.class);
 
-        project.setDevs( getProjectDevs(projectID));
-        System.out.println("test: "+project.getDevs().size());
+        List<Dev> devs = getProjectDevs(projectID);
+        List<Column> columns = getColumns(projectID);
 
-        project.setColumns( getColumns(projectID));
+        for (Column col: columns) {
+            for (Task task: col.getTasks()) {
+                int[] assignedDevs = getTaskDevsID(task.getId());
 
-        return project;
+                for (int devID: assignedDevs ) {
+                    Dev dev = devs.stream().filter(dev1 -> dev1.getId() == devID).findFirst().orElseThrow( () -> new Exception("Dev ID inside task is not present inside project"));
+                    task.addDev(dev);
+                }
+            }
+        }
+
+        return new Project(this,  projectModel.getId(), projectModel.getName(), "", columns, new ArrayList<>(), devs);
     }
+
+    private int[] getTaskDevsID(int taskID) throws ExecutionException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/devTask/" + taskID))
+                .timeout(Duration.ofSeconds(10))
+                .GET()
+                .build();
+        CompletableFuture<String> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body);
+        DevTaskModel[] devs = g.fromJson(projectsAsJson.get(), DevTaskModel[].class);
+
+        int[] devsID = new int[devs.length];
+        for (int i = 0; i < devs.length; i++) {
+            devsID[i] = devs[i].getDev_id();
+        }
+        return devsID;
+    }
+
+
     @Override
     public List<Dev> getProjectDevs(int projectID) throws ExecutionException, InterruptedException{
         HttpRequest request = HttpRequest.newBuilder()

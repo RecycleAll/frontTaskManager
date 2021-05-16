@@ -21,7 +21,7 @@ public class App extends Application {
     private static Scene scene;
 
     @Override
-    public void start(Stage stage) throws IOException, ExecutionException, InterruptedException {
+    public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( "ProjectColumnController.fxml"));
 
         TaskRepositoryApi api = new TaskRepositoryApi("http://localhost:3000");
