@@ -2,6 +2,7 @@ package io.taskmanager.ui.graphical;
 
 import io.taskmanager.test.Dev;
 import io.taskmanager.test.Project;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -61,6 +62,10 @@ public class DevSelectorController extends DialogPane {
                 }
             }
         });
+
+        table.prefHeightProperty().bind(table.fixedCellSizeProperty().multiply(Bindings.size(table.getItems()).add(1.01)));
+        table.minHeightProperty().bind(table.prefHeightProperty());
+        table.maxHeightProperty().bind(table.prefHeightProperty());
     }
 
     public ArrayList<Dev> getDevs(){
