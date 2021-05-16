@@ -72,6 +72,8 @@ public class ProjectColumnController extends ScrollPane{
         TaskVBox.getChildren().add( new ColumnTaskController(this, task) );
     }
 
+    @FXML
+    @SuppressWarnings("unused") //used by fxml
     public void OnAddTask(ActionEvent actionEvent) throws IOException {
         TaskDialog dialog = new TaskDialog(getProject());
         Optional<Task> res = dialog.showAndWait();
@@ -80,21 +82,21 @@ public class ProjectColumnController extends ScrollPane{
         }
     }
 
-    public Project getProject(){
-        return projectController.getProject();
-    }
-
+    @FXML
+    @SuppressWarnings("unused") //used by fxml
     public void OnEdit(ActionEvent actionEvent) throws IOException {
         ColumnEditorDialog dialog = new ColumnEditorDialog(column);
         Optional<Column> res = dialog.showAndWait();
-        System.out.println(res);
         if( res.isPresent()){
             ColumnTitleLabel.setText( res.get().getName());
         }
         else if( dialog.isShouldBeDelete() ){
-            System.out.println("test");
             projectController.removeColumn(this);
         }
-
     }
+
+    public Project getProject(){
+        return projectController.getProject();
+    }
+
 }
