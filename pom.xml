@@ -10,7 +10,7 @@
         <module>Core</module>
         <module>Console-UserInterface</module>
         <module>TaskManager-Application</module>
-        <module>io.taskmanager.test.TaskRepository-Api</module>
+        <module>TaskRepository-Api</module>
     </modules>
 
     <properties>
