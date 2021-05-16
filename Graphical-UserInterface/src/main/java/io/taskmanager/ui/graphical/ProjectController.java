@@ -6,12 +6,8 @@ import io.taskmanager.test.Project;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -47,7 +43,7 @@ public class ProjectController extends BorderPane{
         projectTitle.setText(project.getName());
 
         for (Dev dev:project.getDevs()) {
-            devsVBox.getChildren().add( ProjectDevController.loadNew(this, dev).anchorPane );
+            devsVBox.getChildren().add( new ProjectDevController(this, dev) );
         }
 
         for (Column col:project.getColumns()) {
@@ -72,19 +68,16 @@ public class ProjectController extends BorderPane{
 
     public void removeDev( ProjectDevController dev){
         project.removeDev(dev.getDev());
-        devsVBox.getChildren().remove(dev.anchorPane);
+        devsVBox.getChildren().remove(dev);
     }
 
     private void addDev(Dev dev) throws IOException {
         project.addDev(dev);
-        devsVBox.getChildren().add( ProjectDevController.loadNew(this, dev).anchorPane );
-    }
-
-    private void removeDev(DevViewer devViewer){
-
+        devsVBox.getChildren().add( new ProjectDevController(this, dev) );
     }
 
     @FXML
+    @SuppressWarnings("unused") //used by fxml
     public void OnAddColumn(ActionEvent actionEvent) throws IOException {
         ColumnEditorDialog dialog = new ColumnEditorDialog();
         Optional<Column> res = dialog.showAndWait();
@@ -93,34 +86,13 @@ public class ProjectController extends BorderPane{
         }
     }
 
-
+    @FXML
+    @SuppressWarnings("unused") //used by fxml
     public void OnAddDev(ActionEvent actionEvent) throws IOException {
         DevDialog devDialog = new DevDialog();
         Optional<Dev> res = devDialog.showAndWait();
         if(res.isPresent()){
             this.addDev(res.get());
-        }
-    }
-
-
-    private static class DevViewer extends GridPane {
-
-        public DevViewer(ProjectController projectController, Dev dev) {
-            super();
-            this.add( new Label(dev.getFirstName()), 0, 0);
-            this.add( new Label(dev.getLastName()), 0, 1);
-            this.setBorder( new Border( new BorderStroke(Paint.valueOf("black"), BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(1))));
-            this.setBackground( new Background( new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
-            Button button = new Button("view");
-            button.setOnAction(actionEvent -> {
-
-            });
-            AnchorPane pane = new AnchorPane();
-            AnchorPane.setRightAnchor( button, 0d);
-            pane.getChildren().add( button);
-            this.add( pane, 1, 0);
-            this.prefWidth(USE_COMPUTED_SIZE);
-            this.maxWidth(USE_COMPUTED_SIZE);
         }
     }
 }

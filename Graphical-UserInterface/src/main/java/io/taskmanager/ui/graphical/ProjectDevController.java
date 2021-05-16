@@ -11,21 +11,10 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.Optional;
 
-public class ProjectDevController {
+public class ProjectDevController extends AnchorPane{
 
     private static final String FXML_FILE = "ProjectDevViewer.fxml";
 
-    public static ProjectDevController loadNew(@NotNull ProjectController projectController, @NotNull Dev dev) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
-        fxmlLoader.load();
-        ProjectDevController projectDevController = fxmlLoader.getController();
-        projectDevController.setDev(dev);
-        projectDevController.setProject(projectController);
-        return projectDevController;
-    }
-
-    @FXML
-    public AnchorPane anchorPane;
     @FXML
     public Label firstNameLabel;
     @FXML
@@ -33,6 +22,15 @@ public class ProjectDevController {
 
     private Dev dev;
     private ProjectController projectController;
+
+    public ProjectDevController(@NotNull ProjectController projectController, @NotNull Dev dev) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
+        fxmlLoader.setController(this);
+        fxmlLoader.setRoot(this);
+        fxmlLoader.load();
+        setDev(dev);
+        setProject(projectController);
+    }
 
     public void setProject(@NotNull ProjectController projectController) {
         this.projectController = projectController;
