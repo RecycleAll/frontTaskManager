@@ -34,6 +34,10 @@ public class Dev {
         this(-1, "", "", "", "", 0);
     }
 
+    public ArrayList<Project> getProjects() {
+        return projects;
+    }
+
     public int getId() {
         return id;
     }

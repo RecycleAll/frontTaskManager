@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" tabClosingPolicy="UNAVAILABLE" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/15.0.1">
+  <tabs>
+    <Tab text="Overview">
+         <content>
+            <VBox spacing="5.0">
+               <children>
+                  <AnchorPane style="-fx-background-radius: 10; -fx-border-color: black; -fx-border-radius: 10;">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <Label fx:id="firstNameLabel" text="last name" />
+                              <Label fx:id="lastNameLabel" text="first name" />
+                           </children>
+                        </HBox>
+                        <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#OnEdit" text="Button" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <graphic>
+                              <FontIcon iconLiteral="anto-setting" iconSize="18" />
+                           </graphic>
+                        </Button>
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </AnchorPane>
+                  <Label text="Projects">
+                     <padding>
+                        <Insets bottom="-7.0" />
+                     </padding>
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <VBox fx:id="projectVBox" spacing="15.0" style="-fx-background-radius: 10; -fx-border-color: black; -fx-border-radius: 10;" />
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </VBox>
+         </content>
+    </Tab>
+  </tabs>
+</TabPane>
