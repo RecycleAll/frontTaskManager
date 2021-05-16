@@ -13,6 +13,7 @@ import javafx.scene.layout.FlowPane;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class TaskController extends DialogPane {
@@ -34,7 +35,7 @@ public class TaskController extends DialogPane {
 
     private final SimpleBooleanProperty isNewTask;
 
-    private ArrayList<Dev>  newDevList;
+    private List<Dev> newDevList;
 
     public TaskController(Project project, Task task) throws IOException {
         isNewTask = new SimpleBooleanProperty(false);
@@ -121,7 +122,7 @@ public class TaskController extends DialogPane {
         addDevToFlowPane(dev);
     }
 
-    private void setDevs(ArrayList<Dev> devs){
+    private void setDevs(List<Dev> devs){
         devsFlowPane.getChildren().remove(0, devsFlowPane.getChildren().size() - 1);
 
         for (Dev dev: devs ) {
@@ -137,7 +138,7 @@ public class TaskController extends DialogPane {
     @FXML
     public void OnAddDev(ActionEvent actionEvent) throws IOException {
         DevSelectorDialog dialog = new DevSelectorDialog( project, newDevList);
-        Optional<ArrayList<Dev>> res = dialog.showAndWait();
+        Optional<List<Dev>> res = dialog.showAndWait();
 
         if( res.isPresent()){
             System.out.println(res.get().size());

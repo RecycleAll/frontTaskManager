@@ -8,10 +8,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
-public class DevSelectorDialog extends Dialog<ArrayList<Dev>> {
+public class DevSelectorDialog extends Dialog<List<Dev>> {
 
-    public DevSelectorDialog(@NotNull Project project, ArrayList<Dev> devs) throws IOException {
+    public DevSelectorDialog(@NotNull Project project, List<Dev> devs) throws IOException {
         DevSelectorController controller = new DevSelectorController(project, new ArrayList<>( devs));
         this.setDialogPane( controller);
 

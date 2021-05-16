@@ -3,6 +3,7 @@ package io.taskmanager.test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Task {
     private final int id;
@@ -13,10 +14,10 @@ public class Task {
     private LocalDate limitDate;
     private LocalDateTime updatedAt;
 
-    private ArrayList<Dev> devs;
-    private ArrayList<Tag> tags;
+    private List<Dev> devs;
+    private List<Tag> tags;
 
-    public Task(int id, String name, String description, LocalDateTime createdAt, LocalDate limitDate, LocalDateTime lastUpdateDate, ArrayList<Dev> devs, ArrayList<Tag> tags) {
+    public Task(int id, String name, String description, LocalDateTime createdAt, LocalDate limitDate, LocalDateTime lastUpdateDate, List<Dev> devs, List<Tag> tags) {
         this.id = id;
         setName(name);
         setDescription(description);
@@ -27,7 +28,7 @@ public class Task {
         this.tags = tags;
     }
 
-    public Task(int id, String name, String description, LocalDate limitDate, ArrayList<Dev> devs) {
+    public Task(int id, String name, String description, LocalDate limitDate, List<Dev> devs) {
         this(id, name, description, LocalDateTime.now(), limitDate, null, devs, new ArrayList<>());
     }
 
@@ -44,12 +45,16 @@ public class Task {
         System.out.println("dev size from copy: "+ devs.size());
     }
 
-    public void setDevs(ArrayList<Dev> devs) {
+    public void setDevs(List<Dev> devs) {
         this.devs = devs;
     }
 
-    public ArrayList<Dev> getDevs() {
+    public List<Dev> getDevs() {
         return devs;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
     }
 
     public int getId() {

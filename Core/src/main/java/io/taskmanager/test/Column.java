@@ -1,19 +1,19 @@
 package io.taskmanager.test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Column {
     private final int id;
     private String name;
 
-    private ArrayList<Task> tasks;
+    private List<Task> tasks;
 
-    public Column(int id, String name, ArrayList<Task> tasks) {
+    public Column(int id, String name, List<Task> tasks) {
         this.id = id;
         setName(name);
         this.tasks = tasks;
     }
-
 
     public Column(int id, String name) {
         this(id, name, new ArrayList<>());
@@ -21,6 +21,10 @@ public class Column {
 
     public Column() {
         this(-1, "");
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
 
     public void addTask(Task task){
@@ -31,7 +35,7 @@ public class Column {
         tasks.remove(task);
     }
 
-    public ArrayList<Task> getTasks(){
+    public List<Task> getTasks(){
         return tasks;
     }
 

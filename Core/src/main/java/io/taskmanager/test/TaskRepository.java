@@ -16,6 +16,10 @@ public interface TaskRepository {
     Column getColumn(Column column) throws ExecutionException, InterruptedException;
 
     List<Task> getTasks(Project project) throws ExecutionException, InterruptedException;
+    List<Task> getColumnTasks(int columnId) throws ExecutionException, InterruptedException;
+
+
+    List<Dev> getTaskDevs(int taskID) throws ExecutionException, InterruptedException;
 
     Task getTask(Column column) throws ExecutionException, InterruptedException;
 }

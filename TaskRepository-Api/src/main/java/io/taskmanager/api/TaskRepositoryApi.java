@@ -131,7 +131,22 @@ public class TaskRepositoryApi implements TaskRepository {
         Project project = g.fromJson(projectsAsJson.get(), Project.class);
         project.setApi(this);
         project.setColumns( getColumns(projectID));
+
         return project;
+    }
+
+    @Override
+    public List<Dev> getTaskDevs(int taskID) throws ExecutionException, InterruptedException{
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/devTask/" + taskID))
+                .timeout(Duration.ofSeconds(10))
+                .GET()
+                .build();
+        CompletableFuture<String> columnsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body);
+        System.out.println(columnsAsJson.get());
+        Dev[] devs = g.fromJson(columnsAsJson.get(), Dev[].class);
+        return Arrays.asList(devs);
     }
 
     @Override
@@ -144,6 +159,11 @@ public class TaskRepositoryApi implements TaskRepository {
         CompletableFuture<String> columnsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body);
         Column[] columnsArray = g.fromJson(columnsAsJson.get(), Column[].class);
+
+        for (Column col:columnsArray) {
+            col.setTasks( getColumnTasks( col.getId()));
+        }
+
         return Arrays.asList(columnsArray);
     }
 
@@ -157,6 +177,11 @@ public class TaskRepositoryApi implements TaskRepository {
         CompletableFuture<String> columnsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body);
         Column[] columnsArray = g.fromJson(columnsAsJson.get(), Column[].class);
+
+        for (Column col:columnsArray) {
+            col.setTasks( getColumnTasks( col.getId()));
+        }
+
         return Arrays.asList(columnsArray);
     }
 
@@ -182,6 +207,22 @@ public class TaskRepositoryApi implements TaskRepository {
         CompletableFuture<String> tasksAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body);
         Task[] tasksArray = g.fromJson(tasksAsJson.get(), Task[].class);
+        return Arrays.asList(tasksArray);
+    }
+
+    @Override
+    public List<Task> getColumnTasks(int columnId) throws ExecutionException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/task/all/" + columnId))
+                .timeout(Duration.ofSeconds(10))
+                .GET()
+                .build();
+        CompletableFuture<String> tasksAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body);
+        Task[] tasksArray = g.fromJson(tasksAsJson.get(), Task[].class);
+        for (Task task: tasksArray) {
+            task.setDevs( getTaskDevs(task.getId()));
+        }
         return Arrays.asList(tasksArray);
     }
 

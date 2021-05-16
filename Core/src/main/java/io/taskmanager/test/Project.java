@@ -31,19 +31,15 @@ public class Project {
     }
 
     public Project(TaskRepository api, int id, String name, String gitHubUrl) {
-        this(api, id, name, gitHubUrl, null, null, null);
+        this(api, id, name, gitHubUrl, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
     }
 
     public Project(TaskRepository api) {
         this(api, -1, "", "");
     }
 
-    public Project(TaskRepository api, int projectId) {
-        this(api);
-    }
-
     public Project() {
-        this(null, -1, "", "");
+        this(null, -1, "", "", null, null, null);
     }
 
     public void setApi(TaskRepository api) {
@@ -52,6 +48,15 @@ public class Project {
 
     public void setColumns(List<Column> columns) {
         this.columns = columns;
+        this.devs = new ArrayList<>();
+        this.tags = new ArrayList<>();
+
+        for (Column col: columns ) {
+            for (Task task: col.getTasks() ) {
+                this.devs.addAll( task.getDevs());
+                //this.tags.addAll( task.getTags());
+            }
+        }
     }
 
     public void setTags(ArrayList<Tag> tags) {
@@ -116,3 +121,4 @@ public class Project {
         this.gitHubUrl = gitHubUrl;
     }
 }
+
