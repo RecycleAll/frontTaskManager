@@ -8,10 +8,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,17 +25,16 @@ public class TaskController extends DialogPane {
     public TextField taskNameField;
     @FXML
     public FlowPane devsFlowPane;
+    @FXML
+    public DatePicker limitDatePicker;
+
 
     private Task task;
-    private Project project;
+    private final Project project;
 
     private final SimpleBooleanProperty isNewTask;
 
     private ArrayList<Dev>  newDevList;
-
-    public TaskController(Project project) throws IOException {
-        this(project, null);
-    }
 
     public TaskController(Project project, Task task) throws IOException {
         isNewTask = new SimpleBooleanProperty(false);
@@ -47,6 +44,10 @@ public class TaskController extends DialogPane {
         fxmlLoader.load();
         setTask(task);
         this.project = project;
+    }
+
+    public TaskController(Project project) throws IOException {
+        this(project, null);
     }
 
     @FXML
@@ -75,10 +76,16 @@ public class TaskController extends DialogPane {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "You need to have at least 1 dev assigned too a task.", ButtonType.OK);
                 alert.showAndWait();
                 actionEvent.consume();
-            }else{
+            }else if(limitDatePicker.getValue().isBefore(task.getCreationDate().toLocalDate())  ){
+                Alert alert = new Alert(Alert.AlertType.ERROR, "You can't set the limit date to be before the creation date", ButtonType.OK);
+                alert.showAndWait();
+                actionEvent.consume();
+            }
+            else{
                 task.setName( taskNameField.getText());
                 task.setDescription( taskDescriptionArea.getText());
                 task.setDevs(newDevList);
+                task.setLimitDate(limitDatePicker.getValue().atStartOfDay());
             }
 
         });
@@ -99,6 +106,7 @@ public class TaskController extends DialogPane {
 
         taskNameField.setText(this.task.getName());
         taskDescriptionArea.setText(this.task.getDescription());
+        limitDatePicker.setValue( task.getLimitDate().toLocalDate());
 
         for (Dev dev: task.getDevs()) {
             addDevToFlowPane(dev);

@@ -34,7 +34,7 @@ public class Task {
     }
 
     public Task(){
-        this(0, "", "", null, null, null,new ArrayList<>(), new ArrayList<>());
+        this(0, "", "", LocalDateTime.now());
     }
 
     public Task(Task task){
