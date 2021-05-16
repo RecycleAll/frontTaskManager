@@ -10,23 +10,10 @@ import javafx.scene.control.*;
 
 import java.io.IOException;
 
-public class DevController {
+public class DevController extends DialogPane{
 
     private static final String FXML_FILE = "DevController.fxml";
 
-    public static DevController loadNew(Dev dev) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
-        fxmlLoader.load();
-        DevController devController = fxmlLoader.getController();
-        devController.setDev(dev);
-        return devController;
-    }
-    public static DevController loadNew() throws IOException {
-        return loadNew(null);
-    }
-
-    @FXML
-    private DialogPane dialogPane;
     @FXML
     public TextField firstNameField;
     @FXML
@@ -39,15 +26,24 @@ public class DevController {
     private final SimpleBooleanProperty isNewDev = new SimpleBooleanProperty(false);
     private Dev dev;
 
+    public DevController(Dev dev) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
+        fxmlLoader.setController(this);
+        fxmlLoader.setRoot(this);
+        fxmlLoader.load();
+        setDev(dev);
+    }
+
     @FXML
+    @SuppressWarnings("unused") //used by fxml loader
     public void initialize() {
 
         ButtonType removeButtonType = new ButtonType("delete", ButtonBar.ButtonData.OTHER);
-        dialogPane.getButtonTypes().add(removeButtonType);
-        Button removeButton = (Button) dialogPane.lookupButton(removeButtonType);
+        this.getButtonTypes().add(removeButtonType);
+        Button removeButton = (Button) this.lookupButton(removeButtonType);
         removeButton.visibleProperty().bind(Bindings.createBooleanBinding(() -> !isNewDev.get(), isNewDev));
 
-        Button applyButton = (Button) dialogPane.lookupButton(ButtonType.APPLY);
+        Button applyButton = (Button) this.lookupButton(ButtonType.APPLY);
         applyButton.addEventFilter(ActionEvent.ACTION, actionEvent -> {
             if( dev == null)
             {
@@ -105,7 +101,6 @@ public class DevController {
             this.dev = newDev;
             isNewDev.set(false);
         }
-        System.out.println("dev new: "+ isNewDev);
 
         firstNameField.setText(this.dev.getFirstName());
         lastNameField.setText(this.dev.getLastName());
@@ -117,10 +112,6 @@ public class DevController {
     public void OnPasswordChange(ActionEvent actionEvent) throws IOException {
         PasswordChangeDialog dialog = new PasswordChangeDialog(dev);
         dialog.showAndWait();
-    }
-
-    public DialogPane getDialogPane() {
-        return dialogPane;
     }
 
     public Dev getDev() {

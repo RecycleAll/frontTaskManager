@@ -12,8 +12,8 @@ public class DevDialog extends Dialog<Dev> {
 
     public DevDialog(Dev dev) throws IOException {
         shouldBeDelete = false;
-        DevController controller = DevController.loadNew(dev);
-        this.setDialogPane(controller.getDialogPane());
+        DevController controller = new DevController(dev);
+        this.setDialogPane(controller);
 
         setResultConverter(buttonType -> {
             if( buttonType == ButtonType.APPLY){
