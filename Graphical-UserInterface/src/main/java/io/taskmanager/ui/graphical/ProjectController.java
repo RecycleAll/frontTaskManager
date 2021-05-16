@@ -42,6 +42,7 @@ public class ProjectController extends BorderPane{
 
         projectTitle.setText(project.getName());
 
+        System.out.println("rgvfrdsegfvsz: "+project.getDevs().size());
         for (Dev dev:project.getDevs()) {
             devsVBox.getChildren().add( new ProjectDevController(this, dev) );
         }

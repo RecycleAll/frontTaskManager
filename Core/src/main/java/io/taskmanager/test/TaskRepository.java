@@ -19,6 +19,9 @@ public interface TaskRepository {
     List<Task> getColumnTasks(int columnId) throws ExecutionException, InterruptedException;
 
 
+    List<Dev> getProjectDevs(int projectID) throws ExecutionException, InterruptedException;
+    Dev getDev(int devID) throws ExecutionException, InterruptedException;
+
     List<Dev> getTaskDevs(int taskID) throws ExecutionException, InterruptedException;
 
     Task getTask(Column column) throws ExecutionException, InterruptedException;

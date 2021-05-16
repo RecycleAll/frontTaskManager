@@ -4,30 +4,30 @@ import java.util.ArrayList;
 
 public class Dev {
     private final int id;
-    private String firstName;
-    private String lastName;
+    private String firstname;
+    private String lastname;
     private String email;
     private String password;
     private int github_id;
 
     private ArrayList<Project> projects;
 
-    public Dev(int id, String firstName, String lastName, String email, String password, int github_id, ArrayList<Project> projects) {
+    public Dev(int id, String firstname, String lastname, String email, String password, int github_id, ArrayList<Project> projects) {
         this.id = id;
-        setFirstName(firstName);
-        setLastName(lastName);
+        setFirstname(firstname);
+        setLastname(lastname);
         setEmail(email);
         setPassword(password);
         setGithub_id(github_id);
         this.projects = projects;
     }
 
-    public Dev(int id, String firstName, String lastName, String email, String password, int github_id){
-        this(id, firstName, lastName, email, password, github_id, new ArrayList<>());
+    public Dev(int id, String firstname, String lastname, String email, String password, int github_id){
+        this(id, firstname, lastname, email, password, github_id, new ArrayList<>());
     }
 
     public Dev(Dev dev){
-        this(dev.id, dev.firstName, dev.lastName, dev.email, dev.password, -dev.github_id, dev.projects);
+        this(dev.id, dev.firstname, dev.lastname, dev.email, dev.password, -dev.github_id, dev.projects);
     }
 
     public Dev(){
@@ -50,20 +50,20 @@ public class Dev {
         projects.remove(project);
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getLastname() {
+        return lastname;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
     public String getEmail() {
@@ -92,6 +92,6 @@ public class Dev {
 
     @Override
     public String toString(){
-        return firstName;
+        return firstname;
     }
 }

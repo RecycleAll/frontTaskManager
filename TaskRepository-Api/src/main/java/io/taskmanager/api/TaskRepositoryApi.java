@@ -13,6 +13,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -121,7 +122,6 @@ public class TaskRepositoryApi implements TaskRepository {
     @Override
     public Project getProject(int projectID) throws ExecutionException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                //.uri(URI.create(apiUrl + "/project/one/" + projectID))
                 .uri(URI.create(apiUrl + "/project/one/" + projectID))
                 .timeout(Duration.ofSeconds(10))
                 .GET()
@@ -130,9 +130,49 @@ public class TaskRepositoryApi implements TaskRepository {
                 .thenApply(HttpResponse::body);
         Project project = g.fromJson(projectsAsJson.get(), Project.class);
         project.setApi(this);
+
+        project.setDevs( getProjectDevs(projectID));
+        System.out.println("test: "+project.getDevs().size());
+
         project.setColumns( getColumns(projectID));
 
         return project;
+    }
+    @Override
+    public List<Dev> getProjectDevs(int projectID) throws ExecutionException, InterruptedException{
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/participe/" + projectID))
+                .timeout(Duration.ofSeconds(10))
+                .GET()
+                .build();
+        CompletableFuture<String> columnsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body);
+
+        System.out.println("getProjectDevs json: "+columnsAsJson.get());
+
+        Participates[] participation= g.fromJson(columnsAsJson.get(), Participates[].class);
+        List<Dev> devs = new ArrayList<>();
+
+        for (Participates participates: participation  ) {
+            System.out.println("test");
+            devs.add( getDev( participates.getDev_id()));
+        }
+        System.out.println(devs.size());
+        return devs;
+    }
+    @Override
+    public Dev getDev( int devID) throws ExecutionException, InterruptedException{
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/auth/"+ devID))
+                .timeout(Duration.ofSeconds(10))
+                .GET()
+                .build();
+        CompletableFuture<String> columnsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body);
+
+        System.out.println("getDev json: "+columnsAsJson.get());
+
+        return g.fromJson(columnsAsJson.get(), Dev.class);
     }
 
     @Override
@@ -220,9 +260,6 @@ public class TaskRepositoryApi implements TaskRepository {
         CompletableFuture<String> tasksAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body);
         Task[] tasksArray = g.fromJson(tasksAsJson.get(), Task[].class);
-        for (Task task: tasksArray) {
-            task.setDevs( getTaskDevs(task.getId()));
-        }
         return Arrays.asList(tasksArray);
     }
 

@@ -42,8 +42,8 @@ public class ProjectDevController extends AnchorPane{
     }
 
     public void updateUI(){
-        firstNameLabel.setText( dev.getFirstName());
-        lastNameLabel.setText( dev.getLastName());
+        firstNameLabel.setText( dev.getFirstname());
+        lastNameLabel.setText( dev.getLastname());
     }
 
     public void OnView(ActionEvent actionEvent) throws IOException {

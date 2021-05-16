@@ -86,8 +86,8 @@ public class DevEditorController extends DialogPane{
                 }
             }
 
-            dev.setFirstName( firstNameField.getText());
-            dev.setLastName( lastNameField.getText());
+            dev.setFirstname( firstNameField.getText());
+            dev.setLastname( lastNameField.getText());
             dev.setEmail( emailField.getText());
 
         });
@@ -102,8 +102,8 @@ public class DevEditorController extends DialogPane{
             isNewDev.set(false);
         }
 
-        firstNameField.setText(this.dev.getFirstName());
-        lastNameField.setText(this.dev.getLastName());
+        firstNameField.setText(this.dev.getFirstname());
+        lastNameField.setText(this.dev.getLastname());
         emailField.setText(this.dev.getEmail());
         githubField.setText( String.valueOf(this.dev.getGithub_id()));
 

@@ -12,7 +12,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -150,7 +149,7 @@ public class TaskController extends DialogPane {
     static class DevButton extends Button{
         public Dev dev;
         public DevButton(TaskController editor, Dev dev) {
-            super(dev.getFirstName());
+            super(dev.getFirstname());
             this.dev = dev;
 
             this.setOnAction(actionEvent -> {

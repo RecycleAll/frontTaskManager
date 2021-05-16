@@ -37,7 +37,7 @@ public class Task {
     }
 
     public Task(){
-        this(0, "", "", null, null, null, null, null);
+        this(0, "", "", null, null, null, new ArrayList<>(), new ArrayList<>());
     }
 
     public Task(Task task){

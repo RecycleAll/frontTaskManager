@@ -39,8 +39,8 @@ public class DevViewerController extends TabPane {
     }
 
     private void updateUI(){
-        firstNameLabel.setText(dev.getFirstName());
-        lastNameLabel.setText(dev.getLastName().toUpperCase(Locale.ROOT));
+        firstNameLabel.setText(dev.getFirstname());
+        lastNameLabel.setText(dev.getLastname().toUpperCase(Locale.ROOT));
 
         projectVBox.getChildren().clear();
         for (Project project :dev.getProjects()) {

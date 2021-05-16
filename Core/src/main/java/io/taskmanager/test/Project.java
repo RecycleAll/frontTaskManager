@@ -13,8 +13,8 @@ public class Project {
     private String gitHubUrl;
 
     private List<Column> columns;
-    private ArrayList<Tag> tags;
-    private ArrayList<Dev> devs;
+    private List<Tag> tags;
+    private List<Dev> devs;
 
     public static Project loadFromApi(TaskRepository api, int projectID) throws ExecutionException, InterruptedException {
         return api.getProject(projectID);
@@ -48,26 +48,25 @@ public class Project {
 
     public void setColumns(List<Column> columns) {
         this.columns = columns;
-        this.devs = new ArrayList<>();
-        this.tags = new ArrayList<>();
 
-        for (Column col: columns ) {
+       /* for (Column col: columns ) {
             for (Task task: col.getTasks() ) {
                 this.devs.addAll( task.getDevs());
                 //this.tags.addAll( task.getTags());
             }
-        }
+        }*/
     }
 
-    public void setTags(ArrayList<Tag> tags) {
+    public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
 
-    public void setDevs(ArrayList<Dev> devs) {
+    public void setDevs(List<Dev> devs) {
+        System.out.println("setDevs: "+devs.size());
         this.devs = devs;
     }
 
-    public ArrayList<Dev> getDevs() {
+    public List<Dev> getDevs() {
         return devs;
        // return null;
     }

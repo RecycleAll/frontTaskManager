@@ -78,14 +78,14 @@ public class ColumnTaskController extends BorderPane {
         private final Dev dev;
 
         public DevButton(Dev dev) {
-            super(dev.getFirstName());
+            super(dev.getFirstname());
             this.dev = dev;
             setOnAction(this);
         }
 
         @Override
         public void handle(ActionEvent actionEvent) {
-            System.out.println("clicked on " + dev.getFirstName());
+            System.out.println("clicked on " + dev.getFirstname());
         }
     }
 }
