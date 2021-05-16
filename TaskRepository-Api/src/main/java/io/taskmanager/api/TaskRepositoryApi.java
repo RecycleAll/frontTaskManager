@@ -227,6 +227,22 @@ public class TaskRepositoryApi implements TaskRepository {
         System.out.print(response.get().body());
     }
 
+    @Override
+    public void postTask(String name, String description, Duration limitDate, int columnId) throws ExecutionException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/task/"))
+                .timeout(Duration.ofSeconds(10))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString("{ \"name\":\""+name+"\"," +
+                        "\"description\":\""+description+"\"," +
+                        "\"Duration\":\""+limitDate+"\"," +
+                        "\"columnId\":\""+columnId+"\"}"))
+                .build();
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request,
+                HttpResponse.BodyHandlers.ofString());
+        System.out.print(response.get().body());
+    }
+
 }
 
 
