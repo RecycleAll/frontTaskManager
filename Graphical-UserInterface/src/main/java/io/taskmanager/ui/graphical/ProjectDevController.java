@@ -40,6 +40,10 @@ public class ProjectDevController {
 
     public void setDev(@NotNull Dev dev) {
         this.dev = dev;
+        updateUI();
+    }
+
+    public void updateUI(){
         firstNameLabel.setText( dev.getFirstName());
         lastNameLabel.setText( dev.getLastName());
     }
@@ -47,7 +51,10 @@ public class ProjectDevController {
     public void OnView(ActionEvent actionEvent) throws IOException {
         DevDialog devDialog = new DevDialog(dev);
         Optional<Dev> res = devDialog.showAndWait();
-        if( res.isEmpty() && devDialog.isShouldBeDelete()){
+        if(res.isPresent()){
+            updateUI();
+        }
+        else if( devDialog.isShouldBeDelete()){
             projectController.removeDev(this);
         }
     }

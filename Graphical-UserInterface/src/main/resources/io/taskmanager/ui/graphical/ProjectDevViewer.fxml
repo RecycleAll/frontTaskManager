@@ -19,8 +19,8 @@
          <tooltip>
             <Tooltip text="edit this developer" />
          </tooltip></Button>
-      <Label fx:id="lastNameLabel" text="last name" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
-      <Label fx:id="firstNameLabel" text="first name" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <Label fx:id="lastNameLabel" text="last name" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="30.0" />
+      <Label fx:id="firstNameLabel" text="first name" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="0.0" />
    </children>
    <padding>
       <Insets bottom="5.0" left="5.0" top="5.0" />
