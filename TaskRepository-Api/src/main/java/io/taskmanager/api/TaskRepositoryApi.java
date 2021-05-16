@@ -206,7 +206,7 @@ public class TaskRepositoryApi implements TaskRepository {
                 .build();
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request,
                 HttpResponse.BodyHandlers.ofString());
-        response.get().body();
+        System.out.print(response.get().body());
     }
 
 }
