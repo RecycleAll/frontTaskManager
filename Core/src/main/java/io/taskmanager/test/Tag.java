@@ -9,6 +9,10 @@ public class Tag {
         this.name = name;
     }
 
+    public Tag() {
+        this(0, "");
+    }
+
     public int getId() {
         return id;
     }

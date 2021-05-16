@@ -1,12 +1,18 @@
-import com.google.gson.Gson;
+package io.taskmanager.api;
+
+import com.google.gson.*;
 import io.taskmanager.test.*;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -14,13 +20,25 @@ import java.util.concurrent.ExecutionException;
 
 public class TaskRepositoryApi implements TaskRepository {
 
+    private final static DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
     private final HttpClient httpClient;
     private final Gson g;
     private final String apiUrl;
 
     public TaskRepositoryApi(String apiUrl) {
         httpClient = HttpClient.newHttpClient();
-        g = new Gson();
+        g = new GsonBuilder().registerTypeAdapter(LocalDate.class, new JsonDeserializer<LocalDate>() {
+            @Override
+            public LocalDate deserialize(JsonElement json, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+                return LocalDate.parse(json.getAsJsonPrimitive().getAsString());
+            }
+        }).registerTypeAdapter(LocalDateTime.class, new JsonDeserializer<LocalDateTime>() {
+            @Override
+            public LocalDateTime deserialize(JsonElement json, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+                return LocalDateTime.parse(json.getAsJsonPrimitive().getAsString(), format);
+            }
+        }).create();
         this.apiUrl = apiUrl;
     }
 
@@ -29,8 +47,9 @@ public class TaskRepositoryApi implements TaskRepository {
     }
 
     private static void asynchronousRequest() throws ExecutionException, InterruptedException {
+
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://jsonplaceholder.typicode.com/posts"))
+                .uri(URI.create("http://localhost:3000/task/one/1"))
                 .timeout(Duration.ofSeconds(10))
                 .GET()
                 .build();
@@ -38,10 +57,40 @@ public class TaskRepositoryApi implements TaskRepository {
         var d = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body);
 
-        System.out.print(d.get());
-        Gson g = new Gson();
-        testJsonObject[] s = g.fromJson(d.get(), testJsonObject[].class);
-        System.out.print(s[0].toString());
+        System.out.println("test: "+d.get());
+
+        Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new JsonDeserializer<LocalDate>() {
+            @Override
+            public LocalDate deserialize(JsonElement json, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+                System.out.println("LocalDate: "+ json.getAsJsonPrimitive().getAsString() );
+                System.out.println("LocalDate: "+ LocalDate.parse(json.getAsJsonPrimitive().getAsString()) );
+                return LocalDate.parse(json.getAsJsonPrimitive().getAsString());
+            }
+        }).registerTypeAdapter(LocalDateTime.class, new JsonDeserializer<LocalDateTime>() {
+            @Override
+            public LocalDateTime deserialize(JsonElement json, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+                //System.out.println("test");
+                System.out.println("LocalDateTime: "+ json.getAsJsonPrimitive().getAsString() );
+                //System.out.println("LocalDateTime: "+ LocalDateTime.parse(json.getAsJsonPrimitive().getAsString()) );
+                return LocalDateTime.parse(json.getAsJsonPrimitive().getAsString(), format);
+                //return null;
+            }
+        }).create();
+      //  Tag s = g.fromJson(d.get(), Tag.class);
+
+       // Project s = g.fromJson(d.get(), Project.class);
+      /*  Task[] s = g.fromJson(d.get(), Task[].class);
+        System.out.println( s[0].getName());
+        System.out.println( s[0].getId() );
+        System.out.println( s[1].getName());
+        System.out.println( s[1].getId() );*/
+
+        Task s = gson.fromJson(d.get(), Task.class);
+        System.out.println( s.getName());
+        System.out.println( s.getId() );
+        System.out.println( s.getLimitDate() );
+        System.out.println( s.getCreatedAt() );
+        System.out.println( s.getLastUpdateDate() );
     }
 
     @Override
@@ -70,9 +119,38 @@ public class TaskRepositoryApi implements TaskRepository {
     }
 
     @Override
+    public Project getProject(int projectID) throws ExecutionException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                //.uri(URI.create(apiUrl + "/project/one/" + projectID))
+                .uri(URI.create(apiUrl + "/project/one/" + projectID))
+                .timeout(Duration.ofSeconds(10))
+                .GET()
+                .build();
+        CompletableFuture<String> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body);
+        Project project = g.fromJson(projectsAsJson.get(), Project.class);
+        project.setApi(this);
+        project.setColumns( getColumns(projectID));
+        return project;
+    }
+
+    @Override
     public List<Column> getColumns(Project project) throws ExecutionException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiUrl + "/column/all/" + project.getId()))
+                .timeout(Duration.ofSeconds(10))
+                .GET()
+                .build();
+        CompletableFuture<String> columnsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body);
+        Column[] columnsArray = g.fromJson(columnsAsJson.get(), Column[].class);
+        return Arrays.asList(columnsArray);
+    }
+
+    @Override
+    public List<Column> getColumns(int projectID) throws ExecutionException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/column/all/" + projectID))
                 .timeout(Duration.ofSeconds(10))
                 .GET()
                 .build();
@@ -119,3 +197,5 @@ public class TaskRepositoryApi implements TaskRepository {
         return g.fromJson(taskAsJson.get(), Task.class);
     }
 }
+
+

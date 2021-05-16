@@ -6,7 +6,7 @@ public class Column {
     private final int id;
     private String name;
 
-    private final ArrayList<Task> tasks;
+    private ArrayList<Task> tasks;
 
     public Column(int id, String name, ArrayList<Task> tasks) {
         this.id = id;

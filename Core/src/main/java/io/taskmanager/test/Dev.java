@@ -10,7 +10,7 @@ public class Dev {
     private String password;
     private int github_id;
 
-    private final ArrayList<Project> projects;
+    private ArrayList<Project> projects;
 
     public Dev(int id, String firstName, String lastName, String email, String password, int github_id, ArrayList<Project> projects) {
         this.id = id;

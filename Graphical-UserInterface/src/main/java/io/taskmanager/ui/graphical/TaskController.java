@@ -76,7 +76,7 @@ public class TaskController extends DialogPane {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "You need to have at least 1 dev assigned too a task.", ButtonType.OK);
                 alert.showAndWait();
                 actionEvent.consume();
-            }else if(limitDatePicker.getValue().isBefore(task.getCreationDate().toLocalDate())  ){
+            }else if(limitDatePicker.getValue().isBefore(task.getCreatedAt().toLocalDate())  ){
                 Alert alert = new Alert(Alert.AlertType.ERROR, "You can't set the limit date to be before the creation date", ButtonType.OK);
                 alert.showAndWait();
                 actionEvent.consume();
@@ -85,7 +85,7 @@ public class TaskController extends DialogPane {
                 task.setName( taskNameField.getText());
                 task.setDescription( taskDescriptionArea.getText());
                 task.setDevs(newDevList);
-                task.setLimitDate(limitDatePicker.getValue().atStartOfDay());
+                task.setLimitDate(limitDatePicker.getValue().atStartOfDay().toLocalDate());
             }
 
         });
@@ -106,7 +106,7 @@ public class TaskController extends DialogPane {
 
         taskNameField.setText(this.task.getName());
         taskDescriptionArea.setText(this.task.getDescription());
-        limitDatePicker.setValue( task.getLimitDate().toLocalDate());
+        limitDatePicker.setValue( task.getLimitDate());
 
         for (Dev dev: task.getDevs()) {
             addDevToFlowPane(dev);

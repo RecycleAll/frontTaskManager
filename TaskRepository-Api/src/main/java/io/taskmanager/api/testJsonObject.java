@@ -1,3 +1,5 @@
+package io.taskmanager.api;
+
 public class testJsonObject {
     private int userId;
     private int id;
@@ -6,7 +8,7 @@ public class testJsonObject {
 
     @Override
     public String toString() {
-        return "testJsonObject{" +
+        return "io.taskmanager.api.testJsonObject{" +
                 "userId=" + userId +
                 ", id=" + id +
                 ", title='" + title + '\'' +

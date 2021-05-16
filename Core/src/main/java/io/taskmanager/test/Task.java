@@ -1,5 +1,6 @@
 package io.taskmanager.test;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -7,38 +8,39 @@ public class Task {
     private final int id;
     private String name;
     private String description;
-    private LocalDateTime creationDate;
-    private LocalDateTime limitDate;
-    private LocalDateTime lastUpdateDate;
+
+    private LocalDateTime createdAt;
+    private LocalDate limitDate;
+    private LocalDateTime updatedAt;
 
     private ArrayList<Dev> devs;
-    private final ArrayList<Tag> tags;
+    private ArrayList<Tag> tags;
 
-    public Task(int id, String name, String description, LocalDateTime creationDate, LocalDateTime limitDate, LocalDateTime lastUpdateDate, ArrayList<Dev> devs, ArrayList<Tag> tags) {
+    public Task(int id, String name, String description, LocalDateTime createdAt, LocalDate limitDate, LocalDateTime lastUpdateDate, ArrayList<Dev> devs, ArrayList<Tag> tags) {
         this.id = id;
         setName(name);
         setDescription(description);
-        setCreationDate(creationDate);
+        setCreatedAt(createdAt);
         setLimitDate(limitDate);
         setLastUpdateDate(lastUpdateDate);
         this.devs = devs;
         this.tags = tags;
     }
 
-    public Task(int id, String name, String description, LocalDateTime limitDate, ArrayList<Dev> devs) {
+    public Task(int id, String name, String description, LocalDate limitDate, ArrayList<Dev> devs) {
         this(id, name, description, LocalDateTime.now(), limitDate, null, devs, new ArrayList<>());
     }
 
-    public Task(int id, String name, String description, LocalDateTime limitDate) {
+    public Task(int id, String name, String description, LocalDate limitDate) {
         this(id, name, description, LocalDateTime.now(), limitDate, null, new ArrayList<>(), new ArrayList<>());
     }
 
     public Task(){
-        this(0, "", "", LocalDateTime.now());
+        this(0, "", "", null, null, null, null, null);
     }
 
     public Task(Task task){
-        this(task.getId(), task.getName(), task.getDescription(), task.getCreationDate(), task.getLimitDate(), task.getLastUpdateDate(), task.getDevs(), task.tags);
+        this(task.getId(), task.getName(), task.getDescription(), task.getCreatedAt(), task.getLimitDate(), task.getLastUpdateDate(), task.getDevs(), task.tags);
         System.out.println("dev size from copy: "+ devs.size());
     }
 
@@ -86,28 +88,28 @@ public class Task {
         this.description = description;
     }
 
-    public LocalDateTime getCreationDate() {
-        return creationDate;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public LocalDateTime getLimitDate() {
+    public LocalDate getLimitDate() {
         return limitDate;
     }
 
-    public void setLimitDate(LocalDateTime limitDate) {
+    public void setLimitDate(LocalDate limitDate) {
         this.limitDate = limitDate;
     }
 
     public LocalDateTime getLastUpdateDate() {
-        return lastUpdateDate;
+        return updatedAt;
     }
 
     public void setLastUpdateDate(LocalDateTime lastUpdateDate) {
-        this.lastUpdateDate = lastUpdateDate;
+        this.updatedAt = lastUpdateDate;
     }
 
     @Override

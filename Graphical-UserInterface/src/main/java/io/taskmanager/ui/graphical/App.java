@@ -1,9 +1,7 @@
 package io.taskmanager.ui.graphical;
 
-import io.taskmanager.test.Column;
-import io.taskmanager.test.Dev;
-import io.taskmanager.test.Project;
-import io.taskmanager.test.Task;
+import io.taskmanager.api.TaskRepositoryApi;
+import io.taskmanager.test.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,6 +10,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.concurrent.ExecutionException;
 
 /**
  * JavaFX App
@@ -21,10 +20,16 @@ public class App extends Application {
     private static Scene scene;
 
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) throws IOException, ExecutionException, InterruptedException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( "ProjectColumnController.fxml"));
 
-        Project project = new Project(0, "project test", "gitURL");
+        TaskRepositoryApi api = new TaskRepositoryApi("http://localhost:3000");
+        Project p = Project.loadFromApi(api, 1);
+
+        System.out.println("project: "+p);
+
+    /*
+        Project project = new Project(api, 0, "project test", "gitURL");
 
         Dev dev = new Dev(0, "dev1", "pata", "", "", 0);
         Dev dev2 = new Dev(0, "dev2", "pata", "", "", 0);
@@ -46,7 +51,7 @@ public class App extends Application {
         //scene = new Scene( ProjectColumnController.loadNew(column).scrollPane );
 
         stage.setScene(scene);
-        stage.show();
+        stage.show();*/
 
     }
 

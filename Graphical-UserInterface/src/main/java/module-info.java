@@ -5,6 +5,7 @@ module Graphical.UserInterface {
     requires Core;
     requires org.kordamp.ikonli.core;
     requires org.kordamp.ikonli.javafx;
+    requires TaskRepository.Api;
 
     opens io.taskmanager.ui.graphical to javafx.fxml;
     exports io.taskmanager.ui.graphical;
