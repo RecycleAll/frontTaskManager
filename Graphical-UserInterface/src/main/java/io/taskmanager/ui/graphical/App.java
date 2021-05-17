@@ -25,9 +25,8 @@ public class App extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( "ProjectColumnController.fxml"));
 
         TaskRepositoryApi api = new TaskRepositoryApi("http://localhost:3000");
-        Project p = Project.loadFromApi(api, 1);
-
-        System.out.println("project: "+p);
+       // Project p = Project.loadFromApi(api, 1);
+      //  System.out.println("project: "+p);
 
 
         Project project = new Project(api, 0, "project test", "gitURL");
@@ -48,7 +47,10 @@ public class App extends Application {
         project.addDev(dev);
         project.addDev(dev2);
 
-        scene = new Scene( new ProjectController(p) );
+        dev.addProject(project);
+
+        scene = new Scene( new DevViewerController(dev) );
+        //scene = new Scene( new ProjectController(project) );
         //scene = new Scene( ProjectColumnController.loadNew(column).scrollPane );
 
         stage.setScene(scene);

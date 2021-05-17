@@ -7,7 +7,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
@@ -18,9 +17,9 @@ public class DevViewerController extends TabPane {
     private static final String FXML_FILE = "DevViewerController.fxml";
 
     @FXML
-    public TextField firstNameLabel;
+    public Label firstNameLabel;
     @FXML
-    public TextField lastNameLabel;
+    public Label lastNameLabel;
     @FXML
     public VBox projectVBox;
 
@@ -31,22 +30,45 @@ public class DevViewerController extends TabPane {
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
+        setDev(dev);
     }
 
-    public void setDev(Dev dev){
+    public void setDev(Dev dev) throws IOException {
         this.dev = dev;
-
+        updateUI();
     }
 
-    private void updateUI(){
-        firstNameLabel.setText(dev.getFirstname());
-        lastNameLabel.setText(dev.getLastname().toUpperCase(Locale.ROOT));
+    private void addProjectViewer(Project project) throws IOException {
+        if(this.getTabs().stream().noneMatch(tab -> {
+            if( tab instanceof ProjectController) {
+                ProjectController myTab = (ProjectController) tab;
+                return project == myTab.getProject();
+            }else{
+                return false;
+            }
+        })){
+            ProjectController projectControllerTab = new ProjectController(project);
+            this.getTabs().add( projectControllerTab);
+            this.getSelectionModel().select(projectControllerTab);
+        }
+    }
+
+    private void updateUI() throws IOException {
+        firstNameLabel.setText(dev.getFirstName());
+        lastNameLabel.setText(dev.getLastName().toUpperCase(Locale.ROOT));
 
         projectVBox.getChildren().clear();
         for (Project project :dev.getProjects()) {
-            projectVBox.getChildren().add( new Label(project.getName()));
+            DevProjectController devProjectController = new DevProjectController(project);
+            devProjectController.setOnMouseClicked(mouseEvent -> {
+                try {
+                    addProjectViewer(project);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            projectVBox.getChildren().add( devProjectController);
         }
-
     }
 
     @FXML

@@ -1,10 +1,13 @@
 package io.taskmanager.test;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public interface TaskRepository {
+
+    Dev loginDev(String login, String password) throws ExecutionException, InterruptedException;
 
     List<Project> getProjects(Dev dev) throws ExecutionException, InterruptedException;
 
@@ -31,7 +34,7 @@ public interface TaskRepository {
 
     void registerDev(String firstname, String lastname, String email, String password, String githubId) throws ExecutionException, InterruptedException;
 
-    void postTask(String name, String description, Duration limitDate, int columnId) throws ExecutionException, InterruptedException;
+    void postTask(String name, String description, LocalDate limitDate, int columnId) throws ExecutionException, InterruptedException;
 
     void postColumn(String name, int projectId) throws ExecutionException, InterruptedException;
 }

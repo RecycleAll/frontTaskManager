@@ -49,50 +49,45 @@ public class TaskRepositoryApi implements TaskRepository {
     }
 
     private static void asynchronousRequest() throws ExecutionException, InterruptedException {
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:3000/task/one/1"))
-                .timeout(Duration.ofSeconds(10))
-                .GET()
-                .build();
         HttpClient httpClient = HttpClient.newHttpClient();
-        var d = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+
+        String name = "name", description = "dex";
+        LocalDate limitDate = LocalDate.now();
+        int columnId = 1;
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create( "http://localhost:3000/task/"))
+                .timeout(Duration.ofSeconds(10))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString("{ \"name\":\""+name+"\"," +
+                        "\"description\":\""+description+"\"," +
+                        "\"limitDate\":\""+limitDate+"\"," +
+                        "\"columnId\":\""+columnId+"\"}"))
+                .build();
+
+if(request.bodyPublisher().isPresent() )
+        System.out.println("req: "+request.toString());
+
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request,
+                HttpResponse.BodyHandlers.ofString());
+
+        System.out.println("headers: "+response.get().statusCode());
+
+    }
+
+    @Override
+    public Dev loginDev(String login, String password) throws ExecutionException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/login"))
+                .timeout(Duration.ofSeconds(10))
+                .POST( HttpRequest.BodyPublishers.ofString("{ \"email\":\""+login+"\"," +
+                        "\"password\":\""+password+"\"}"))
+                .build();
+        CompletableFuture<String> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body);
 
-        System.out.println("test: "+d.get());
+        SessionModel session = g.fromJson(projectsAsJson.get(), SessionModel.class);
 
-        Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new JsonDeserializer<LocalDate>() {
-            @Override
-            public LocalDate deserialize(JsonElement json, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-                System.out.println("LocalDate: "+ json.getAsJsonPrimitive().getAsString() );
-                System.out.println("LocalDate: "+ LocalDate.parse(json.getAsJsonPrimitive().getAsString()) );
-                return LocalDate.parse(json.getAsJsonPrimitive().getAsString());
-            }
-        }).registerTypeAdapter(LocalDateTime.class, new JsonDeserializer<LocalDateTime>() {
-            @Override
-            public LocalDateTime deserialize(JsonElement json, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-                //System.out.println("test");
-                System.out.println("LocalDateTime: "+ json.getAsJsonPrimitive().getAsString() );
-                //System.out.println("LocalDateTime: "+ LocalDateTime.parse(json.getAsJsonPrimitive().getAsString()) );
-                return LocalDateTime.parse(json.getAsJsonPrimitive().getAsString(), format);
-                //return null;
-            }
-        }).create();
-      //  Tag s = g.fromJson(d.get(), Tag.class);
-
-       // Project s = g.fromJson(d.get(), Project.class);
-      /*  Task[] s = g.fromJson(d.get(), Task[].class);
-        System.out.println( s[0].getName());
-        System.out.println( s[0].getId() );
-        System.out.println( s[1].getName());
-        System.out.println( s[1].getId() );*/
-
-        Task s = gson.fromJson(d.get(), Task.class);
-        System.out.println( s.getName());
-        System.out.println( s.getId() );
-        System.out.println( s.getLimitDate() );
-        System.out.println( s.getCreatedAt() );
-        System.out.println( s.getLastUpdateDate() );
+        return null;
     }
 
     @Override
@@ -334,7 +329,7 @@ public class TaskRepositoryApi implements TaskRepository {
     }
 
     @Override
-    public void postTask(String name, String description, Duration limitDate, int columnId) throws ExecutionException, InterruptedException {
+    public void postTask(String name, String description, LocalDate limitDate, int columnId) throws ExecutionException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiUrl + "/task/"))
                 .timeout(Duration.ofSeconds(10))
