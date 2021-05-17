@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.concurrent.ExecutionException;
 
@@ -24,17 +25,16 @@ public class App extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( "ProjectColumnController.fxml"));
 
         TaskRepositoryApi api = new TaskRepositoryApi("http://localhost:3000");
-        Project p = Project.loadFromApi(api, 1);
+       // Project p = Project.loadFromApi(api, 1);
+      //  System.out.println("project: "+p);
 
-        System.out.println("project: "+p);
 
-    /*
         Project project = new Project(api, 0, "project test", "gitURL");
 
         Dev dev = new Dev(0, "dev1", "pata", "", "", 0);
         Dev dev2 = new Dev(0, "dev2", "pata", "", "", 0);
 
-        Task task = new Task(0, "task1", "", LocalDateTime.now());
+        Task task = new Task(0, "task1", "", LocalDate.now());
         task.addDev(dev);
         task.addDev(dev2);
 
@@ -47,11 +47,14 @@ public class App extends Application {
         project.addDev(dev);
         project.addDev(dev2);
 
-        scene = new Scene( new ProjectController(project) );
+        dev.addProject(project);
+
+        scene = new Scene( new DevViewerController(dev) );
+        //scene = new Scene( new ProjectController(project) );
         //scene = new Scene( ProjectColumnController.loadNew(column).scrollPane );
 
         stage.setScene(scene);
-        stage.show();*/
+        stage.show();
 
     }
 

@@ -31,7 +31,7 @@ public class Project {
     }
 
     public Project(TaskRepository api, int id, String name, String gitHubUrl) {
-        this(api, id, name, gitHubUrl, null, null, null);
+        this(api, id, name, gitHubUrl, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
     }
 
     public Project(TaskRepository api) {
