@@ -302,6 +302,66 @@ public class TaskRepositoryApi implements TaskRepository {
                 .thenApply(HttpResponse::body);
         return g.fromJson(taskAsJson.get(), Task.class);
     }
+
+    @Override
+    public void postProject(Dev dev, String name) throws ExecutionException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/project/"))
+                .timeout(Duration.ofSeconds(10))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString("{ \"name\":\""+name+"\",\"devId\":"+dev.getId() +"}"))
+                .build();
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request,
+                HttpResponse.BodyHandlers.ofString());
+        System.out.print(response.get().body());
+    }
+
+    @Override
+    public void registerDev(String firstname, String lastname, String email, String password, String githubId) throws ExecutionException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/project/"))
+                .timeout(Duration.ofSeconds(10))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString("{ \"firstname\":\""+firstname+"\"," +
+                        "\"lastname\":\""+lastname+"\"," +
+                        "\"email\":\""+email+"\"," +
+                        "\"password\":\""+password+"\"," +
+                        "\"githubId\":\""+githubId+"\"}"))
+                .build();
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request,
+                HttpResponse.BodyHandlers.ofString());
+        System.out.print(response.get().body());
+    }
+
+    @Override
+    public void postTask(String name, String description, Duration limitDate, int columnId) throws ExecutionException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/task/"))
+                .timeout(Duration.ofSeconds(10))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString("{ \"name\":\""+name+"\"," +
+                        "\"description\":\""+description+"\"," +
+                        "\"limitDate\":\""+limitDate+"\"," +
+                        "\"columnId\":\""+columnId+"\"}"))
+                .build();
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request,
+                HttpResponse.BodyHandlers.ofString());
+        System.out.print(response.get().body());
+    }
+
+    @Override
+    public void postColumn(String name, int projectId) throws ExecutionException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/column/"))
+                .timeout(Duration.ofSeconds(10))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString("{ \"name\":\""+name+"\"," +
+                        "\"projectId\":\""+projectId+"\"}"))
+                .build();
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request,
+                HttpResponse.BodyHandlers.ofString());
+        System.out.print(response.get().body());
+    }
 }
 
 
