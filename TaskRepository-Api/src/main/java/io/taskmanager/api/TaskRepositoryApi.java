@@ -73,6 +73,22 @@ if(request.bodyPublisher().isPresent() )
     }
 
     @Override
+    public Dev loginDev(String login, String password) throws ExecutionException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/login"))
+                .timeout(Duration.ofSeconds(10))
+                .POST( HttpRequest.BodyPublishers.ofString("{ \"email\":\""+login+"\"," +
+                        "\"password\":\""+password+"\"}"))
+                .build();
+        CompletableFuture<String> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body);
+
+        SessionModel session = g.fromJson(projectsAsJson.get(), SessionModel.class);
+
+        return null;
+    }
+
+    @Override
     public List<Project> getProjects(Dev dev) throws ExecutionException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiUrl + "/project/all/" + dev.getId()))

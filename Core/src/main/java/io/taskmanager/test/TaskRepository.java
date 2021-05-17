@@ -7,6 +7,8 @@ import java.util.concurrent.ExecutionException;
 
 public interface TaskRepository {
 
+    Dev loginDev(String login, String password) throws ExecutionException, InterruptedException;
+
     List<Project> getProjects(Dev dev) throws ExecutionException, InterruptedException;
 
     Project getProject(Project project) throws ExecutionException, InterruptedException;

@@ -38,15 +38,37 @@ public class DevViewerController extends TabPane {
         updateUI();
     }
 
+    private void addProjectViewer(Project project) throws IOException {
+        if(this.getTabs().stream().noneMatch(tab -> {
+            if( tab instanceof ProjectController) {
+                ProjectController myTab = (ProjectController) tab;
+                return project == myTab.getProject();
+            }else{
+                return false;
+            }
+        })){
+            ProjectController projectControllerTab = new ProjectController(project);
+            this.getTabs().add( projectControllerTab);
+            this.getSelectionModel().select(projectControllerTab);
+        }
+    }
+
     private void updateUI() throws IOException {
         firstNameLabel.setText(dev.getFirstName());
         lastNameLabel.setText(dev.getLastName().toUpperCase(Locale.ROOT));
 
         projectVBox.getChildren().clear();
         for (Project project :dev.getProjects()) {
-            projectVBox.getChildren().add( new DevProjectController(project));
+            DevProjectController devProjectController = new DevProjectController(project);
+            devProjectController.setOnMouseClicked(mouseEvent -> {
+                try {
+                    addProjectViewer(project);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            projectVBox.getChildren().add( devProjectController);
         }
-
     }
 
     @FXML
