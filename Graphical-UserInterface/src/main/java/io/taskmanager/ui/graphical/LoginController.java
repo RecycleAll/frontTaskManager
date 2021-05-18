@@ -21,27 +21,29 @@ public class LoginController extends BorderPane {
     @FXML
     public PasswordField passwordField;
     @FXML
-    public TextField loginField;
+    public TextField emailField;
 
-    private Stage stage;
+    private App app;
     private Dev dev;
     private TaskRepository api;
 
-    public LoginController(TaskRepository api, Stage stage) throws IOException {
+    public LoginController(TaskRepository api, App app) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
         this.api = api;
-        this.stage = stage;
+        this.app = app;
     }
 
     @FXML
     public void OnConnect(ActionEvent actionEvent) throws ExecutionException, InterruptedException, IOException {
-        dev = api.loginDev(loginField.getText(), passwordField.getText());
+        System.out.println(emailField.getText());
+        System.out.println(passwordField.getText());
+        dev = api.loginDev(emailField.getText(), passwordField.getText());
         System.out.println("longed dev: "+dev);
         if(dev != null){
-            stage.setScene( new Scene( new DevViewerController(dev)));
+            app.setDevViewerScene(dev);
         }
     }
 }

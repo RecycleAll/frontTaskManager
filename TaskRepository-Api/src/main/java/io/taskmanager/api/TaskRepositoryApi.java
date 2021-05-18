@@ -74,24 +74,23 @@ public class TaskRepositoryApi implements TaskRepository {
     }
 
     @Override
-    public Dev loginDev(String login, String password) throws ExecutionException, InterruptedException {
+    public Dev loginDev(String email, String password) throws ExecutionException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiUrl + "/auth/login"))
                 .timeout(Duration.ofSeconds(10))
                 .header("Content-Type", "application/json")
                 .POST( HttpRequest.BodyPublishers.ofString("{ " +
-                        "\"email\":\""+login+"\"," +
+                        "\"email\":\""+email+"\"," +
                         "\"password\":\""+password+"\"" +
                         "}"))
                 .build();
 
         CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
 
-        System.out.println("code: "+projectsAsJson.get().statusCode());
+        //System.out.println("code: "+projectsAsJson.get().statusCode());
+        //System.out.println("json: "+projectsAsJson.get().body());
         if( projectsAsJson.get().statusCode() == 201 ) {
             SessionModel session = g.fromJson(projectsAsJson.get().body(), SessionModel.class);
-
-
             return getDev(session.getDev_id());
         }else{
             return null;
@@ -201,6 +200,7 @@ public class TaskRepositoryApi implements TaskRepository {
         CompletableFuture<String> columnsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body);
 
+        System.out.println("devId: "+ devID);
         System.out.println("getDev json: "+columnsAsJson.get());
 
         return g.fromJson(columnsAsJson.get(), Dev.class);

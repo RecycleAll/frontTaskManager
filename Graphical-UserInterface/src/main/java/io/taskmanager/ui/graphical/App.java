@@ -17,9 +17,23 @@ import java.time.LocalDate;
 public class App extends Application {
 
     private static Scene scene;
+    private Stage stage;
+    private DevViewerController devViewerController;
+    private Scene devViewerScene;
+
+    public App() throws IOException {
+        devViewerController = new DevViewerController();
+        devViewerScene = new Scene( devViewerController);
+    }
+
+    public void setDevViewerScene(Dev dev) throws IOException {
+        devViewerController.setDev(dev);
+        stage.setScene(devViewerScene);
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
+        this.stage = stage;
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( "ProjectColumnController.fxml"));
 
         TaskRepositoryApi api = new TaskRepositoryApi("http://localhost:3000");
@@ -46,7 +60,7 @@ public class App extends Application {
 
         dev.addProject(project);
 
-        LoginController loginController = new LoginController(api, stage);
+        LoginController loginController = new LoginController(api, this);
 
         scene = new Scene( loginController );
         //scene = new Scene( new ProjectController(project) );

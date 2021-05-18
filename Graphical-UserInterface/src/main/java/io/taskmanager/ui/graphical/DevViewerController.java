@@ -33,6 +33,10 @@ public class DevViewerController extends TabPane {
         setDev(dev);
     }
 
+    public DevViewerController() throws IOException {
+        this(null);
+    }
+
     public void setDev(Dev dev) throws IOException {
         this.dev = dev;
         updateUI();
@@ -54,20 +58,27 @@ public class DevViewerController extends TabPane {
     }
 
     private void updateUI() throws IOException {
-        firstNameLabel.setText(dev.getFirstname());
-        lastNameLabel.setText(dev.getLastname().toUpperCase(Locale.ROOT));
+        if( dev == null){
+            firstNameLabel.setText("No Dev");
+            lastNameLabel.setText("");
 
-        projectVBox.getChildren().clear();
-        for (Project project :dev.getProjects()) {
-            DevProjectController devProjectController = new DevProjectController(project);
-            devProjectController.setOnMouseClicked(mouseEvent -> {
-                try {
-                    addProjectViewer(project);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-            projectVBox.getChildren().add( devProjectController);
+            projectVBox.getChildren().clear();
+        }else {
+            firstNameLabel.setText(dev.getFirstname());
+            lastNameLabel.setText(dev.getLastname().toUpperCase(Locale.ROOT));
+
+            projectVBox.getChildren().clear();
+            for (Project project : dev.getProjects()) {
+                DevProjectController devProjectController = new DevProjectController(project);
+                devProjectController.setOnMouseClicked(mouseEvent -> {
+                    try {
+                        addProjectViewer(project);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                projectVBox.getChildren().add(devProjectController);
+            }
         }
     }
 
