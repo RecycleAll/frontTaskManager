@@ -10,8 +10,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.concurrent.ExecutionException;
 
 /**
  * JavaFX App
@@ -26,8 +24,7 @@ public class App extends Application {
 
         TaskRepositoryApi api = new TaskRepositoryApi("http://localhost:3000");
        // Project p = Project.loadFromApi(api, 1);
-      //  System.out.println("project: "+p);
-
+       //  System.out.println("project: "+p);
 
         Project project = new Project(api, 0, "project test", "gitURL");
 
@@ -49,7 +46,9 @@ public class App extends Application {
 
         dev.addProject(project);
 
-        scene = new Scene( new DevViewerController(dev) );
+        LoginController loginController = new LoginController(api, stage);
+
+        scene = new Scene( loginController );
         //scene = new Scene( new ProjectController(project) );
         //scene = new Scene( ProjectColumnController.loadNew(column).scrollPane );
 

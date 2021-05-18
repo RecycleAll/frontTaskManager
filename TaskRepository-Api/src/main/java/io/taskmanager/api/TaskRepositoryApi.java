@@ -64,11 +64,10 @@ public class TaskRepositoryApi implements TaskRepository {
                         "\"columnId\":\""+columnId+"\"}"))
                 .build();
 
-if(request.bodyPublisher().isPresent() )
-        System.out.println("req: "+request.toString());
+        if(request.bodyPublisher().isPresent() )
+            System.out.println("req: "+request.toString());
 
-        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request,
-                HttpResponse.BodyHandlers.ofString());
+        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
 
         System.out.println("headers: "+response.get().statusCode());
 
@@ -77,17 +76,26 @@ if(request.bodyPublisher().isPresent() )
     @Override
     public Dev loginDev(String login, String password) throws ExecutionException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(apiUrl + "/login"))
+                .uri(URI.create(apiUrl + "/auth/login"))
                 .timeout(Duration.ofSeconds(10))
-                .POST( HttpRequest.BodyPublishers.ofString("{ \"email\":\""+login+"\"," +
-                        "\"password\":\""+password+"\"}"))
+                .header("Content-Type", "application/json")
+                .POST( HttpRequest.BodyPublishers.ofString("{ " +
+                        "\"email\":\""+login+"\"," +
+                        "\"password\":\""+password+"\"" +
+                        "}"))
                 .build();
-        CompletableFuture<String> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenApply(HttpResponse::body);
 
-        SessionModel session = g.fromJson(projectsAsJson.get(), SessionModel.class);
+        CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
 
-        return null;
+        System.out.println("code: "+projectsAsJson.get().statusCode());
+        if( projectsAsJson.get().statusCode() == 201 ) {
+            SessionModel session = g.fromJson(projectsAsJson.get().body(), SessionModel.class);
+
+
+            return getDev(session.getDev_id());
+        }else{
+            return null;
+        }
     }
 
     @Override

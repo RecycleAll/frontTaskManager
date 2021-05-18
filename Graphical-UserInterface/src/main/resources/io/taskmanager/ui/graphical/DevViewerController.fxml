@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" tabClosingPolicy="UNAVAILABLE" type="TabPane" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
   <tabs>
     <Tab text="Overview">
          <content>
@@ -43,13 +43,7 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <VBox fx:id="projectVBox" prefWidth="201.0" spacing="15.0" style="-fx-background-radius: 5; -fx-border-color: black; -fx-border-radius: 5;" VBox.vgrow="ALWAYS">
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding></VBox>
+                  <VBox fx:id="projectVBox" spacing="15.0" style="-fx-background-radius: 10; -fx-border-color: black; -fx-border-radius: 10;" />
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -58,4 +52,4 @@
          </content>
     </Tab>
   </tabs>
-</fx:root>
+</TabPane>
