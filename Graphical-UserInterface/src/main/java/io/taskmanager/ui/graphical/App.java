@@ -40,7 +40,7 @@ public class App extends Application {
        // Project p = Project.loadFromApi(api, 1);
        //  System.out.println("project: "+p);
 
-        Project project = new Project(api, 0, "project test", "gitURL");
+        Project project = new Project(0, "project test", "gitURL");
 
         Dev dev = new Dev(0, "dev1", "pata", "", "", 0);
         Dev dev2 = new Dev(0, "dev2", "pata", "", "", 0);

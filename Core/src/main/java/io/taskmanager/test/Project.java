@@ -1,12 +1,11 @@
 package io.taskmanager.test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.Map;
 
 public class Project {
-
-    private TaskRepository api;
 
     private final int id;
     private String name;
@@ -14,14 +13,13 @@ public class Project {
 
     private List<Column> columns;
     private List<Tag> tags;
-    private List<Dev> devs;
+    private Map<Dev, DevStatus> devs;
 
     public static Project loadFromApi(TaskRepository api, int projectID) throws Exception {
         return api.getProject(projectID);
     }
 
-    public Project(TaskRepository api, int id, String name, String gitHubUrl, List<Column> columns, List<Tag> tags, List<Dev> devs) {
-        this.api = api;
+    public Project(int id, String name, String gitHubUrl, List<Column> columns, List<Tag> tags, Map<Dev, DevStatus> devs) {
         this.id = id;
         setName(name);
         setGitHubUrl(gitHubUrl);
@@ -30,21 +28,14 @@ public class Project {
         this.devs = devs;
     }
 
-    public Project(TaskRepository api, int id, String name, String gitHubUrl) {
-        this(api, id, name, gitHubUrl, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-    }
-
-    public Project(TaskRepository api) {
-        this(api, -1, "", "");
+    public Project(int id, String name, String gitHubUrl) {
+        this(id, name, gitHubUrl, new ArrayList<>(), new ArrayList<>(), new HashMap<>());
     }
 
     public Project() {
-        this(null, -1, "", "", null, null, null);
+        this(-1, "", "", null, null, null);
     }
 
-    public void setApi(TaskRepository api) {
-        this.api = api;
-    }
 
     public void setColumns(List<Column> columns) {
         this.columns = columns;
@@ -61,14 +52,14 @@ public class Project {
         this.tags = tags;
     }
 
-    public void setDevs(List<Dev> devs) {
-        System.out.println("setDevs: "+devs.size());
+    public void setDevs(Map<Dev, DevStatus> devs) {
+        System.out.println("setDevs: " + devs.size());
         this.devs = devs;
     }
 
     public List<Dev> getDevs() {
-        return devs;
-       // return null;
+        return new ArrayList<>(devs.keySet());
+        // return null;
     }
 
     public List<Column> getColumns() {
@@ -80,27 +71,31 @@ public class Project {
         return id;
     }
 
-    public void addColumn(Column column){
+    public void addColumn(Column column) {
         columns.add(column);
     }
 
-    public void removeColumn(Column column){
+    public void removeColumn(Column column) {
         columns.remove(column);
     }
 
-    public void addTag(Tag tag){
+    public void addTag(Tag tag) {
         tags.add(tag);
     }
 
-    public void removeTag(Tag tag){
+    public void removeTag(Tag tag) {
         tags.remove(tag);
     }
 
-    public void addDev(Dev dev){
-        devs.add(dev);
+    public void addDev(Dev dev) {
+        devs.put(dev, DevStatus.DEV);
     }
 
-    public void removeDev(Dev dev){
+    public void addDev(Dev dev, DevStatus devStatus) {
+        devs.put(dev, devStatus);
+    }
+
+    public void removeDev(Dev dev) {
         devs.remove(dev);
     }
 
