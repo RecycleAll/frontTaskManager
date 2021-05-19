@@ -3,6 +3,7 @@ package io.taskmanager.ui.graphical;
 import io.taskmanager.api.TaskRepositoryApi;
 import io.taskmanager.test.*;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -18,27 +19,43 @@ public class App extends Application {
 
     private static Scene scene;
     private Stage stage;
-    private DevViewerController devViewerController;
-    private Scene devViewerScene;
 
-    public App() throws IOException {
+    private final DevViewerController devViewerController;
+    private final Scene devViewerScene;
+
+    private final LoginController loginController;
+    private final Scene loginScene;
+
+    private final TaskRepository repository;
+
+    public static void launchApp(TaskRepository repository) throws IOException {
+        App app = new App(repository);
+        Platform.runLater( () -> app.start(new Stage()));
+    }
+
+    public App(TaskRepository repository) throws IOException {
         devViewerController = new DevViewerController();
         devViewerScene = new Scene( devViewerController);
+        loginController = new LoginController(repository, this);
+        loginScene = new Scene( loginController );
+
+        this.repository = repository;
     }
 
     public void setDevViewerScene(Dev dev) throws IOException {
         devViewerController.setDev(dev);
         stage.setScene(devViewerScene);
+        stage.sizeToScene();
+    }
+    public void setLoginScene(){
+        loginController.reset();
+        stage.setScene(loginScene);
+        stage.sizeToScene();
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         this.stage = stage;
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( "ProjectColumnController.fxml"));
-
-        TaskRepositoryApi api = new TaskRepositoryApi("http://localhost:3000");
-       // Project p = Project.loadFromApi(api, 1);
-       //  System.out.println("project: "+p);
 
         Project project = new Project(0, "project test", "gitURL");
 
@@ -60,25 +77,14 @@ public class App extends Application {
 
         dev.addProject(project);
 
-        LoginController loginController = new LoginController(api, this);
-
-        scene = new Scene( new DevViewerController(dev) );
         //scene = new Scene( new ProjectController(project) );
         //scene = new Scene( ProjectColumnController.loadNew(column).scrollPane );
 
-        stage.setScene(scene);
+        stage.setScene(loginScene);
         stage.show();
 
     }
 
-    static void setRoot(String fxml) throws IOException {
-        scene.setRoot(loadFXML(fxml));
-    }
-
-    private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
-        return fxmlLoader.load();
-    }
 
     public static void main(String[] args) {
         launch();
