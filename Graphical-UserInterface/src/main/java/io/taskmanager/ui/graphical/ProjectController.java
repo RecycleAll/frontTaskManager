@@ -66,6 +66,7 @@ public class ProjectController extends Tab {
     private void addColumn(Column column) throws IOException {
         project.addColumn(column);
         columnHBox.getChildren().add( new ProjectColumnController(this, column));
+        this.getTabPane().getScene().getWindow().sizeToScene();
     }
 
     public void removeDev( ProjectDevController dev){

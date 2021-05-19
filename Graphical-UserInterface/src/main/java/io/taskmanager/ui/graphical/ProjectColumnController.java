@@ -66,6 +66,7 @@ public class ProjectColumnController extends ScrollPane{
     private void addTask(Task task) throws IOException {
         column.addTask(task);
         addTaskToTaskVBox(task);
+        this.getScene().getWindow().sizeToScene();
     }
 
     private void addTaskToTaskVBox(Task task) throws IOException {

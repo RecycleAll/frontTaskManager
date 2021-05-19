@@ -17,18 +17,22 @@ public class App extends Application {
     private static Scene scene;
     private Stage stage;
 
-    private DevViewerController devViewerController;
-    private Scene devViewerScene;
+    private final DevViewerController devViewerController;
+    private final Scene devViewerScene;
 
-    private LoginController loginController;
-    private Scene loginScene;
+    private final LoginController loginController;
+    private final Scene loginScene;
 
     private final TaskRepository repository;
 
     public static void launchApp(TaskRepository repository) throws Exception {
         Platform.startup(() -> {});
         App app = new App(repository);
-        Platform.runLater( () -> app.start(new Stage()));
+        Platform.runLater( () -> {
+            Stage stage = new Stage();
+            stage.setMaxWidth(999999);
+            app.start(stage);
+        });
     }
 
     public App(TaskRepository repository) throws Exception {
