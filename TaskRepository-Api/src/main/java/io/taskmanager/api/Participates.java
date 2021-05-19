@@ -5,6 +5,7 @@ public class Participates {
     private int id;
     private int dev_id;
     private int project_id;
+    private boolean owner;
 
     public Participates() {
     }
@@ -19,6 +20,10 @@ public class Participates {
 
     public int getProject_id() {
         return project_id;
+    }
+
+    public boolean isOwner() {
+        return owner;
     }
 }
 

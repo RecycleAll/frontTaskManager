@@ -13,12 +13,10 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Predicate;
 
 public class TaskRepositoryApi implements TaskRepository {
 
@@ -42,35 +40,6 @@ public class TaskRepositoryApi implements TaskRepository {
             }
         }).create();
         this.apiUrl = apiUrl;
-    }
-
-    public static void main(String[] args) throws IOException, InterruptedException, ExecutionException {
-        asynchronousRequest();
-    }
-
-    private static void asynchronousRequest() throws ExecutionException, InterruptedException {
-        HttpClient httpClient = HttpClient.newHttpClient();
-
-        String name = "name", description = "dex";
-        LocalDate limitDate = LocalDate.now();
-        int columnId = 1;
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create( "http://localhost:3000/task/"))
-                .timeout(Duration.ofSeconds(10))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString("{ \"name\":\""+name+"\"," +
-                        "\"description\":\""+description+"\"," +
-                        "\"limitDate\":\""+limitDate+"\"," +
-                        "\"columnId\":\""+columnId+"\"}"))
-                .build();
-
-        if(request.bodyPublisher().isPresent() )
-            System.out.println("req: "+request.toString());
-
-        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-
-        System.out.println("headers: "+response.get().statusCode());
-
     }
 
     @Override
@@ -133,7 +102,7 @@ public class TaskRepositoryApi implements TaskRepository {
                 .thenApply(HttpResponse::body);
         ProjectModel projectModel = g.fromJson(projectsAsJson.get(), ProjectModel.class);
 
-        List<Dev> devs = getProjectDevs(projectID);
+        Map<Dev,DevStatus> devs = getProjectDevs(projectID);
         List<Column> columns = getColumns(projectID);
 
         for (Column col: columns) {
@@ -141,13 +110,13 @@ public class TaskRepositoryApi implements TaskRepository {
                 int[] assignedDevs = getTaskDevsID(task.getId());
 
                 for (int devID: assignedDevs ) {
-                    Dev dev = devs.stream().filter(dev1 -> dev1.getId() == devID).findFirst().orElseThrow( () -> new Exception("Dev ID inside task is not present inside project"));
+                    Dev dev = devs.keySet().stream().filter(dev1 -> dev1.getId() == devID).findFirst().orElseThrow( () -> new Exception("Dev ID inside task is not present inside project"));
                     task.addDev(dev);
                 }
             }
         }
 
-        return new Project(this,  projectModel.getId(), projectModel.getName(), "", columns, new ArrayList<>(), devs);
+        return new Project( projectModel.getId(), projectModel.getName(), "", columns, new ArrayList<>(), devs);
     }
 
     private int[] getTaskDevsID(int taskID) throws ExecutionException, InterruptedException {
@@ -169,7 +138,7 @@ public class TaskRepositoryApi implements TaskRepository {
 
 
     @Override
-    public List<Dev> getProjectDevs(int projectID) throws ExecutionException, InterruptedException{
+    public Map<Dev,DevStatus> getProjectDevs(int projectID) throws ExecutionException, InterruptedException{
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiUrl + "/participe/" + projectID))
                 .timeout(Duration.ofSeconds(10))
@@ -181,11 +150,15 @@ public class TaskRepositoryApi implements TaskRepository {
         System.out.println("getProjectDevs json: "+columnsAsJson.get());
 
         Participates[] participation= g.fromJson(columnsAsJson.get(), Participates[].class);
-        List<Dev> devs = new ArrayList<>();
+        Map<Dev,DevStatus> devs = new HashMap<>();
 
         for (Participates participates: participation  ) {
             System.out.println("test");
-            devs.add( getDev( participates.getDev_id()));
+            if (participates.isOwner())
+                devs.put(getDev(participates.getDev_id()),DevStatus.OWNER);
+            else {
+                devs.put(getDev(participates.getDev_id()), DevStatus.DEV);
+            }
         }
         System.out.println(devs.size());
         return devs;
@@ -307,12 +280,12 @@ public class TaskRepositoryApi implements TaskRepository {
     }
 
     @Override
-    public void postProject(Dev dev, String name) throws ExecutionException, InterruptedException {
+    public void postProject(Dev dev, Project project) throws ExecutionException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiUrl + "/project/"))
                 .timeout(Duration.ofSeconds(10))
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString("{ \"name\":\""+name+"\",\"devId\":"+dev.getId() +"}"))
+                .POST(HttpRequest.BodyPublishers.ofString("{ \"name\":\""+project.getName()+"\",\"devId\":"+dev.getId() +"}"))
                 .build();
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request,
                 HttpResponse.BodyHandlers.ofString());
