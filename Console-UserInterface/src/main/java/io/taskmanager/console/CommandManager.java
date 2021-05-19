@@ -26,9 +26,9 @@ public class CommandManager {
     private void show(){
         switch (args[1]) {
             case "dev" -> showDev();
-            case "project" -> showProject();
-            case "column" -> showColumn();
-            case "task" -> showTask();
+            case "project" -> showProjects();
+            case "column" -> showColumns();
+            case "task" -> showTasks();
         }
     }
 
@@ -41,16 +41,31 @@ public class CommandManager {
         }
     }
 
-    private void showProject() {
+    private void showProjects() {
+        try {
+            Dev dev = askToLogin();
 
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void showColumn() {
+    private void showColumns() {
+        try {
+            Dev dev = askToLogin();
 
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void showTask() {
+    private void showTasks() {
+        try {
+            Dev dev = askToLogin();
 
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void create(){
