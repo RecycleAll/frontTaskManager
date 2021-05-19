@@ -36,7 +36,14 @@ public class LoginController extends BorderPane {
         this.app = app;
     }
 
+    public void reset(){
+        passwordField.setText("");
+        emailField.setText("");
+        dev = null;
+    }
+
     @FXML
+    @SuppressWarnings("unused") //used by fxml loader
     public void OnConnect(ActionEvent actionEvent) throws ExecutionException, InterruptedException, IOException {
         System.out.println(emailField.getText());
         System.out.println(passwordField.getText());

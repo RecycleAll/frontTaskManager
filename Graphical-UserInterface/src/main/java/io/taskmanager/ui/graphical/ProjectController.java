@@ -44,7 +44,6 @@ public class ProjectController extends Tab {
         this.setText(project.getName());
         projectTitle.setText(project.getName());
 
-        System.out.println("rgvfrdsegfvsz: "+project.getDevs().size());
         for (Dev dev:project.getDevs()) {
             devsVBox.getChildren().add( new ProjectDevController(this, dev) );
         }
@@ -67,6 +66,7 @@ public class ProjectController extends Tab {
     private void addColumn(Column column) throws IOException {
         project.addColumn(column);
         columnHBox.getChildren().add( new ProjectColumnController(this, column));
+        this.getTabPane().getScene().getWindow().sizeToScene();
     }
 
     public void removeDev( ProjectDevController dev){

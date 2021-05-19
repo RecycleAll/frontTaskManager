@@ -33,7 +33,7 @@ public class Project {
     }
 
     public Project() {
-        this(-1, "", "", null, null, null);
+        this(-1, "", "");
     }
 
 
@@ -72,6 +72,7 @@ public class Project {
     }
 
     public void addColumn(Column column) {
+        System.out.println("addCOl"+ columns +" "+ column);
         columns.add(column);
     }
 

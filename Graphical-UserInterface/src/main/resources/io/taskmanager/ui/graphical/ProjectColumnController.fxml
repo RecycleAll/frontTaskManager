@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<fx:root fitToHeight="true" fitToWidth="true" style="-fx-border-radius: 10; -fx-background-radius: 10; -fx-background-size: 0; -fx-border-color: black; -fx-border-width: 2;" type="ScrollPane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root maxHeight="-Infinity" maxWidth="-Infinity" style="-fx-border-radius: 10; -fx-background-radius: 10; -fx-background-size: 0; -fx-border-color: black; -fx-border-width: 2;" type="ScrollPane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <opaqueInsets>
       <Insets />
    </opaqueInsets>

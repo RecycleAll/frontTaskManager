@@ -6,11 +6,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Optional;
 
 public class DevViewerController extends TabPane {
 
@@ -43,18 +45,23 @@ public class DevViewerController extends TabPane {
     }
 
     private void addProjectViewer(Project project) throws IOException {
-        if(this.getTabs().stream().noneMatch(tab -> {
-            if( tab instanceof ProjectController) {
-                ProjectController myTab = (ProjectController) tab;
+        Optional<Tab> optionalTab = this.getTabs().stream().filter(tab -> {
+            if(tab instanceof ProjectController myTab) {
                 return project == myTab.getProject();
             }else{
                 return false;
             }
-        })){
+        }).findFirst();
+
+        if( optionalTab.isPresent()){
+            this.getSelectionModel().select(optionalTab.get());
+        }else{
             ProjectController projectControllerTab = new ProjectController(project);
             this.getTabs().add( projectControllerTab);
             this.getSelectionModel().select(projectControllerTab);
+            this.getScene().getWindow().sizeToScene();
         }
+
     }
 
     private void updateUI() throws IOException {
