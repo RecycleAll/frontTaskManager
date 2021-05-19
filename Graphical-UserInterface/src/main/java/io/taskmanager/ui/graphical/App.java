@@ -28,7 +28,11 @@ public class App extends Application {
     public static void launchApp(TaskRepository repository) throws Exception {
         Platform.startup(() -> {});
         App app = new App(repository);
-        Platform.runLater( () -> app.start(new Stage()));
+        Platform.runLater( () -> {
+            Stage stage = new Stage();
+            stage.setMaxWidth(999999);
+            app.start(stage);
+        });
     }
 
     public App(TaskRepository repository) throws Exception {
