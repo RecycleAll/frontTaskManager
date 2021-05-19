@@ -1,11 +1,8 @@
 package io.taskmanager.ui.graphical;
 
-import io.taskmanager.api.TaskRepositoryApi;
 import io.taskmanager.test.*;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -20,18 +17,17 @@ public class App extends Application {
     private static Scene scene;
     private Stage stage;
 
-    private final DevViewerController devViewerController;
-    private final Scene devViewerScene;
+    private DevViewerController devViewerController;
+    private Scene devViewerScene;
 
-    private final LoginController loginController;
-    private final Scene loginScene;
+    private LoginController loginController;
+    private Scene loginScene;
 
     private final TaskRepository repository;
 
     public static void launchApp(TaskRepository repository) throws Exception {
         Platform.startup(() -> {});
         App app = new App(repository);
-        app.init();
         Platform.runLater( () -> app.start(new Stage()));
     }
 
@@ -85,12 +81,6 @@ public class App extends Application {
 
         stage.setScene(loginScene);
         stage.show();
-
-    }
-
-
-    public static void main(String[] args) {
-        launch();
     }
 
 }
