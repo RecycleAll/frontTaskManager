@@ -10,9 +10,9 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-radius: 5; -fx-background-color: gray; -fx-border-color: black; -fx-border-radius: 5;" type="BorderPane" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root style="-fx-background-radius: 5; -fx-background-color: gray; -fx-border-color: black; -fx-border-radius: 5;" type="BorderPane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <center>
-      <FlowPane fx:id="DevsFlowPane" hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWrapLength="200.0" vgap="10.0" BorderPane.alignment="CENTER">
+      <FlowPane fx:id="DevsFlowPane" hgap="10.0" prefWrapLength="200.0" vgap="10.0" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets />
          </BorderPane.margin>
@@ -22,7 +22,7 @@
       </FlowPane>
    </center>
    <top>
-      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <AnchorPane minWidth="200.0" BorderPane.alignment="CENTER">
          <children>
             <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#OnView" text="view" AnchorPane.rightAnchor="0.0">
                <graphic>

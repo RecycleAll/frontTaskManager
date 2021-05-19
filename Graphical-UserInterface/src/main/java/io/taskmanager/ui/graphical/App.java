@@ -62,7 +62,7 @@ public class App extends Application {
 
         LoginController loginController = new LoginController(api, this);
 
-        scene = new Scene( loginController );
+        scene = new Scene( new DevViewerController(dev) );
         //scene = new Scene( new ProjectController(project) );
         //scene = new Scene( ProjectColumnController.loadNew(column).scrollPane );
 
