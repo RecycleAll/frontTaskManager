@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<fx:root style="-fx-background-radius: 5; -fx-background-color: gray; -fx-border-color: black; -fx-border-radius: 5;" type="BorderPane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <FlowPane fx:id="DevsFlowPane" hgap="10.0" prefWrapLength="200.0" vgap="10.0" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </FlowPane>
+   </center>
+   <top>
+      <AnchorPane minWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#OnView" text="view" AnchorPane.rightAnchor="0.0">
+               <graphic>
+                  <FontIcon iconLiteral="anto-setting" iconSize="18" />
+               </graphic>
+               <padding>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </padding>
+               <tooltip>
+                  <Tooltip text="edit this task" />
+               </tooltip></Button>
+            <Label fx:id="taskTitleLabel" text="Task Title" AnchorPane.leftAnchor="0.0">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+         </children>
+         <padding>
+            <Insets bottom="3.0" left="3.0" right="3.0" />
+         </padding>
+         <BorderPane.margin>
+            <Insets top="3.0" />
+         </BorderPane.margin>
+      </AnchorPane>
+   </top>
+</fx:root>

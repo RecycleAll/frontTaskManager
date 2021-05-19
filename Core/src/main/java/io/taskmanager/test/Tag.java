@@ -1,3 +1,5 @@
+package io.taskmanager.test;
+
 public class Tag {
     private final int id;
     private String name;
@@ -5,6 +7,10 @@ public class Tag {
     public Tag(int id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public Tag() {
+        this(0, "");
     }
 
     public int getId() {
