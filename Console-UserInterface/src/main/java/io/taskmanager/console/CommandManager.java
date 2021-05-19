@@ -1,3 +1,5 @@
+package io.taskmanager.console;
+
 import io.taskmanager.test.TaskRepository;
 
 public class CommandManager {

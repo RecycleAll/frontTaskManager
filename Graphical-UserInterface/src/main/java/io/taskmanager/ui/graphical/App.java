@@ -28,12 +28,15 @@ public class App extends Application {
 
     private final TaskRepository repository;
 
-    public static void launchApp(TaskRepository repository) throws IOException {
+    public static void launchApp(TaskRepository repository) throws Exception {
+        Platform.startup(() -> {});
         App app = new App(repository);
+        app.init();
         Platform.runLater( () -> app.start(new Stage()));
     }
 
-    public App(TaskRepository repository) throws IOException {
+    public App(TaskRepository repository) throws Exception {
+        super();
         devViewerController = new DevViewerController();
         devViewerScene = new Scene( devViewerController);
         loginController = new LoginController(repository, this);
