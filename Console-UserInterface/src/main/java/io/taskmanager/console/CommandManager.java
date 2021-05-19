@@ -1,9 +1,11 @@
 package io.taskmanager.console;
 
+import io.taskmanager.test.Dev;
 import io.taskmanager.test.TaskRepository;
 
 import java.io.Console;
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 
 public class CommandManager {
     private final String[] args;
@@ -31,12 +33,12 @@ public class CommandManager {
     }
 
     private void showDev() {
-        Console console = System.console();
-        System.out.println("Enter your login:");
-        String login = console.readLine();
-        System.out.println("Enter your password");
-        char[] password = console.readPassword();
-        System.out.print(login+" : "+ Arrays.toString(password));
+        try {
+            Dev dev = askToLogin();
+            System.out.print(dev);
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void showProject() {
@@ -74,5 +76,14 @@ public class CommandManager {
 
     private void createTask() {
 
+    }
+
+    private Dev askToLogin() throws ExecutionException, InterruptedException {
+        Console console = System.console();
+        System.out.println("Enter your login:");
+        String login = console.readLine();
+        System.out.println("Enter your password:");
+        String password = String.valueOf(console.readPassword());
+        return taskRepository.loginDev(login,password);
     }
 }

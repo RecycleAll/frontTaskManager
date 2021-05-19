@@ -18,8 +18,6 @@ public class TaskManagerApplication {
         else {
             Console console = System.console();
             if(console == null){
-                String filename = TaskManagerApplication.class.getProtectionDomain().getCodeSource().getLocation().toString().substring(6);
-                System.out.print(Arrays.toString(args));
                 ArrayList<String> arrays = new ArrayList<String>(Arrays.asList("cmd", "/c", "start", "cmd", "/k", "java -jar out/artifacts/TaskManager_Application_jar/TaskManager-Application.jar"));
                 arrays.addAll(Arrays.asList(args));
                 Runtime.getRuntime().exec(arrays.stream().reduce((aze,aze2)-> aze+" "+aze2).orElseThrow());
