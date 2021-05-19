@@ -20,6 +20,7 @@ public class CommandManager {
         switch (args[0]) {
             case "show" -> show();
             case "create" -> create();
+            case "update" -> update();
         }
     }
 
@@ -44,6 +45,7 @@ public class CommandManager {
     private void showProjects() {
         try {
             Dev dev = askToLogin();
+            taskRepository.getProjects(dev);
 
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
@@ -90,6 +92,31 @@ public class CommandManager {
     }
 
     private void createTask() {
+
+    }
+
+    private void update(){
+        switch (args[1]) {
+            case "dev" -> updateDev();
+            case "project" -> updateProject();
+            case "column" -> updateColumn();
+            case "task" -> updateTask();
+        }
+    }
+
+    private void updateDev() {
+
+    }
+
+    private void updateProject() {
+
+    }
+
+    private void updateColumn() {
+
+    }
+
+    private void updateTask() {
 
     }
 
