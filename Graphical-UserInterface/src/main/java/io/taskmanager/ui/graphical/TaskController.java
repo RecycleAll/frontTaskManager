@@ -70,12 +70,7 @@ public class TaskController extends DialogPane {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "task name can't be empty", ButtonType.OK);
                 alert.showAndWait();
                 actionEvent.consume();
-            }
-            else if( newDevList.size() <= 0)
-            {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "You need to have at least 1 dev assigned too a task.", ButtonType.OK);
-                alert.showAndWait();
-                actionEvent.consume();
+
             }else if(limitDatePicker.getValue().isBefore(task.getCreatedAt().toLocalDate())  ){
                 Alert alert = new Alert(Alert.AlertType.ERROR, "You can't set the limit date to be before the creation date", ButtonType.OK);
                 alert.showAndWait();

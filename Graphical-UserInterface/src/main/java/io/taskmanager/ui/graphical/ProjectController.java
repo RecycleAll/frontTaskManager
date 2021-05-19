@@ -44,7 +44,6 @@ public class ProjectController extends Tab {
         this.setText(project.getName());
         projectTitle.setText(project.getName());
 
-        System.out.println("rgvfrdsegfvsz: "+project.getDevs().size());
         for (Dev dev:project.getDevs()) {
             devsVBox.getChildren().add( new ProjectDevController(this, dev) );
         }
