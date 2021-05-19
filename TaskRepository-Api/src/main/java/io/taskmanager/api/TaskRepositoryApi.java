@@ -27,8 +27,8 @@ public class TaskRepositoryApi implements TaskRepository {
     private final Gson g;
     private final String apiUrl;
 
-    private List<Dev> loadedDev;
-    private List<Project> loadedProject;
+    private final List<Dev> loadedDev;
+    private final List<Project> loadedProject;
 
     public TaskRepositoryApi(String apiUrl) {
         httpClient = HttpClient.newHttpClient();
@@ -125,8 +125,9 @@ public class TaskRepositoryApi implements TaskRepository {
                     }
                 }
             }
-            System.out.println("test: "+ columns);
-            return new Project(projectModel.getId(), projectModel.getName(), "", columns, new ArrayList<>(), devs);
+            Project project = new Project(projectModel.getId(), projectModel.getName(), "", columns, new ArrayList<>(), devs);
+            loadedProject.add(project);
+            return project;
         }
     }
 

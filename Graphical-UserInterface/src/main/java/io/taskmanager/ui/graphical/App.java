@@ -17,11 +17,11 @@ public class App extends Application {
     private static Scene scene;
     private Stage stage;
 
-    private DevViewerController devViewerController;
-    private Scene devViewerScene;
+    private final DevViewerController devViewerController;
+    private final Scene devViewerScene;
 
-    private LoginController loginController;
-    private Scene loginScene;
+    private final LoginController loginController;
+    private final Scene loginScene;
 
     private final TaskRepository repository;
 
