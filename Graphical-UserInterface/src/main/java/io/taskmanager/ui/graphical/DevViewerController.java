@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Window;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -61,7 +62,11 @@ public class DevViewerController extends TabPane {
             this.getSelectionModel().select(projectControllerTab);
             this.getScene().getWindow().sizeToScene();
         }
+    }
 
+    private void pack(){
+        Window w =  this.getScene().getWindow();
+        w.sizeToScene();
     }
 
     private void updateUI() throws IOException {

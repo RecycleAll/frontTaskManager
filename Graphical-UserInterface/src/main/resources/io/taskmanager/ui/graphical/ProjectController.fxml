@@ -15,7 +15,7 @@
 
 <fx:root text="Untitled Tab" type="Tab" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <content>
-      <BorderPane>
+      <BorderPane fx:id="borderPane">
          <top>
             <Label fx:id="projectTitle" text="Project Title" BorderPane.alignment="BOTTOM_LEFT">
                <font>
@@ -46,7 +46,7 @@
                         </Button>
                      </children>
                   </AnchorPane>
-                  <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+                  <ScrollPane fx:id="columnScrollPane" fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
                      <content>
                         <HBox fx:id="columnHBox" minHeight="-Infinity" minWidth="-Infinity" spacing="15.0">
                            <padding>

@@ -6,8 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<fx:root maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#OnMouseClicked" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: black;" type="AnchorPane" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root onMouseClicked="#OnMouseClicked" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: black;" type="AnchorPane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label fx:id="projectNameLabel" text="project name" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="60.0" AnchorPane.topAnchor="0.0">
          <font>

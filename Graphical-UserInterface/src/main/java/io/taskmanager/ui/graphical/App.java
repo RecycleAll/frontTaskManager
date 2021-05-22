@@ -4,6 +4,8 @@ import io.taskmanager.test.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -14,7 +16,6 @@ import java.time.LocalDate;
  */
 public class App extends Application {
 
-    private static Scene scene;
     private Stage stage;
 
     private final DevViewerController devViewerController;
@@ -27,10 +28,15 @@ public class App extends Application {
 
     public static void launchApp(TaskRepository repository) throws Exception {
         Platform.startup(() -> {});
+
         App app = new App(repository);
         Platform.runLater( () -> {
             Stage stage = new Stage();
-            stage.setMaxWidth(999999);
+
+            stage.sceneProperty().addListener((observableValue, scene, newScene) -> {
+                stage.setMinWidth(newScene.getWidth());
+                stage.setMinHeight(newScene.getHeight());
+            });
             app.start(stage);
         });
     }
@@ -39,8 +45,10 @@ public class App extends Application {
         super();
         devViewerController = new DevViewerController();
         devViewerScene = new Scene( devViewerController);
+
         loginController = new LoginController(repository, this);
         loginScene = new Scene( loginController );
+
 
         this.repository = repository;
     }
@@ -48,12 +56,19 @@ public class App extends Application {
     public void setDevViewerScene(Dev dev) throws IOException {
         devViewerController.setDev(dev);
         stage.setScene(devViewerScene);
-        stage.sizeToScene();
+        pack();
     }
     public void setLoginScene(){
         loginController.reset();
         stage.setScene(loginScene);
-        stage.sizeToScene();
+        pack();
+    }
+
+    private void pack(){
+        Scene scene = stage.getScene();
+       // stage.sizeToScene();
+       // stage.setMinWidth( stage.getWidth());
+       // stage.setMinHeight( stage.getHeight());
     }
 
     @Override
@@ -82,9 +97,9 @@ public class App extends Application {
 
         //scene = new Scene( new ProjectController(project) );
         //scene = new Scene( ProjectColumnController.loadNew(column).scrollPane );
-
-        stage.setScene(loginScene);
+        setLoginScene();
         stage.show();
+        pack();
     }
 
 }

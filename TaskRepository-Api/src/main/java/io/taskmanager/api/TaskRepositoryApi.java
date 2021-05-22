@@ -32,6 +32,8 @@ public class TaskRepositoryApi implements TaskRepository {
 
     public TaskRepositoryApi(String apiUrl) {
         httpClient = HttpClient.newHttpClient();
+
+
         g = new GsonBuilder().registerTypeAdapter(LocalDate.class, new JsonDeserializer<LocalDate>() {
             @Override
             public LocalDate deserialize(JsonElement json, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
