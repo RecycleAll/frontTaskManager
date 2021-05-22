@@ -62,6 +62,10 @@ public class Project {
         // return null;
     }
 
+    public DevStatus getDevStatus(Dev dev){
+        return devs.get(dev);
+    }
+
     public List<Column> getColumns() {
         return columns;
         //return null;

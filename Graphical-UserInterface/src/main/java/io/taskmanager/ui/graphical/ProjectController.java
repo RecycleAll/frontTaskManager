@@ -2,6 +2,7 @@ package io.taskmanager.ui.graphical;
 
 import io.taskmanager.test.Column;
 import io.taskmanager.test.Dev;
+import io.taskmanager.test.DevStatus;
 import io.taskmanager.test.Project;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -30,13 +31,26 @@ public class ProjectController extends Tab {
     public BorderPane borderPane;
 
     private Project project;
+    private int loggedDevId;
 
-    public ProjectController(Project project) throws IOException {
+    public ProjectController(Project project, int loggedDevId) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
+        this.loggedDevId = loggedDevId;
         setProject(project);
+
+    }
+
+    private boolean isProjectDevControllerEditable(Dev dev){
+        if( dev.getId() == loggedDevId){
+            return true;
+        }else if( project.getDevStatus(dev) == DevStatus.OWNER){
+            return  true;
+        }
+
+        return false;
     }
 
     public void setProject(Project newProject) throws IOException {
@@ -50,7 +64,7 @@ public class ProjectController extends Tab {
         projectTitle.setText(project.getName());
 
         for (Dev dev:project.getDevs()) {
-            devsVBox.getChildren().add( new ProjectDevController(this, dev) );
+            devsVBox.getChildren().add( new ProjectDevController(this, dev, isProjectDevControllerEditable(dev)) );
         }
 
         for (Column col:project.getColumns()) {
@@ -88,7 +102,7 @@ public class ProjectController extends Tab {
 
     private void addDev(Dev dev) throws IOException {
         project.addDev(dev);
-        devsVBox.getChildren().add( new ProjectDevController(this, dev) );
+        devsVBox.getChildren().add( new ProjectDevController(this, dev, isProjectDevControllerEditable(dev) ) );
     }
 
     @FXML

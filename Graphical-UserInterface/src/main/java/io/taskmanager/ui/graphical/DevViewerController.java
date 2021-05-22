@@ -57,7 +57,7 @@ public class DevViewerController extends TabPane {
         if( optionalTab.isPresent()){
             this.getSelectionModel().select(optionalTab.get());
         }else{
-            ProjectController projectControllerTab = new ProjectController(project);
+            ProjectController projectControllerTab = new ProjectController(project, dev.getId());
             this.getTabs().add( projectControllerTab);
             this.getSelectionModel().select(projectControllerTab);
             this.getScene().getWindow().sizeToScene();
