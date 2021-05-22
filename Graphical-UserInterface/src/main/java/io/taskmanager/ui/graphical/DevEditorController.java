@@ -23,9 +23,17 @@ public class DevEditorController extends DialogPane{
     @FXML
     public TextField githubField;
 
-    private final SimpleBooleanProperty isNewDev = new SimpleBooleanProperty(false);
+    private final SimpleBooleanProperty isDeletable = new SimpleBooleanProperty(false);
     private Dev dev;
 
+    public DevEditorController(Dev dev, boolean deletable) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
+        fxmlLoader.setController(this);
+        fxmlLoader.setRoot(this);
+        fxmlLoader.load();
+        setDev(dev);
+        isDeletable.set(deletable);
+    }
     public DevEditorController(Dev dev) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
@@ -41,7 +49,7 @@ public class DevEditorController extends DialogPane{
         ButtonType removeButtonType = new ButtonType("delete", ButtonBar.ButtonData.OTHER);
         this.getButtonTypes().add(removeButtonType);
         Button removeButton = (Button) this.lookupButton(removeButtonType);
-        removeButton.visibleProperty().bind(Bindings.createBooleanBinding(() -> !isNewDev.get(), isNewDev));
+        removeButton.visibleProperty().bind(Bindings.createBooleanBinding(isDeletable::get, isDeletable));
 
         Button applyButton = (Button) this.lookupButton(ButtonType.APPLY);
         applyButton.addEventFilter(ActionEvent.ACTION, actionEvent -> {
@@ -96,10 +104,10 @@ public class DevEditorController extends DialogPane{
     public void setDev(Dev newDev){
         if( newDev == null){
             this.dev = new Dev();
-            isNewDev.set(true);
+            isDeletable.set(false);
         }else{
             this.dev = newDev;
-            isNewDev.set(false);
+            isDeletable.set(true);
         }
 
         firstNameField.setText(this.dev.getFirstname());

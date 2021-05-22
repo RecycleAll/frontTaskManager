@@ -64,22 +64,18 @@ public class DevViewerController extends TabPane {
         }
     }
 
-    private void pack(){
-        Window w =  this.getScene().getWindow();
-        w.sizeToScene();
-    }
 
     private void updateUI() throws IOException {
+        projectVBox.getChildren().clear();
+
         if( dev == null){
             firstNameLabel.setText("No Dev");
             lastNameLabel.setText("");
 
-            projectVBox.getChildren().clear();
         }else {
             firstNameLabel.setText(dev.getFirstname());
             lastNameLabel.setText(dev.getLastname().toUpperCase(Locale.ROOT));
 
-            projectVBox.getChildren().clear();
             for (Project project : dev.getProjects()) {
                 DevProjectController devProjectController = new DevProjectController(project);
                 devProjectController.setOnMouseClicked(mouseEvent -> {
@@ -95,8 +91,12 @@ public class DevViewerController extends TabPane {
     }
 
     @FXML
-    public void OnEdit(ActionEvent actionEvent){
-
+    public void OnEditDev(ActionEvent actionEvent) throws IOException {
+        DevEditorDialog dialog = new DevEditorDialog(dev, false);
+        Optional<Dev> dev = dialog.showAndWait();
+        if(dev.isPresent()){
+            updateUI();
+        }
     }
 }
 

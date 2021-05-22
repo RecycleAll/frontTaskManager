@@ -25,7 +25,7 @@
                               <Label fx:id="lastNameLabel" text="first name" />
                            </children>
                         </HBox>
-                        <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#OnEdit" text="Button" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#OnEditDev" text="Button" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <graphic>
                               <FontIcon iconLiteral="anto-setting" iconSize="18" />
                            </graphic>
