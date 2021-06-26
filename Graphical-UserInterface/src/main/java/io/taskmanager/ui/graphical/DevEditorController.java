@@ -87,16 +87,16 @@ public class DevEditorController extends DialogPane{
             {
                 try {
                     dev.setGithub_id( Integer.parseInt(githubField.getText()));
+
+                    dev.setFirstname( firstNameField.getText());
+                    dev.setLastname( lastNameField.getText());
+                    dev.setEmail( emailField.getText());
                 } catch (NumberFormatException e) {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "\""+githubField.getText()+"\" is not a number", ButtonType.OK);
                     alert.showAndWait();
                     actionEvent.consume();
                 }
             }
-
-            dev.setFirstname( firstNameField.getText());
-            dev.setLastname( lastNameField.getText());
-            dev.setEmail( emailField.getText());
 
         });
     }

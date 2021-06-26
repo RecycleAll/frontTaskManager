@@ -54,10 +54,10 @@ public class ProjectEditorController extends DialogPane {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Project name can't be empty", ButtonType.OK);
                 alert.showAndWait();
                 actionEvent.consume();
+            }else{
+                project.setName(nameField.getText());
+                project.setGitHubUrl(gitHubUrlFiled.getText());
             }
-            System.out.println("projecteditor ended");
-            project.setName(nameField.getText());
-            project.setGitHubUrl(gitHubUrlFiled.getText());
 
         });
     }
