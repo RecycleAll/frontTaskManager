@@ -15,7 +15,7 @@ import javafx.scene.layout.*;
 import java.io.IOException;
 import java.util.Optional;
 
-public class ProjectController extends Tab {
+public class ProjectController extends BorderPane {
 
     private static final String FXML_FILE = "ProjectController.fxml";
 
@@ -60,7 +60,6 @@ public class ProjectController extends Tab {
             this.project = newProject;
         }
 
-        this.setText(project.getName());
         projectTitle.setText(project.getName());
 
         for (Dev dev:project.getDevs()) {
@@ -85,14 +84,10 @@ public class ProjectController extends Tab {
     private void addColumn(Column column) throws IOException {
         project.addColumn(column);
 
-        System.out.println("max min" + this.getTabPane().getMinWidth() + " / " + this.getTabPane().getMaxWidth());
         //System.out.println("borderPane width" + borderPane.minWidthProperty().get() + " < " + borderPane.getWidth() +" < " +borderPane.getMinWidth());
 
-        System.out.println("added column " + borderPane.getWidth() + " / " + this.getTabPane().getWidth());
         columnHBox.getChildren().add( new ProjectColumnController(this, column));
         //this.getTabPane().setPrefWidth( borderPane.getWidth());
-        System.out.println("added column " + borderPane.getWidth() + " / " + this.getTabPane().getWidth());
-        System.out.println("added column " + borderPane.getWidth() + " / " + this.getTabPane().getWidth());
     }
 
     public void removeDev( ProjectDevController dev){

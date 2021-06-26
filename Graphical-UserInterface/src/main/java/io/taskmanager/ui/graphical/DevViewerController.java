@@ -47,7 +47,7 @@ public class DevViewerController extends TabPane {
 
     private void addProjectViewer(Project project) throws IOException {
         Optional<Tab> optionalTab = this.getTabs().stream().filter(tab -> {
-            if(tab instanceof ProjectController myTab) {
+            if(tab.getContent() instanceof ProjectController myTab) {
                 return project == myTab.getProject();
             }else{
                 return false;
@@ -57,9 +57,11 @@ public class DevViewerController extends TabPane {
         if( optionalTab.isPresent()){
             this.getSelectionModel().select(optionalTab.get());
         }else{
-            ProjectController projectControllerTab = new ProjectController(project, dev.getId());
-            this.getTabs().add( projectControllerTab);
-            this.getSelectionModel().select(projectControllerTab);
+            ProjectController projectController =  new ProjectController(project, dev.getId());
+            Tab tab = new Tab(projectController.getProject().getName());
+            tab.setContent( projectController);
+            this.getTabs().add( tab );
+            this.getSelectionModel().select(tab);
             this.getScene().getWindow().sizeToScene();
         }
     }
