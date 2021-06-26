@@ -43,7 +43,10 @@ public class Dev {
     }
 
     public void addProject(Project project){
-        projects.add(project);
+        if( !projects.contains( project)){
+            projects.add(project);
+            project.addDev(this);
+        }
     }
 
     public void removeProject(Project project){

@@ -1,6 +1,7 @@
 package io.taskmanager.ui.graphical;
 
 import io.taskmanager.test.Dev;
+import io.taskmanager.test.DevStatus;
 import io.taskmanager.test.Project;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -119,6 +120,7 @@ public class DevViewerController extends TabPane {
     public void onAddProjectButton(ActionEvent actionEvent) throws IOException {
         Project project = new Project(-1, "Default project name", "");
         this.dev.addProject(project);
+        project.setDevStatus(dev, DevStatus.OWNER);
         addProject(project);
     }
 }

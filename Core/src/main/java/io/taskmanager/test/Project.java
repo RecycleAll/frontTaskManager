@@ -39,13 +39,6 @@ public class Project {
 
     public void setColumns(List<Column> columns) {
         this.columns = columns;
-
-       /* for (Column col: columns ) {
-            for (Task task: col.getTasks() ) {
-                this.devs.addAll( task.getDevs());
-                //this.tags.addAll( task.getTags());
-            }
-        }*/
     }
 
     public void setTags(List<Tag> tags) {
@@ -64,6 +57,10 @@ public class Project {
 
     public DevStatus getDevStatus(Dev dev){
         return devs.get(dev);
+    }
+
+    public void setDevStatus(Dev dev, DevStatus status){
+        devs.put(dev, status);
     }
 
     public List<Column> getColumns() {
@@ -93,7 +90,9 @@ public class Project {
     }
 
     public void addDev(Dev dev) {
-        devs.put(dev, DevStatus.DEV);
+        if( !devs.containsKey(dev)) {
+            devs.put(dev, DevStatus.DEV);
+        }
     }
 
     public void addDev(Dev dev, DevStatus devStatus) {
