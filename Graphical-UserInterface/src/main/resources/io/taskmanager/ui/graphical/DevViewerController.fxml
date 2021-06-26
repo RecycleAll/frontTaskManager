@@ -35,14 +35,23 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding>
                   </AnchorPane>
-                  <Label text="Projects">
-                     <padding>
-                        <Insets bottom="-7.0" />
-                     </padding>
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
+                  <AnchorPane>
+                     <children>
+                        <Label text="Projects" AnchorPane.leftAnchor="0.0">
+                           <padding>
+                              <Insets bottom="-7.0" />
+                           </padding>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="addProjectButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#onAddProjectButton" text="Button" AnchorPane.rightAnchor="0.0">
+                           <graphic>
+                              <FontIcon iconLiteral="anto-plus-circle" iconSize="18" />
+                           </graphic>
+                        </Button>
+                     </children>
+                  </AnchorPane>
                   <VBox fx:id="projectVBox" spacing="15.0" style="-fx-background-radius: 10; -fx-border-color: black; -fx-border-radius: 10;">
                      <padding>
                         <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />

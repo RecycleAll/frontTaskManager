@@ -90,6 +90,18 @@ public class DevViewerController extends TabPane {
         }
     }
 
+    private void addProject(Project project) throws IOException {
+        DevProjectController devProjectController = new DevProjectController(project);
+        devProjectController.setOnMouseClicked(mouseEvent -> {
+            try {
+                addProjectViewer(project);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        projectVBox.getChildren().add(devProjectController);
+    }
+
     @FXML
     public void OnEditDev(ActionEvent actionEvent) throws IOException {
         DevEditorDialog dialog = new DevEditorDialog(dev, false);
@@ -97,6 +109,13 @@ public class DevViewerController extends TabPane {
         if(dev.isPresent()){
             updateUI();
         }
+    }
+
+    @FXML
+    public void onAddProjectButton(ActionEvent actionEvent) throws IOException {
+        Project project = new Project(-1, "Default project name", "");
+        this.dev.addProject(project);
+        addProject(project);
     }
 }
 
