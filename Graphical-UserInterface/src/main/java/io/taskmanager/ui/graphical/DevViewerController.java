@@ -34,6 +34,8 @@ public class DevViewerController extends TabPane {
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
         setDev(dev);
+
+        this.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
     }
 
     public DevViewerController() throws IOException {
