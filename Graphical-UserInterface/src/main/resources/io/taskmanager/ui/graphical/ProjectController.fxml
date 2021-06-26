@@ -13,13 +13,6 @@
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <fx:root fx:id="borderPane" type="BorderPane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
-   <top>
-      <Label fx:id="projectTitle" text="Project Title" BorderPane.alignment="BOTTOM_LEFT">
-         <font>
-            <Font size="24.0" />
-         </font>
-      </Label>
-   </top>
    <center>
       <VBox style="-fx-border-color: black;">
          <children>
@@ -94,4 +87,20 @@
          </padding>
       </VBox>
    </right>
+   <top>
+      <AnchorPane BorderPane.alignment="CENTER">
+         <children>
+            <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#onEditProject" text="Button" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+               <graphic>
+                  <FontIcon iconLiteral="anto-setting" iconSize="18" />
+               </graphic>
+            </Button>
+            <Label fx:id="projectTitle" text="Project Title" AnchorPane.leftAnchor="0.0">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </top>
 </fx:root>

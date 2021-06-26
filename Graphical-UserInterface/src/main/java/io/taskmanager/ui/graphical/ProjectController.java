@@ -119,5 +119,16 @@ public class ProjectController extends BorderPane {
             this.addDev(res.get());
         }
     }
+
+    @FXML
+    @SuppressWarnings("unused") //used by fxml
+    public void onEditProject(ActionEvent actionEvent) throws IOException {
+        ProjectEditorDialog projectEditorDialog = new ProjectEditorDialog(project);
+        Optional<Project> res = projectEditorDialog.showAndWait();
+        if(res.isPresent()){
+            this.projectTitle.setText(project.getName());
+        }
+    }
+
 }
 
