@@ -99,6 +99,8 @@ public class TaskRepositoryApi implements TaskRepository {
 
     @Override
     public Project getProject(int projectID) throws Exception {
+
+        System.out.println("getProject: "+ projectID);
         Optional<Project> optionalProject = loadedProject.stream().filter(project -> project.getId()== projectID).findFirst();
         if(optionalProject.isPresent()){
             return optionalProject.get();
@@ -127,6 +129,7 @@ public class TaskRepositoryApi implements TaskRepository {
             }
             Project project = new Project(this, projectModel.getId(), projectModel.getName(), "", columns, new ArrayList<>(), devs);
             loadedProject.add(project);
+            System.out.println("getProject return: "+ project);
             return project;
         }
     }
@@ -171,13 +174,13 @@ public class TaskRepositoryApi implements TaskRepository {
                 devs.put(getDev(participates.getDev_id()), DevStatus.DEV);
             }
         }
-        System.out.println(devs.size());
+        System.out.println("getProjectDevs size: "+ devs.size());
         return devs;
     }
 
     private List<Project> getDevProject(int devID) throws ExecutionException, InterruptedException {
         List<Project> projects;
-
+        System.out.println("getDevProject: "+ devID);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiUrl + "/participe/getAll/dev/"+ devID))
                 .timeout(Duration.ofSeconds(10))
@@ -187,16 +190,27 @@ public class TaskRepositoryApi implements TaskRepository {
                 .thenApply(HttpResponse::body);
 
         Participates[] participates = g.fromJson(columnsAsJson.get(), Participates[].class);
+
+        for (Participates participate:participates ) {
+            System.out.println("d: "+ participate.getDev_id() +" p: " +participate.getProject_id());
+        }
+
         projects = Arrays.stream(participates)
                         .map(participate -> {
                             try {
                                 return getProject(participate.getProject_id());
                             } catch (Exception e) {
                                 e.printStackTrace();
+                                return null;
                             }
-                            return null;
                         })
                         .collect(Collectors.toList());
+
+        System.out.println("ps: "+ projects.size());
+        for (Project p:projects ) {
+            System.out.println("pp: "+ p.getId() );
+        }
+
         return projects;
     }
 
@@ -250,6 +264,28 @@ public class TaskRepositoryApi implements TaskRepository {
     }
 
     @Override
+    public boolean postDevTask(Task task, Dev dev) throws ExecutionException, InterruptedException {
+        return postDevTask(task.getId(), dev.getId());
+    }
+
+    @Override
+    public boolean postDevTask(int taskId, int devId) throws ExecutionException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/devTask"))
+                .timeout(Duration.ofSeconds(10))
+                .header("Content-Type", "application/json")
+                .POST( HttpRequest.BodyPublishers.ofString("{ " +
+                        "\"devId\":\""+devId+"\"," +
+                        "\"taskId\":\""+taskId+"\"" +
+                        "}"))
+                .build();
+
+        CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+
+        return projectsAsJson.get().statusCode() == 201 ;
+    }
+
+    @Override
     public List<Dev> getTaskDevs(int taskID) throws ExecutionException, InterruptedException{
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiUrl + "/devTask/" + taskID))
@@ -260,7 +296,36 @@ public class TaskRepositoryApi implements TaskRepository {
                 .thenApply(HttpResponse::body);
         System.out.println(columnsAsJson.get());
         Dev[] devs = g.fromJson(columnsAsJson.get(), Dev[].class);
-        return Arrays.asList(devs);
+        return new ArrayList<>( Arrays.asList(devs) );
+    }
+
+    private DevTaskModel getDevTask(int taskId, int devId) throws ExecutionException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/devTask/" + taskId+"/"+devId))
+                .timeout(Duration.ofSeconds(10))
+                .GET()
+                .build();
+        CompletableFuture<String> taskAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body);
+        return g.fromJson(taskAsJson.get(), DevTaskModel.class);
+    }
+
+    @Override
+    public boolean deleteDevTAsk(Task task, Dev dev) throws ExecutionException, InterruptedException {
+        return deleteDevTAsk(task.getId(), dev.getId());
+    }
+
+    @Override
+    public boolean deleteDevTAsk(int taskId, int devId) throws ExecutionException, InterruptedException {
+        DevTaskModel devTaskModel = getDevTask(taskId, devId);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/devTask/" + devTaskModel.getId()))
+                .timeout(Duration.ofSeconds(10))
+                .DELETE()
+                .build();
+        CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+
+        return projectsAsJson.get().statusCode() == 200;
     }
 
     @Override
@@ -355,7 +420,21 @@ public class TaskRepositoryApi implements TaskRepository {
         CompletableFuture<String> tasksAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body);
         Task[] tasksArray = g.fromJson(tasksAsJson.get(), Task[].class);
-        return new ArrayList<>( Arrays.asList(tasksArray));
+
+        for (Task t: tasksArray) {
+            System.out.println(t.getDevs());
+        }
+
+        return Arrays.stream(tasksArray).map(task -> {
+            try {
+                List<Dev> devs = getTaskDevs(task.getId());
+                task.setDevs(devs);
+                return new Task(this, task);
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }).collect(Collectors.toList());
     }
 
     @Override

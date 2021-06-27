@@ -100,7 +100,7 @@ public class ProjectController extends BorderPane {
         devsVBox.getChildren().remove(dev);
     }
 
-    private void addDev(Dev dev) throws IOException {
+    private void addDev(Dev dev) throws IOException, ExecutionException, InterruptedException {
         project.addDev(dev);
         devsVBox.getChildren().add( new ProjectDevController(this, dev, isProjectDevControllerEditable(dev) ) );
     }
@@ -124,18 +124,7 @@ public class ProjectController extends BorderPane {
 
         Optional<List<Dev>> res = dialog.showAndWait();
         if(res.isPresent()){
-            List<Dev> projectDevs = project.getDevs();
-            List<Dev> newProjectDevs = res.get();
-
-            for (Dev dev :newProjectDevs) {
-                project.addDev(dev);
-            }
-
-            for (Dev dev :projectDevs) {
-                if( !newProjectDevs.contains(dev)){
-                    project.removeDev(dev);
-                }
-            }
+            project.updateDevs(res.get());
             updateUI();
         }
     }

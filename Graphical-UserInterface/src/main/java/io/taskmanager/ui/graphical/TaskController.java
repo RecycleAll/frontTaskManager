@@ -15,6 +15,7 @@ import javafx.scene.layout.FlowPane;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 public class TaskController extends DialogPane {
 
@@ -124,14 +125,14 @@ public class TaskController extends DialogPane {
         addDevToFlowPane(dev);
     }
 
-    private void setDevs(List<Dev> devs){
+    private void setDevs(List<Dev> devs) throws ExecutionException, InterruptedException {
         devsFlowPane.getChildren().remove(0, devsFlowPane.getChildren().size() - 1); // the last child id the add button
 
         for (Dev dev: devs ) {
             addDevToFlowPane(dev);
         }
 
-        task.setDevs(devs);
+        task.updateDevs(devs);
     }
 
     private void addDevToFlowPane(Dev dev){
@@ -139,7 +140,7 @@ public class TaskController extends DialogPane {
     }
 
     @FXML
-    public void OnAddDev(ActionEvent actionEvent) throws IOException {
+    public void OnAddDev(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
         DevSelectorDialog dialog = new DevSelectorDialog( project, task);
         Optional<List<Dev>> res = dialog.showAndWait();
 

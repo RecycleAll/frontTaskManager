@@ -24,7 +24,11 @@ public interface TaskRepository {
     Dev getDev(int devID) throws ExecutionException, InterruptedException;
     List<Dev> getAllDev() throws ExecutionException, InterruptedException;
 
+    boolean postDevTask(Task task, Dev dev) throws ExecutionException, InterruptedException;
+    boolean postDevTask(int taskId, int devId) throws ExecutionException, InterruptedException;
     List<Dev> getTaskDevs(int taskID) throws ExecutionException, InterruptedException;
+    boolean deleteDevTAsk(Task task, Dev dev) throws ExecutionException, InterruptedException;
+    boolean deleteDevTAsk(int taskId, int devId) throws ExecutionException, InterruptedException;
 
     Task getTask(Column column) throws ExecutionException, InterruptedException;
 

@@ -1,9 +1,6 @@
 package io.taskmanager.test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 public class Project {
@@ -97,10 +94,32 @@ public class Project {
         tags.remove(tag);
     }
 
-    public void addDev(Dev dev) {
+    public void addDev(Dev dev) throws ExecutionException, InterruptedException {
         if( !devs.containsKey(dev)) {
             devs.put(dev, DevStatus.DEV);
             dev.addProject(this);
+            if( repository != null){
+                repository.postParticipate(this, dev);
+            }
+        }
+    }
+
+    public void updateDevs(List<Dev> newDevs) throws ExecutionException, InterruptedException {
+        List<Dev> tmp = new ArrayList<>();
+        for (Dev dev: newDevs) {
+            if (!devs.containsKey(dev)){
+                addDev(dev);
+            }
+        }
+
+        for (Dev dev : devs.keySet()) {
+            if (!newDevs.contains(dev)) {
+                tmp.add(dev);
+            }
+        }
+
+        for (Dev dev: tmp ) {
+            removeDev(dev);
         }
     }
 

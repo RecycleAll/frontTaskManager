@@ -134,7 +134,7 @@ public class DevViewerController extends TabPane {
     }
 
     @FXML
-    public void onAddProjectButton(ActionEvent actionEvent) throws IOException {
+    public void onAddProjectButton(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
         Project project = new Project(repo, -1, "Default project name", "");
         this.dev.addProject(project);
         project.setDevStatus(dev, DevStatus.OWNER);

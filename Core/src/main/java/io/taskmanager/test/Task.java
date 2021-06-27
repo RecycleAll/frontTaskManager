@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class Task {
     private final TaskRepository repository;
@@ -42,6 +43,10 @@ public class Task {
         this(repository, 0, "", "", LocalDateTime.now(), null, null, new ArrayList<>(), new ArrayList<>());
     }
 
+    public Task(TaskRepository repository, Task task){
+        this(repository, task.getId(), task.getName(), task.getDescription(), task.getCreatedAt(), task.getLimitDate(), task.getLastUpdateDate(), task.getDevs(), task.tags);
+    }
+
     public Task(Task task){
         this(task.repository, task.getId(), task.getName(), task.getDescription(), task.getCreatedAt(), task.getLimitDate(), task.getLastUpdateDate(), task.getDevs(), task.tags);
         System.out.println("dev size from copy: "+ devs.size());
@@ -49,6 +54,20 @@ public class Task {
 
     public void setDevs(List<Dev> devs) {
         this.devs = devs;
+    }
+
+    public void updateDevs(List<Dev> newDevs) throws ExecutionException, InterruptedException {
+        for (Dev dev: newDevs) {
+            if (!devs.contains(dev)){
+                addDev(dev);
+            }
+        }
+
+        for (Dev dev: devs) {
+            if (!newDevs.contains(dev)){
+                removeDev(dev);
+            }
+        }
     }
 
     public List<Dev> getDevs() {
@@ -71,12 +90,17 @@ public class Task {
         tags.remove(tag);
     }
 
-    public void addDev(Dev dev){
+    public void addDev(Dev dev) throws ExecutionException, InterruptedException {
         devs.add(dev);
+        if( repository != null){
+            repository.postDevTask(this, dev);
+        }
     }
 
-    public void removeDev(Dev dev){
-        devs.remove(dev);
+    public void removeDev(Dev dev) throws ExecutionException, InterruptedException {
+        if( devs.remove(dev) && repository != null){
+            repository.deleteDevTAsk(this, dev);
+        }
     }
 
     public String getName() {
@@ -119,8 +143,4 @@ public class Task {
         this.updatedAt = lastUpdateDate;
     }
 
-    @Override
-    public String toString(){
-        return name;
-    }
 }

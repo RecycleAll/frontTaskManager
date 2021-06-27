@@ -31,8 +31,7 @@ public class Column {
         this(repository, -1, "");
     }
 
-
-    public void removeDevFromAllTask(Dev dev){
+    public void removeDevFromAllTask(Dev dev) throws ExecutionException, InterruptedException {
         for (Task task: tasks) {
             task.removeDev(dev);
         }

@@ -43,7 +43,7 @@ public class Dev {
         return id;
     }
 
-    public void addProject(Project project){
+    public void addProject(Project project) throws ExecutionException, InterruptedException {
         if( !projects.contains( project)){
             projects.add(project);
             project.addDev(this);
