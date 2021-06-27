@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.concurrent.ExecutionException;
 
 /**
  * JavaFX App
@@ -37,7 +38,11 @@ public class App extends Application {
                 stage.setMinWidth(newScene.getWidth());
                 stage.setMinHeight(newScene.getHeight());
             });
-            app.start(stage);
+            try {
+                app.start(stage);
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
         });
     }
 
@@ -72,10 +77,10 @@ public class App extends Application {
     }
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws ExecutionException, InterruptedException {
         this.stage = stage;
 
-        Project project = new Project(0, "project test", "gitURL");
+      /*  Project project = new Project(repository, 0, "project test", "gitURL");
 
         Dev dev = new Dev(0, "dev1", "pata", "", "", 0);
         Dev dev2 = new Dev(0, "dev2", "pata", "", "", 0);
@@ -93,7 +98,7 @@ public class App extends Application {
         project.addDev(dev);
         project.addDev(dev2);
 
-        dev.addProject(project);
+        dev.addProject(project);*/
 
         //scene = new Scene( new ProjectController(project) );
         //scene = new Scene( ProjectColumnController.loadNew(column).scrollPane );

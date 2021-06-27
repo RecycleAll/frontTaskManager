@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 public class ProjectColumnController extends ScrollPane{
 
@@ -85,7 +86,7 @@ public class ProjectColumnController extends ScrollPane{
 
     @FXML
     @SuppressWarnings("unused") //used by fxml
-    public void OnEdit(ActionEvent actionEvent) throws IOException {
+    public void OnEdit(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
         ColumnEditorDialog dialog = new ColumnEditorDialog(column);
         Optional<Column> res = dialog.showAndWait();
         if( res.isPresent()){

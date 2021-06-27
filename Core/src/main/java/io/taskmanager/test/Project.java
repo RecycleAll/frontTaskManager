@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class Project {
 
+    private final TaskRepository repository;
     private final int id;
     private String name;
     private String gitHubUrl;
@@ -19,7 +21,8 @@ public class Project {
         return api.getProject(projectID);
     }
 
-    public Project(int id, String name, String gitHubUrl, List<Column> columns, List<Tag> tags, Map<Dev, DevStatus> devs) {
+    public Project(TaskRepository repository, int id, String name, String gitHubUrl, List<Column> columns, List<Tag> tags, Map<Dev, DevStatus> devs) {
+        this.repository = repository;
         this.id = id;
         setName(name);
         setGitHubUrl(gitHubUrl);
@@ -28,14 +31,13 @@ public class Project {
         this.devs = devs;
     }
 
-    public Project(int id, String name, String gitHubUrl) {
-        this(id, name, gitHubUrl, new ArrayList<>(), new ArrayList<>(), new HashMap<>());
+    public Project(TaskRepository repository, int id, String name, String gitHubUrl) {
+        this(repository, id, name, gitHubUrl, new ArrayList<>(), new ArrayList<>(), new HashMap<>());
     }
 
-    public Project() {
-        this(-1, "", "");
+    public Project(TaskRepository repository) {
+        this(repository, -1, "", "");
     }
-
 
     public void setColumns(List<Column> columns) {
         this.columns = columns;
@@ -72,13 +74,19 @@ public class Project {
         return id;
     }
 
-    public void addColumn(Column column) {
+    public void addColumn(Column column) throws ExecutionException, InterruptedException {
         System.out.println("addCOl"+ columns +" "+ column);
         columns.add(column);
+        if( repository != null){
+            repository.postColumn(column.getName(), this.id);
+        }
     }
 
-    public void removeColumn(Column column) {
+    public void removeColumn(Column column) throws ExecutionException, InterruptedException {
         columns.remove(column);
+        if( repository != null){
+            repository.deleteColumn(column);
+        }
     }
 
     public void addTag(Tag tag) {

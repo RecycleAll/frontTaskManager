@@ -127,7 +127,7 @@ public class TaskRepositoryApi implements TaskRepository {
                     }
                 }
             }
-            Project project = new Project(projectModel.getId(), projectModel.getName(), "", columns, new ArrayList<>(), devs);
+            Project project = new Project(this, projectModel.getId(), projectModel.getName(), "", columns, new ArrayList<>(), devs);
             loadedProject.add(project);
             return project;
         }
@@ -167,9 +167,8 @@ public class TaskRepositoryApi implements TaskRepository {
         Map<Dev,DevStatus> devs = new HashMap<>();
 
         for (Participates participates: participation  ) {
-            System.out.println("test");
             if (participates.isOwner())
-                devs.put(getDev(participates.getDev_id()),DevStatus.OWNER);
+                devs.put(getDev(participates.getDev_id()), DevStatus.OWNER);
             else {
                 devs.put(getDev(participates.getDev_id()), DevStatus.DEV);
             }
@@ -313,6 +312,18 @@ public class TaskRepositoryApi implements TaskRepository {
         CompletableFuture<String> tasksAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body);
         return g.fromJson(tasksAsJson.get(), Column.class);
+    }
+
+    @Override
+    public boolean deleteColumn(Column column) throws ExecutionException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/column/" + column.getId()))
+                .timeout(Duration.ofSeconds(10))
+                .DELETE()
+                .build();
+        CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+
+        return projectsAsJson.get().statusCode() == 201;
     }
 
     @Override

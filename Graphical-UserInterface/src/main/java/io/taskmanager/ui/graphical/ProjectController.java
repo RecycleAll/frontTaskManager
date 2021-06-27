@@ -58,7 +58,7 @@ public class ProjectController extends BorderPane {
 
     public void setProject(Project newProject) throws IOException {
         if( newProject == null){
-            this.project = new Project();
+            this.project = new Project(repo);
         }else {
             this.project = newProject;
         }
@@ -85,12 +85,12 @@ public class ProjectController extends BorderPane {
         return project;
     }
 
-    public void removeColumn(ProjectColumnController projectColumnController){
+    public void removeColumn(ProjectColumnController projectColumnController) throws ExecutionException, InterruptedException {
         project.removeColumn(projectColumnController.getColumn());
         columnHBox.getChildren().remove(projectColumnController);
     }
 
-    private void addColumn(Column column) throws IOException {
+    private void addColumn(Column column) throws IOException, ExecutionException, InterruptedException {
         project.addColumn(column);
 
         //System.out.println("borderPane width" + borderPane.minWidthProperty().get() + " < " + borderPane.getWidth() +" < " +borderPane.getMinWidth());
@@ -111,7 +111,7 @@ public class ProjectController extends BorderPane {
 
     @FXML
     @SuppressWarnings("unused") //used by fxml
-    public void OnAddColumn(ActionEvent actionEvent) throws IOException {
+    public void OnAddColumn(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
         ColumnEditorDialog dialog = new ColumnEditorDialog();
         Optional<Column> res = dialog.showAndWait();
         if(res.isPresent()){

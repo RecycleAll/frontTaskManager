@@ -17,7 +17,8 @@ public interface TaskRepository {
     List<Column> getColumns(Project project) throws ExecutionException, InterruptedException;
     List<Column> getColumns(int projectID) throws ExecutionException, InterruptedException;
 
-    Column getColumn(Column column) throws ExecutionException, InterruptedException;
+
+
 
     List<Task> getTasks(Project project) throws ExecutionException, InterruptedException;
     List<Task> getColumnTasks(int columnId) throws ExecutionException, InterruptedException;
@@ -37,4 +38,6 @@ public interface TaskRepository {
     void postTask(String name, String description, LocalDate limitDate, int columnId) throws ExecutionException, InterruptedException;
 
     void postColumn(String name, int projectId) throws ExecutionException, InterruptedException;
+    Column getColumn(Column column) throws ExecutionException, InterruptedException;
+    boolean deleteColumn(Column column) throws ExecutionException, InterruptedException;
 }

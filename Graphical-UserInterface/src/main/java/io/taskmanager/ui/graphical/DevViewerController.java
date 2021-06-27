@@ -134,7 +134,7 @@ public class DevViewerController extends TabPane {
 
     @FXML
     public void onAddProjectButton(ActionEvent actionEvent) throws IOException {
-        Project project = new Project(-1, "Default project name", "");
+        Project project = new Project(repo, -1, "Default project name", "");
         this.dev.addProject(project);
         project.setDevStatus(dev, DevStatus.OWNER);
         addProject(project);
