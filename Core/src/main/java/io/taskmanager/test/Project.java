@@ -100,7 +100,12 @@ public class Project {
     }
 
     public void removeDev(Dev dev) {
-        devs.remove(dev);
+        if( devs.remove(dev) != null){
+            dev.removeProject(this);
+        }
+        for (Column col : columns) {
+            col.removeDevFromAllTask(dev);
+        }
     }
 
     public String getName() {

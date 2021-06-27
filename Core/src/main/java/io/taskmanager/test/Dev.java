@@ -10,7 +10,7 @@ public class Dev {
     private String password;
     private int github_id;
 
-    private ArrayList<Project> projects;
+    private final ArrayList<Project> projects;
 
     public Dev(int id, String firstname, String lastname, String email, String password, int github_id, ArrayList<Project> projects) {
         this.id = id;
@@ -27,7 +27,7 @@ public class Dev {
     }
 
     public Dev(Dev dev){
-        this(dev.id, dev.firstname, dev.lastname, dev.email, dev.password, -dev.github_id, dev.projects);
+        this(dev.id, dev.firstname, dev.lastname, dev.email, dev.password, dev.github_id, dev.projects);
     }
 
     public Dev(){
@@ -50,7 +50,9 @@ public class Dev {
     }
 
     public void removeProject(Project project){
-        projects.remove(project);
+        if( projects.remove(project) ){
+            project.removeDev(this);
+        }
     }
 
     public String getFirstname() {

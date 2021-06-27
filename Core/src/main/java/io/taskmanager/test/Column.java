@@ -23,6 +23,12 @@ public class Column {
         this(-1, "");
     }
 
+    public void removeDevFromAllTask(Dev dev){
+        for (Task task: tasks) {
+            task.removeDev(dev);
+        }
+    }
+
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
     }
