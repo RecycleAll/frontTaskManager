@@ -382,8 +382,6 @@ public class TaskRepositoryApi implements TaskRepository {
 
     @Override
     public boolean putColumn(Column column) throws ExecutionException, InterruptedException {
-        return true;
-        /*
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiUrl + "/column/"))
                 .timeout(Duration.ofSeconds(10))
@@ -394,7 +392,7 @@ public class TaskRepositoryApi implements TaskRepository {
                         "}"))
                 .build();
         CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-        return projectsAsJson.get().statusCode() == 200;*/
+        return projectsAsJson.get().statusCode() == 200;
     }
 
     @Override
