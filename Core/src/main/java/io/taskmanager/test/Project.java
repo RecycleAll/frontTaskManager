@@ -92,6 +92,7 @@ public class Project {
     public void addDev(Dev dev) {
         if( !devs.containsKey(dev)) {
             devs.put(dev, DevStatus.DEV);
+            dev.addProject(this);
         }
     }
 

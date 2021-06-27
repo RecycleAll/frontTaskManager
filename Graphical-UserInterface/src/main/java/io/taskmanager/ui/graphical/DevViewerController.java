@@ -27,6 +27,8 @@ public class DevViewerController extends TabPane {
     public Label lastNameLabel;
     @FXML
     public VBox projectVBox;
+    @FXML
+    public Tab overviewTab;
 
     private final TaskRepository repo;
 
@@ -39,6 +41,16 @@ public class DevViewerController extends TabPane {
         fxmlLoader.load();
         this.repo = repo;
         setDev(dev);
+
+        this.getSelectionModel().selectedItemProperty().addListener((observableValue, tab, t1) -> {
+            if( t1 == overviewTab){
+                try {
+                    updateUI();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         this.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
     }
