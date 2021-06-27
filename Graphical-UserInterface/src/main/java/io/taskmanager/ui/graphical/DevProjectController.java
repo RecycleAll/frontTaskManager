@@ -1,5 +1,7 @@
 package io.taskmanager.ui.graphical;
 
+import io.taskmanager.test.Dev;
+import io.taskmanager.test.DevStatus;
 import io.taskmanager.test.Project;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,6 +12,7 @@ import javafx.scene.layout.AnchorPane;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class DevProjectController extends AnchorPane {
 
@@ -20,12 +23,15 @@ public class DevProjectController extends AnchorPane {
 
     private Project project;
 
-    public DevProjectController(@NotNull Project project) throws IOException {
+    private final Dev loggedDev;
+
+    public DevProjectController(@NotNull Project project, Dev loggedDev) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
         setProject(project);
+        this.loggedDev = loggedDev;
     }
 
     public void setProject(Project project) {
@@ -33,7 +39,7 @@ public class DevProjectController extends AnchorPane {
         updateUI();
     }
 
-    public void updateUI(){
+    private void updateUI(){
         projectNameLabel.setText(project.getName());
     }
 
@@ -47,8 +53,12 @@ public class DevProjectController extends AnchorPane {
     }
 
     @FXML
-    public void OnEdit(ActionEvent actionEvent){
-
+    public void OnEdit(ActionEvent actionEvent) throws IOException {
+        ProjectEditorDialog dialog = new ProjectEditorDialog(project, project.getDevStatus(loggedDev) == DevStatus.OWNER);
+        Optional<Project> res = dialog.showAndWait();
+        if(res.isPresent()){
+            updateUI();
+        }
     }
 
 }

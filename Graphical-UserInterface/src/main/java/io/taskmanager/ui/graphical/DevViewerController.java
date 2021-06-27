@@ -82,7 +82,7 @@ public class DevViewerController extends TabPane {
             lastNameLabel.setText(dev.getLastname().toUpperCase(Locale.ROOT));
 
             for (Project project : dev.getProjects()) {
-                DevProjectController devProjectController = new DevProjectController(project);
+                DevProjectController devProjectController = new DevProjectController(project, dev);
                 devProjectController.setOnMouseClicked(mouseEvent -> {
                     try {
                         addProjectViewer(project);
@@ -96,7 +96,7 @@ public class DevViewerController extends TabPane {
     }
 
     private void addProject(Project project) throws IOException {
-        DevProjectController devProjectController = new DevProjectController(project);
+        DevProjectController devProjectController = new DevProjectController(project, dev);
         devProjectController.setOnMouseClicked(mouseEvent -> {
             try {
                 addProjectViewer(project);
