@@ -132,5 +132,9 @@ public class Project {
     public void setGitHubUrl(String gitHubUrl) {
         this.gitHubUrl = gitHubUrl;
     }
+
+    public TaskRepository getRepository() {
+        return repository;
+    }
 }
 

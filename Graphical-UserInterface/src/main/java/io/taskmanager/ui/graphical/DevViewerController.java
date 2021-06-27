@@ -16,6 +16,7 @@ import javafx.stage.Window;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 public class DevViewerController extends TabPane {
 
@@ -64,7 +65,7 @@ public class DevViewerController extends TabPane {
         updateUI();
     }
 
-    private void addProjectViewer(Project project) throws IOException {
+    private void addProjectViewer(Project project) throws IOException, ExecutionException, InterruptedException {
         Optional<Tab> optionalTab = this.getTabs().stream().filter(tab -> {
             if(tab.getContent() instanceof ProjectController myTab) {
                 return project == myTab.getProject();
@@ -76,7 +77,7 @@ public class DevViewerController extends TabPane {
         if( optionalTab.isPresent()){
             this.getSelectionModel().select(optionalTab.get());
         }else{
-            ProjectController projectController =  new ProjectController(repo, project, dev.getId());
+            ProjectController projectController =  new ProjectController(project, dev.getId());
             Tab tab = new Tab(projectController.getProject().getName());
             tab.setContent( projectController);
             this.getTabs().add( tab );
@@ -102,7 +103,7 @@ public class DevViewerController extends TabPane {
                 devProjectController.setOnMouseClicked(mouseEvent -> {
                     try {
                         addProjectViewer(project);
-                    } catch (IOException e) {
+                    } catch (IOException | ExecutionException | InterruptedException e) {
                         e.printStackTrace();
                     }
                 });
@@ -116,7 +117,7 @@ public class DevViewerController extends TabPane {
         devProjectController.setOnMouseClicked(mouseEvent -> {
             try {
                 addProjectViewer(project);
-            } catch (IOException e) {
+            } catch (IOException | ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
         });

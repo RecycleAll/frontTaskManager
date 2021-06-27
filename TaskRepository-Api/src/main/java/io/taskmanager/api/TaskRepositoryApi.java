@@ -267,20 +267,7 @@ public class TaskRepositoryApi implements TaskRepository {
 
     @Override
     public List<Column> getColumns(Project project) throws ExecutionException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(apiUrl + "/column/all/" + project.getId()))
-                .timeout(Duration.ofSeconds(10))
-                .GET()
-                .build();
-        CompletableFuture<String> columnsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenApply(HttpResponse::body);
-        Column[] columnsArray = g.fromJson(columnsAsJson.get(), Column[].class);
-
-        for (Column col:columnsArray) {
-            col.setTasks( getColumnTasks( col.getId()));
-        }
-
-        return Arrays.asList(columnsArray);
+        return  getColumns(project.getId());
     }
 
     @Override
@@ -294,12 +281,15 @@ public class TaskRepositoryApi implements TaskRepository {
                 .thenApply(HttpResponse::body);
 
         Column[] columnsArray = g.fromJson(columnsAsJson.get(), Column[].class);
+        List<Column> columns = new ArrayList<>();
 
-        for (Column col:columnsArray) {
-            col.setTasks( getColumnTasks( col.getId()));
+        for (Column col : columnsArray) {
+            Column c = new Column(this, col);
+            columns.add(c);
+            c.setTasks( getColumnTasks( col.getId()));
         }
 
-        return new ArrayList<>(Arrays.asList(columnsArray));
+        return columns;
     }
 
     @Override
@@ -311,7 +301,8 @@ public class TaskRepositoryApi implements TaskRepository {
                 .build();
         CompletableFuture<String> tasksAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body);
-        return g.fromJson(tasksAsJson.get(), Column.class);
+        Column col = g.fromJson(tasksAsJson.get(), Column.class);
+        return new Column(this, col.getId(), col.getName(), col.getTasks());
     }
 
     @Override
@@ -324,6 +315,23 @@ public class TaskRepositoryApi implements TaskRepository {
         CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
 
         return projectsAsJson.get().statusCode() == 201;
+    }
+
+    @Override
+    public boolean putColumn(Column column) throws ExecutionException, InterruptedException {
+        return true;
+        /*
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/column/"))
+                .timeout(Duration.ofSeconds(10))
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString("{ " +
+                        "\"id\":\""+column.getId()+"\"," +
+                        "\"name\":\""+column.getName()+"\"" +
+                        "}"))
+                .build();
+        CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+        return projectsAsJson.get().statusCode() == 200;*/
     }
 
     @Override

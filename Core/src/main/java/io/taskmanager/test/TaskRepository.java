@@ -40,4 +40,5 @@ public interface TaskRepository {
     void postColumn(String name, int projectId) throws ExecutionException, InterruptedException;
     Column getColumn(Column column) throws ExecutionException, InterruptedException;
     boolean deleteColumn(Column column) throws ExecutionException, InterruptedException;
+    boolean putColumn(Column column) throws ExecutionException, InterruptedException;
 }

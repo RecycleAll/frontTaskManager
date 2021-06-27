@@ -1,6 +1,7 @@
 package io.taskmanager.ui.graphical;
 
 import io.taskmanager.test.Column;
+import io.taskmanager.test.TaskRepository;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
@@ -9,10 +10,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 public class ColumnEditor extends DialogPane{
 
     private static final String FXML_FILE = "ColumnEditor.fxml";
+
+    private final TaskRepository repository;
 
     @FXML
     public TextField nameField;
@@ -21,11 +25,12 @@ public class ColumnEditor extends DialogPane{
 
     private final SimpleBooleanProperty isNewDev = new SimpleBooleanProperty(false);
 
-    public ColumnEditor(Column column) throws IOException {
+    public ColumnEditor(TaskRepository repository, Column column) throws IOException, ExecutionException, InterruptedException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
+        this.repository = repository;
         setColumn(column);
     }
 
@@ -43,14 +48,18 @@ public class ColumnEditor extends DialogPane{
                 alert.showAndWait();
                 actionEvent.consume();
             }else{
-                column.setName( nameField.getText());
+                try {
+                    column.setName( nameField.getText());
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
 
-    public void setColumn(Column column) {
+    public void setColumn(Column column) throws ExecutionException, InterruptedException {
         if( column == null){
-            this.column = new Column();
+            this.column = new Column(repository);
             isNewDev.set(true);
         }else{
             this.column = column;

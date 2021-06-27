@@ -6,14 +6,15 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 public class ColumnEditorDialog extends Dialog<Column> {
 
     private boolean shouldBeDelete;
 
-    public ColumnEditorDialog(Column column) throws IOException {
+    public ColumnEditorDialog(Column column) throws IOException, ExecutionException, InterruptedException {
         shouldBeDelete = false;
-        ColumnEditor controller = new ColumnEditor(column);
+        ColumnEditor controller = new ColumnEditor(column.getRepository(), column);
         this.setDialogPane( controller);
 
         setResultConverter(buttonType -> {
@@ -27,7 +28,7 @@ public class ColumnEditorDialog extends Dialog<Column> {
             }
         });
     }
-    public ColumnEditorDialog() throws IOException {
+    public ColumnEditorDialog() throws IOException, ExecutionException, InterruptedException {
         this(null);
     }
 

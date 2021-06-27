@@ -35,13 +35,13 @@ public class ProjectController extends BorderPane {
     private Project project;
     private int loggedDevId;
 
-    public ProjectController(TaskRepository repo, Project project, int loggedDevId) throws IOException {
+    public ProjectController( Project project, int loggedDevId) throws IOException, ExecutionException, InterruptedException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
         this.loggedDevId = loggedDevId;
-        this.repo = repo;
+        this.repo = project.getRepository();
         setProject(project);
 
     }
@@ -56,7 +56,7 @@ public class ProjectController extends BorderPane {
         return false;
     }
 
-    public void setProject(Project newProject) throws IOException {
+    public void setProject(Project newProject) throws IOException, ExecutionException, InterruptedException {
         if( newProject == null){
             this.project = new Project(repo);
         }else {
@@ -66,7 +66,7 @@ public class ProjectController extends BorderPane {
         updateUI();
     }
 
-    private void updateUI() throws IOException {
+    private void updateUI() throws IOException, ExecutionException, InterruptedException {
         projectTitle.setText(project.getName());
 
         devsVBox.getChildren().remove(1, devsVBox.getChildren().size());
@@ -77,7 +77,7 @@ public class ProjectController extends BorderPane {
         }
 
         for (Column col:project.getColumns()) {
-            columnHBox.getChildren().add( new ProjectColumnController(this, col));
+            columnHBox.getChildren().add( new ProjectColumnController(col.getRepository(), this, col));
         }
     }
 
@@ -92,11 +92,7 @@ public class ProjectController extends BorderPane {
 
     private void addColumn(Column column) throws IOException, ExecutionException, InterruptedException {
         project.addColumn(column);
-
-        //System.out.println("borderPane width" + borderPane.minWidthProperty().get() + " < " + borderPane.getWidth() +" < " +borderPane.getMinWidth());
-
-        columnHBox.getChildren().add( new ProjectColumnController(this, column));
-        //this.getTabPane().setPrefWidth( borderPane.getWidth());
+        columnHBox.getChildren().add( new ProjectColumnController(column.getRepository(), this, column));
     }
 
     public void removeDev( ProjectDevController dev){

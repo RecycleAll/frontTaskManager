@@ -2,6 +2,7 @@ package io.taskmanager.ui.graphical;
 import io.taskmanager.test.Column;
 import io.taskmanager.test.Project;
 import io.taskmanager.test.Task;
+import io.taskmanager.test.TaskRepository;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +19,8 @@ public class ProjectColumnController extends ScrollPane{
 
     private static final String FXML_FILE = "ProjectColumnController.fxml";
 
+    private final TaskRepository repository;
+
     @FXML
     public Label ColumnTitleLabel;
     @FXML
@@ -26,25 +29,26 @@ public class ProjectColumnController extends ScrollPane{
     private Column column;
     private ProjectController projectController;
 
-    public ProjectColumnController( ProjectController projectController, Column column) throws IOException {
+    public ProjectColumnController(TaskRepository repository, ProjectController projectController, Column column) throws IOException, ExecutionException, InterruptedException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
+        this.repository = repository;
         setColumn(column);
         this.projectController = projectController;
     }
-    public ProjectColumnController( ProjectController projectController) throws IOException {
-        this(projectController, null);
+    public ProjectColumnController(TaskRepository repository, ProjectController projectController) throws IOException, ExecutionException, InterruptedException {
+        this(repository, projectController, null);
     }
 
     public Column getColumn() {
         return column;
     }
 
-    public void setColumn(Column newColumn) throws IOException {
+    public void setColumn(Column newColumn) throws IOException, ExecutionException, InterruptedException {
         if( newColumn == null){
-            this.column = new Column();
+            this.column = new Column(repository);
         }else {
             this.column = newColumn;
         }
