@@ -57,6 +57,7 @@ public class Task {
     }
 
     public void updateDevs(List<Dev> newDevs) throws ExecutionException, InterruptedException {
+        List<Dev> tmp = new ArrayList<>();
         for (Dev dev: newDevs) {
             if (!devs.contains(dev)){
                 addDev(dev);
@@ -65,8 +66,12 @@ public class Task {
 
         for (Dev dev: devs) {
             if (!newDevs.contains(dev)){
-                removeDev(dev);
+                tmp.add(dev);
             }
+        }
+
+         for (Dev dev: tmp) {
+            removeDev(dev);
         }
     }
 
