@@ -2,6 +2,7 @@ package io.taskmanager.ui.graphical;
 
 import io.taskmanager.test.Dev;
 import io.taskmanager.test.Task;
+import io.taskmanager.test.TaskRepository;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -17,26 +18,28 @@ public class ColumnTaskController extends BorderPane {
 
     private static final String FXML_FILE = "ColumnTaskController.fxml";
 
+    private final TaskRepository repository;
+
     @FXML
     public FlowPane DevsFlowPane;
-
     @FXML
     public Label taskTitleLabel;
 
     private Task task;
     private final ProjectColumnController projectColumnController;
 
-    public ColumnTaskController(ProjectColumnController projectColumnController, Task task) throws IOException {
+    public ColumnTaskController(TaskRepository repository, ProjectColumnController projectColumnController, Task task) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
+        this.repository = repository;
         setTask(task);
         this.projectColumnController = projectColumnController;
     }
 
-    public ColumnTaskController(ProjectColumnController projectColumnController) throws IOException {
-        this(projectColumnController, null);
+    public ColumnTaskController(TaskRepository repository, ProjectColumnController projectColumnController) throws IOException {
+        this(repository, projectColumnController, null);
     }
 
     public void setTask(Task task) {
@@ -62,7 +65,7 @@ public class ColumnTaskController extends BorderPane {
     @FXML
     @SuppressWarnings("unused") //used by fxml
     public void OnView(ActionEvent actionEvent) throws IOException {
-        TaskDialog dialog = new TaskDialog(projectColumnController.getProject(), task);
+        TaskDialog dialog = new TaskDialog(repository, projectColumnController.getProject(), task);
         Optional<Task> res = dialog.showAndWait();
 
         if( res.isPresent()){

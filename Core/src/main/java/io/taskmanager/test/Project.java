@@ -108,13 +108,17 @@ public class Project {
         devs.put(dev, devStatus);
     }
 
-    public void removeDev(Dev dev) {
+    public void removeDev(Dev dev) throws ExecutionException, InterruptedException {
         if( devs.remove(dev) != null){
             dev.removeProject(this);
+            if( repository != null){
+                repository.deleteParticipate(this, dev);
+            }
+            for (Column col : columns) {
+                col.removeDevFromAllTask(dev);
+            }
         }
-        for (Column col : columns) {
-            col.removeDevFromAllTask(dev);
-        }
+
     }
 
     public String getName() {

@@ -3,7 +3,6 @@ package io.taskmanager.api;
 import com.google.gson.*;
 import io.taskmanager.test.*;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -16,7 +15,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class TaskRepositoryApi implements TaskRepository {
@@ -190,9 +188,9 @@ public class TaskRepositoryApi implements TaskRepository {
 
         Participates[] participates = g.fromJson(columnsAsJson.get(), Participates[].class);
         projects = Arrays.stream(participates)
-                        .map(participates1 -> {
+                        .map(participate -> {
                             try {
-                                return getProject(participates1.getProject_id());
+                                return getProject(participate.getProject_id());
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -314,7 +312,7 @@ public class TaskRepositoryApi implements TaskRepository {
                 .build();
         CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
 
-        return projectsAsJson.get().statusCode() == 201;
+        return projectsAsJson.get().statusCode() == 200;
     }
 
     @Override
@@ -373,6 +371,55 @@ public class TaskRepositoryApi implements TaskRepository {
     }
 
     @Override
+    public boolean postParticipate(Project project, Dev dev) throws ExecutionException, InterruptedException {
+        return postParticipate(project.getId(), dev.getId());
+    }
+
+    @Override
+    public boolean postParticipate(int projectID, int devId) throws ExecutionException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/participe/"))
+                .timeout(Duration.ofSeconds(10))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString("{ " +
+                        "\"projectId\":\""+projectID+"\"," +
+                        "\"devId\":\""+devId+"\"}"))
+                .build();
+        CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+        return projectsAsJson.get().statusCode() == 201;
+    }
+
+    private Participates getParticipate(int projectID, int devId) throws ExecutionException, InterruptedException{
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/participe/" + projectID+"/"+devId))
+                .timeout(Duration.ofSeconds(10))
+                .GET()
+                .build();
+        CompletableFuture<String> taskAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body);
+        return g.fromJson(taskAsJson.get(), Participates.class);
+    };
+
+    @Override
+    public boolean deleteParticipate(Project project, Dev dev) throws ExecutionException, InterruptedException {
+        return deleteParticipate(project.getId(), dev.getId());
+    }
+
+    @Override
+    public boolean deleteParticipate(int projectID, int devId) throws ExecutionException, InterruptedException {
+
+        Participates participates = getParticipate(projectID, devId);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/participe/" + participates.getId()))
+                .timeout(Duration.ofSeconds(10))
+                .DELETE()
+                .build();
+        CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+
+        return projectsAsJson.get().statusCode() == 200;
+    }
+
+    @Override
     public void postProject(Dev dev, Project project) throws ExecutionException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiUrl + "/project/"))
@@ -382,6 +429,7 @@ public class TaskRepositoryApi implements TaskRepository {
                 .build();
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request,
                 HttpResponse.BodyHandlers.ofString());
+
         System.out.print(response.get().body());
     }
 

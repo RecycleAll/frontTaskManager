@@ -17,9 +17,6 @@ public interface TaskRepository {
     List<Column> getColumns(Project project) throws ExecutionException, InterruptedException;
     List<Column> getColumns(int projectID) throws ExecutionException, InterruptedException;
 
-
-
-
     List<Task> getTasks(Project project) throws ExecutionException, InterruptedException;
     List<Task> getColumnTasks(int columnId) throws ExecutionException, InterruptedException;
 
@@ -30,6 +27,11 @@ public interface TaskRepository {
     List<Dev> getTaskDevs(int taskID) throws ExecutionException, InterruptedException;
 
     Task getTask(Column column) throws ExecutionException, InterruptedException;
+
+    boolean postParticipate(Project project, Dev dev) throws ExecutionException, InterruptedException;
+    boolean postParticipate(int projectID, int devId) throws ExecutionException, InterruptedException;
+    boolean deleteParticipate(Project project, Dev dev) throws ExecutionException, InterruptedException;
+    boolean deleteParticipate(int projectID, int devId) throws ExecutionException, InterruptedException;
 
     void postProject(Dev dev, Project project) throws ExecutionException, InterruptedException;
 

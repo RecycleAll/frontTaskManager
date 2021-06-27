@@ -3,6 +3,7 @@ package io.taskmanager.ui.graphical;
 import io.taskmanager.test.Dev;
 import io.taskmanager.test.Project;
 import io.taskmanager.test.Task;
+import io.taskmanager.test.TaskRepository;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
@@ -18,6 +19,8 @@ import java.util.Optional;
 public class TaskController extends DialogPane {
 
     private static final String FXML_FILE = "TaskController.fxml";
+
+    private final TaskRepository repository;
 
     @FXML
     public TextArea taskDescriptionArea;
@@ -36,7 +39,8 @@ public class TaskController extends DialogPane {
 
     private List<Dev> backUpDevList;
 
-    public TaskController(Project project, Task task) throws IOException {
+    public TaskController(TaskRepository repository, Project project, Task task) throws IOException {
+        this.repository = repository;
         isNewTask = new SimpleBooleanProperty(false);
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
@@ -46,8 +50,8 @@ public class TaskController extends DialogPane {
         this.project = project;
     }
 
-    public TaskController(Project project) throws IOException {
-        this(project, null);
+    public TaskController(TaskRepository repository,Project project) throws IOException {
+        this(repository, project, null);
     }
 
     @FXML
@@ -96,7 +100,7 @@ public class TaskController extends DialogPane {
 
     public void setTask(Task newTask) {
         if( newTask == null){
-            this.task = new Task();
+            this.task = new Task(repository);
             isNewTask.set(true);
         }else{
             this.task = newTask;

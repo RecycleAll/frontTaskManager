@@ -1,6 +1,7 @@
 package io.taskmanager.test;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class Dev {
     private final int id;
@@ -49,7 +50,7 @@ public class Dev {
         }
     }
 
-    public void removeProject(Project project){
+    public void removeProject(Project project) throws ExecutionException, InterruptedException {
         if( projects.remove(project) ){
             project.removeDev(this);
         }

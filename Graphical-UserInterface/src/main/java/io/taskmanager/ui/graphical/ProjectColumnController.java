@@ -75,13 +75,13 @@ public class ProjectColumnController extends ScrollPane{
     }
 
     private void addTaskToTaskVBox(Task task) throws IOException {
-        TaskVBox.getChildren().add( new ColumnTaskController(this, task) );
+        TaskVBox.getChildren().add( new ColumnTaskController(repository, this, task) );
     }
 
     @FXML
     @SuppressWarnings("unused") //used by fxml
     public void OnAddTask(ActionEvent actionEvent) throws IOException {
-        TaskDialog dialog = new TaskDialog(getProject());
+        TaskDialog dialog = new TaskDialog(repository, getProject());
         Optional<Task> res = dialog.showAndWait();
         if(res.isPresent()){
             addTask(res.get());

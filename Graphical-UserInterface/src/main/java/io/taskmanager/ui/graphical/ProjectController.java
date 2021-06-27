@@ -95,7 +95,7 @@ public class ProjectController extends BorderPane {
         columnHBox.getChildren().add( new ProjectColumnController(column.getRepository(), this, column));
     }
 
-    public void removeDev( ProjectDevController dev){
+    public void removeDev( ProjectDevController dev) throws ExecutionException, InterruptedException {
         project.removeDev(dev.getDev());
         devsVBox.getChildren().remove(dev);
     }

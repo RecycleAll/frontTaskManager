@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 public class ProjectDevController extends AnchorPane{
 
@@ -53,7 +54,7 @@ public class ProjectDevController extends AnchorPane{
         lastNameLabel.setText( dev.getLastname());
     }
 
-    public void OnView(ActionEvent actionEvent) throws IOException {
+    public void OnView(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
         DevEditorDialog devEditorDialog = new DevEditorDialog(dev);
         Optional<Dev> res = devEditorDialog.showAndWait();
         if(res.isPresent()){
