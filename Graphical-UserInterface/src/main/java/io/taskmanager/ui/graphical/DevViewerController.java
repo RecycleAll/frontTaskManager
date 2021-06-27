@@ -3,6 +3,7 @@ package io.taskmanager.ui.graphical;
 import io.taskmanager.test.Dev;
 import io.taskmanager.test.DevStatus;
 import io.taskmanager.test.Project;
+import io.taskmanager.test.TaskRepository;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,20 +28,23 @@ public class DevViewerController extends TabPane {
     @FXML
     public VBox projectVBox;
 
+    private final TaskRepository repo;
+
     private Dev dev;
 
-    public DevViewerController(Dev dev) throws IOException {
+    public DevViewerController(TaskRepository repo, Dev dev) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
+        this.repo = repo;
         setDev(dev);
 
         this.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
     }
 
-    public DevViewerController() throws IOException {
-        this(null);
+    public DevViewerController(TaskRepository repo) throws IOException {
+        this(repo, null);
     }
 
     public void setDev(Dev dev) throws IOException {
@@ -60,7 +64,7 @@ public class DevViewerController extends TabPane {
         if( optionalTab.isPresent()){
             this.getSelectionModel().select(optionalTab.get());
         }else{
-            ProjectController projectController =  new ProjectController(project, dev.getId());
+            ProjectController projectController =  new ProjectController(repo, project, dev.getId());
             Tab tab = new Tab(projectController.getProject().getName());
             tab.setContent( projectController);
             this.getTabs().add( tab );

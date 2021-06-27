@@ -227,6 +227,32 @@ public class TaskRepositoryApi implements TaskRepository {
     }
 
     @Override
+    public List<Dev> getAllDev() throws ExecutionException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/auth/" ))
+                .timeout(Duration.ofSeconds(10))
+                .GET()
+                .build();
+        CompletableFuture<String> columnsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body);
+        Dev[] devs = g.fromJson(columnsAsJson.get(), Dev[].class);
+
+        for (Dev dev: devs) {
+            boolean isAlreadyLoaded = false;
+            for (Dev loadDev:loadedDev) {
+                if( dev.getId() == loadDev.getId()){
+                    isAlreadyLoaded = true;
+                    break;
+                }
+            }
+            if( !isAlreadyLoaded){
+                loadedDev.add(dev);
+            }
+        }
+        return loadedDev;
+    }
+
+    @Override
     public List<Dev> getTaskDevs(int taskID) throws ExecutionException, InterruptedException{
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiUrl + "/devTask/" + taskID))

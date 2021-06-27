@@ -34,7 +34,7 @@ public class TaskController extends DialogPane {
 
     private final SimpleBooleanProperty isNewTask;
 
-    private List<Dev> newDevList;
+    private List<Dev> backUpDevList;
 
     public TaskController(Project project, Task task) throws IOException {
         isNewTask = new SimpleBooleanProperty(false);
@@ -56,6 +56,11 @@ public class TaskController extends DialogPane {
         this.getButtonTypes().add(removeButtonType);
         Button removeButton = (Button) this.lookupButton(removeButtonType);
         removeButton.visibleProperty().bind(Bindings.createBooleanBinding(() -> !isNewTask.get(), isNewTask));
+
+        Button cancelButton = (Button) this.lookupButton(ButtonType.CANCEL);
+        cancelButton.addEventFilter(ActionEvent.ACTION, actionEvent -> {
+            getTask().setDevs(backUpDevList);
+        });
 
         Button applyButton = (Button) this.lookupButton(ButtonType.APPLY);
         applyButton.addEventFilter(ActionEvent.ACTION, actionEvent -> {
@@ -79,7 +84,6 @@ public class TaskController extends DialogPane {
             else{
                 task.setName( taskNameField.getText());
                 task.setDescription( taskDescriptionArea.getText());
-                task.setDevs(newDevList);
                 task.setLimitDate(limitDatePicker.getValue().atStartOfDay().toLocalDate());
             }
 
@@ -97,7 +101,7 @@ public class TaskController extends DialogPane {
         }else{
             this.task = newTask;
         }
-        newDevList = this.task.getDevs();
+        backUpDevList = this.task.getDevs();
 
         taskNameField.setText(this.task.getName());
         taskDescriptionArea.setText(this.task.getDescription());
@@ -117,12 +121,13 @@ public class TaskController extends DialogPane {
     }
 
     private void setDevs(List<Dev> devs){
-        devsFlowPane.getChildren().remove(0, devsFlowPane.getChildren().size() - 1);
+        devsFlowPane.getChildren().remove(0, devsFlowPane.getChildren().size() - 1); // the last child id the add button
 
         for (Dev dev: devs ) {
             addDevToFlowPane(dev);
         }
-        newDevList = devs;
+
+        task.setDevs(devs);
     }
 
     private void addDevToFlowPane(Dev dev){
@@ -131,7 +136,7 @@ public class TaskController extends DialogPane {
 
     @FXML
     public void OnAddDev(ActionEvent actionEvent) throws IOException {
-        DevSelectorDialog dialog = new DevSelectorDialog( project, newDevList);
+        DevSelectorDialog dialog = new DevSelectorDialog( project, task);
         Optional<List<Dev>> res = dialog.showAndWait();
 
         if( res.isPresent()){

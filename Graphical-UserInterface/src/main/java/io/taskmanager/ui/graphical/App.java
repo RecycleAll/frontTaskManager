@@ -43,7 +43,7 @@ public class App extends Application {
 
     public App(TaskRepository repository) throws Exception {
         super();
-        devViewerController = new DevViewerController();
+        devViewerController = new DevViewerController(repository);
         devViewerScene = new Scene( devViewerController);
 
         loginController = new LoginController(repository, this);

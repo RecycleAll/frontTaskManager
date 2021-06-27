@@ -1,9 +1,6 @@
 package io.taskmanager.ui.graphical;
 
-import io.taskmanager.test.Column;
-import io.taskmanager.test.Dev;
-import io.taskmanager.test.DevStatus;
-import io.taskmanager.test.Project;
+import io.taskmanager.test.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,7 +10,10 @@ import javafx.scene.control.Tab;
 import javafx.scene.layout.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 public class ProjectController extends BorderPane {
 
@@ -30,15 +30,18 @@ public class ProjectController extends BorderPane {
     @FXML
     public BorderPane borderPane;
 
+    private final TaskRepository repo;
+
     private Project project;
     private int loggedDevId;
 
-    public ProjectController(Project project, int loggedDevId) throws IOException {
+    public ProjectController(TaskRepository repo, Project project, int loggedDevId) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
         this.loggedDevId = loggedDevId;
+        this.repo = repo;
         setProject(project);
 
     }
@@ -60,7 +63,14 @@ public class ProjectController extends BorderPane {
             this.project = newProject;
         }
 
+        updateUI();
+    }
+
+    private void updateUI() throws IOException {
         projectTitle.setText(project.getName());
+
+        devsVBox.getChildren().remove(1, devsVBox.getChildren().size());
+        columnHBox.getChildren().clear();
 
         for (Dev dev:project.getDevs()) {
             devsVBox.getChildren().add( new ProjectDevController(this, dev, isProjectDevControllerEditable(dev)) );
@@ -69,7 +79,6 @@ public class ProjectController extends BorderPane {
         for (Column col:project.getColumns()) {
             columnHBox.getChildren().add( new ProjectColumnController(this, col));
         }
-
     }
 
     public Project getProject() {
@@ -112,17 +121,33 @@ public class ProjectController extends BorderPane {
 
     @FXML
     @SuppressWarnings("unused") //used by fxml
-    public void OnAddDev(ActionEvent actionEvent) throws IOException {
-        DevEditorDialog devEditorDialog = new DevEditorDialog();
-        Optional<Dev> res = devEditorDialog.showAndWait();
+    public void OnAddDev(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
+        ArrayList<Dev> devs = (ArrayList<Dev>) repo.getAllDev();
+        System.out.println(devs);
+        DevSelectorDialog dialog = new DevSelectorDialog(project, devs);
+
+        Optional<List<Dev>> res = dialog.showAndWait();
         if(res.isPresent()){
-            this.addDev(res.get());
+            List<Dev> projectDevs = project.getDevs();
+            List<Dev> newProjectDevs = res.get();
+
+            for (Dev dev :newProjectDevs) {
+                project.addDev(dev);
+            }
+
+            for (Dev dev :projectDevs) {
+                if( !newProjectDevs.contains(dev)){
+                    project.removeDev(dev);
+                }
+            }
+            updateUI();
         }
     }
 
     @FXML
     @SuppressWarnings("unused") //used by fxml
-    public void onEditProject(ActionEvent actionEvent) throws IOException {
+    public void onEditProject(ActionEvent actionEvent) throws IOException{
+
         ProjectEditorDialog projectEditorDialog = new ProjectEditorDialog(project);
         Optional<Project> res = projectEditorDialog.showAndWait();
         if(res.isPresent()){

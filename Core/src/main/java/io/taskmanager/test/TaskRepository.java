@@ -24,6 +24,7 @@ public interface TaskRepository {
 
     Map<Dev,DevStatus> getProjectDevs(int projectID) throws ExecutionException, InterruptedException;
     Dev getDev(int devID) throws ExecutionException, InterruptedException;
+    List<Dev> getAllDev() throws ExecutionException, InterruptedException;
 
     List<Dev> getTaskDevs(int taskID) throws ExecutionException, InterruptedException;
 

@@ -2,6 +2,7 @@ package io.taskmanager.ui.graphical;
 
 import io.taskmanager.test.Dev;
 import io.taskmanager.test.Project;
+import io.taskmanager.test.Task;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -29,7 +30,6 @@ public class DevSelectorController extends DialogPane {
     public TableColumn<DevTableItem, Boolean> presentColumn;
 
     private final ArrayList<Dev> devs;
-    private Project project;
 
     public DevSelectorController(Project project, ArrayList<Dev> devs) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
@@ -37,7 +37,23 @@ public class DevSelectorController extends DialogPane {
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
         this.devs = devs;
-        this.project = project;
+
+        firstNameColumn.setCellValueFactory(devTableItemStringCellDataFeatures -> new SimpleStringProperty(devTableItemStringCellDataFeatures.getValue().dev.getFirstname()) );
+        lastNameColumn.setCellValueFactory( devTableItemStringCellDataFeatures -> new SimpleStringProperty(devTableItemStringCellDataFeatures.getValue().dev.getLastname()) );
+        presentColumn.setCellValueFactory(devTableItemBooleanCellDataFeatures -> devTableItemBooleanCellDataFeatures.getValue().isSelected );
+        presentColumn.setCellFactory( CheckBoxTableCell.forTableColumn(presentColumn));
+
+        for (Dev dev :devs ) {
+            table.getItems().add( new DevTableItem( dev, project.getDevs().contains(dev)));
+        }
+    }
+
+    public DevSelectorController(Project project, Task task) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
+        fxmlLoader.setController(this);
+        fxmlLoader.setRoot(this);
+        fxmlLoader.load();
+        this.devs = (ArrayList<Dev>) project.getDevs();
 
         firstNameColumn.setCellValueFactory(devTableItemStringCellDataFeatures -> new SimpleStringProperty(devTableItemStringCellDataFeatures.getValue().dev.getFirstname()) );
         lastNameColumn.setCellValueFactory( devTableItemStringCellDataFeatures -> new SimpleStringProperty(devTableItemStringCellDataFeatures.getValue().dev.getLastname()) );
@@ -45,7 +61,7 @@ public class DevSelectorController extends DialogPane {
         presentColumn.setCellFactory( CheckBoxTableCell.forTableColumn(presentColumn));
 
         for (Dev dev :project.getDevs() ) {
-            table.getItems().add( new DevTableItem( dev, devs.contains(dev)));
+            table.getItems().add( new DevTableItem( dev, task.getDevs().contains(dev)));
         }
     }
 
