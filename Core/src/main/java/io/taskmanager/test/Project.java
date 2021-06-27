@@ -71,9 +71,22 @@ public class Project {
         return id;
     }
 
+    public Column addNewColumn(String name) throws ExecutionException, InterruptedException {
+        System.out.println("add new COl: "+ name);
+        if( repository != null) {
+            System.out.println("add new COl repo: "+ name);
+            Column col = repository.postColumn(name, id);
+            columns.add(col);
+            return col;
+        }
+        return null;
+    }
+
     public void addColumn(Column column) throws ExecutionException, InterruptedException {
         System.out.println("addCOl"+ columns +" "+ column);
-        columns.add(column);
+        if( columns.contains(column)) {
+            columns.add(column);
+        }
         if( repository != null){
             repository.postColumn(column.getName(), this.id);
         }
@@ -81,7 +94,9 @@ public class Project {
 
     public void removeColumn(Column column) throws ExecutionException, InterruptedException {
         columns.remove(column);
+        System.out.println("removeColumn: "+ column.getName());
         if( repository != null){
+            System.out.println("repo: "+ column.getId());
             repository.deleteColumn(column);
         }
     }

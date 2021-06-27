@@ -23,7 +23,7 @@ public class ColumnEditor extends DialogPane{
 
     private Column column;
 
-    private final SimpleBooleanProperty isNewDev = new SimpleBooleanProperty(false);
+    private final SimpleBooleanProperty isNewColumn = new SimpleBooleanProperty(false);
 
     public ColumnEditor(TaskRepository repository, Column column) throws IOException, ExecutionException, InterruptedException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
@@ -39,7 +39,7 @@ public class ColumnEditor extends DialogPane{
         ButtonType removeButtonType = new ButtonType("delete", ButtonBar.ButtonData.OTHER);
         this.getButtonTypes().add(removeButtonType);
         Button removeButton = (Button) this.lookupButton(removeButtonType);
-        removeButton.visibleProperty().bind(Bindings.createBooleanBinding(() -> !isNewDev.get(), isNewDev));
+        removeButton.visibleProperty().bind(Bindings.createBooleanBinding(() -> !isNewColumn.get(), isNewColumn));
 
         Button applyButton = (Button) this.lookupButton(ButtonType.APPLY);
         applyButton.addEventFilter(ActionEvent.ACTION, actionEvent -> {
@@ -60,7 +60,7 @@ public class ColumnEditor extends DialogPane{
     public void setColumn(Column column) throws ExecutionException, InterruptedException {
         if( column == null){
             this.column = new Column(repository);
-            isNewDev.set(true);
+            isNewColumn.set(true);
         }else{
             this.column = column;
         }

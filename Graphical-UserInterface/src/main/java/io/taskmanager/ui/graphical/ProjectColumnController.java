@@ -91,7 +91,7 @@ public class ProjectColumnController extends ScrollPane{
     @FXML
     @SuppressWarnings("unused") //used by fxml
     public void OnEdit(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
-        ColumnEditorDialog dialog = new ColumnEditorDialog(column);
+        ColumnEditorDialog dialog = new ColumnEditorDialog(repository, column);
         Optional<Column> res = dialog.showAndWait();
         if( res.isPresent()){
             ColumnTitleLabel.setText( res.get().getName());

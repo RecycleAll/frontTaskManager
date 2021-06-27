@@ -11,7 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Window;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -77,7 +76,7 @@ public class DevViewerController extends TabPane {
         if( optionalTab.isPresent()){
             this.getSelectionModel().select(optionalTab.get());
         }else{
-            ProjectController projectController =  new ProjectController(project, dev.getId());
+            ProjectController projectController =  new ProjectController(repo, project, dev.getId());
             Tab tab = new Tab(projectController.getProject().getName());
             tab.setContent( projectController);
             this.getTabs().add( tab );

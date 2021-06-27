@@ -30,18 +30,18 @@ public class ProjectController extends BorderPane {
     @FXML
     public BorderPane borderPane;
 
-    private final TaskRepository repo;
+    private TaskRepository repo;
 
     private Project project;
     private int loggedDevId;
 
-    public ProjectController( Project project, int loggedDevId) throws IOException, ExecutionException, InterruptedException {
+    public ProjectController(TaskRepository repository, Project project, int loggedDevId) throws IOException, ExecutionException, InterruptedException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
         this.loggedDevId = loggedDevId;
-        this.repo = project.getRepository();
+        this.repo = repository;
         setProject(project);
 
     }
@@ -61,6 +61,7 @@ public class ProjectController extends BorderPane {
             this.project = new Project(repo);
         }else {
             this.project = newProject;
+            this.repo = newProject.getRepository();
         }
 
         updateUI();
@@ -91,7 +92,7 @@ public class ProjectController extends BorderPane {
     }
 
     private void addColumn(Column column) throws IOException, ExecutionException, InterruptedException {
-        project.addColumn(column);
+        //project.addColumn(column);
         columnHBox.getChildren().add( new ProjectColumnController(column.getRepository(), this, column));
     }
 
@@ -108,10 +109,10 @@ public class ProjectController extends BorderPane {
     @FXML
     @SuppressWarnings("unused") //used by fxml
     public void OnAddColumn(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
-        ColumnEditorDialog dialog = new ColumnEditorDialog();
+        ColumnEditorDialog dialog = new ColumnEditorDialog(repo);
         Optional<Column> res = dialog.showAndWait();
         if(res.isPresent()){
-            addColumn(res.get());
+            addColumn( project.addNewColumn( res.get().getName()) );
         }
     }
 
