@@ -41,10 +41,11 @@ public interface TaskRepository {
 
     void registerDev(String firstname, String lastname, String email, String password, String githubId) throws ExecutionException, InterruptedException;
 
-    void postTask(String name, String description, LocalDate limitDate, int columnId) throws ExecutionException, InterruptedException;
+    Task postTask(String name, String description, LocalDate limitDate, int columnId) throws ExecutionException, InterruptedException;
 
     Column postColumn(String name, int projectId) throws ExecutionException, InterruptedException;
     Column getColumn(Column column) throws ExecutionException, InterruptedException;
     boolean deleteColumn(Column column) throws ExecutionException, InterruptedException;
     boolean putColumn(Column column) throws ExecutionException, InterruptedException;
+
 }

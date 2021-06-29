@@ -1,5 +1,6 @@
 package io.taskmanager.test;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -43,6 +44,12 @@ public class Column {
 
     public void addTask(Task task){
         tasks.add(task);
+    }
+
+    public Task addNewTask(String name, String description, LocalDate limitDate) throws ExecutionException, InterruptedException {
+        Task task = repository.postTask(name, description, limitDate, id);
+        tasks.add(task);
+        return task;
     }
 
     public void removeTask(Task task){

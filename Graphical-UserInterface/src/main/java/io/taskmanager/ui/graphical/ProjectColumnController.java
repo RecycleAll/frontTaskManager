@@ -69,7 +69,6 @@ public class ProjectColumnController extends ScrollPane{
     }
 
     private void addTask(Task task) throws IOException {
-        column.addTask(task);
         addTaskToTaskVBox(task);
         this.getScene().getWindow().sizeToScene();
     }
@@ -80,11 +79,13 @@ public class ProjectColumnController extends ScrollPane{
 
     @FXML
     @SuppressWarnings("unused") //used by fxml
-    public void OnAddTask(ActionEvent actionEvent) throws IOException {
+    public void OnAddTask(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
         TaskDialog dialog = new TaskDialog(repository, getProject());
         Optional<Task> res = dialog.showAndWait();
         if(res.isPresent()){
-            addTask(res.get());
+            Task task = res.get();
+            task = column.addNewTask(task.getName(), task.getDescription(), task.getLimitDate());
+            addTask(task);
         }
     }
 

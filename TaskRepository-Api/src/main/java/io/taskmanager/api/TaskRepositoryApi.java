@@ -19,7 +19,8 @@ import java.util.stream.Collectors;
 
 public class TaskRepositoryApi implements TaskRepository {
 
-    private final static DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    private final static DateTimeFormatter dataBaseDateFormatOut = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    private final static DateTimeFormatter dataBaseDateFormatIn = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 
     private final HttpClient httpClient;
     private final Gson g;
@@ -40,7 +41,7 @@ public class TaskRepositoryApi implements TaskRepository {
         }).registerTypeAdapter(LocalDateTime.class, new JsonDeserializer<LocalDateTime>() {
             @Override
             public LocalDateTime deserialize(JsonElement json, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-                return LocalDateTime.parse(json.getAsJsonPrimitive().getAsString(), format);
+                return LocalDateTime.parse(json.getAsJsonPrimitive().getAsString(), dataBaseDateFormatOut);
             }
         }).create();
         this.apiUrl = apiUrl;
@@ -528,19 +529,24 @@ public class TaskRepositoryApi implements TaskRepository {
     }
 
     @Override
-    public void postTask(String name, String description, LocalDate limitDate, int columnId) throws ExecutionException, InterruptedException {
+    public Task postTask(String name, String description, LocalDate limitDate, int columnId) throws ExecutionException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiUrl + "/task/"))
                 .timeout(Duration.ofSeconds(10))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString("{ \"name\":\""+name+"\"," +
                         "\"description\":\""+description+"\"," +
-                        "\"limitDate\":\""+limitDate+"\"," +
+                        "\"limitDate\":\""+limitDate.format(dataBaseDateFormatIn)+"\"," +
                         "\"columnId\":\""+columnId+"\"}"))
                 .build();
-        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request,
-                HttpResponse.BodyHandlers.ofString());
-        System.out.print(response.get().body());
+        CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+
+        if( projectsAsJson.get().statusCode() == 201 ) {
+            TaskModel taskModel = g.fromJson(projectsAsJson.get().body(), TaskModel.class);
+            return new Task(this, taskModel.getId(), taskModel.getName(), taskModel.getDescription(), taskModel.getLimitDate());
+        }else{
+            return null;
+        }
     }
 
     @Override
