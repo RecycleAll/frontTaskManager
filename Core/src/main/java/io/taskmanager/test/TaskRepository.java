@@ -17,6 +17,11 @@ public interface TaskRepository {
     List<Column> getColumns(Project project) throws ExecutionException, InterruptedException;
     List<Column> getColumns(int projectID) throws ExecutionException, InterruptedException;
 
+    boolean deleteTask(Task task) throws ExecutionException, InterruptedException;
+    boolean deleteTask(int taskId) throws ExecutionException, InterruptedException;
+    boolean updateTask(Task task) throws ExecutionException, InterruptedException;
+    boolean updateTask(int taskId) throws ExecutionException, InterruptedException;
+    Task postTask(String name, String description, LocalDate limitDate, int columnId) throws ExecutionException, InterruptedException;
     List<Task> getTasks(Project project) throws ExecutionException, InterruptedException;
     List<Task> getColumnTasks(int columnId) throws ExecutionException, InterruptedException;
 
@@ -41,8 +46,9 @@ public interface TaskRepository {
 
     void registerDev(String firstname, String lastname, String email, String password, String githubId) throws ExecutionException, InterruptedException;
 
-    Task postTask(String name, String description, LocalDate limitDate, int columnId) throws ExecutionException, InterruptedException;
 
+
+    int postColumn(Column column) throws ExecutionException, InterruptedException;
     Column postColumn(String name, int projectId) throws ExecutionException, InterruptedException;
     Column getColumn(Column column) throws ExecutionException, InterruptedException;
     boolean deleteColumn(Column column) throws ExecutionException, InterruptedException;

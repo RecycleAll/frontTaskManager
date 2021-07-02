@@ -63,7 +63,7 @@ public class ProjectColumnController extends ScrollPane{
         this.projectController = projectController;
     }
 
-    public void removeTask( ColumnTaskController taskController){
+    public void removeTask( ColumnTaskController taskController) throws ExecutionException, InterruptedException {
         column.removeTask(taskController.getTask());
         TaskVBox.getChildren().remove(taskController);
     }

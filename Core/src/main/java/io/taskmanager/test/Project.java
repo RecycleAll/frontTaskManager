@@ -84,12 +84,12 @@ public class Project {
 
     public void addColumn(Column column) throws ExecutionException, InterruptedException {
         System.out.println("addCOl"+ columns +" "+ column);
-        if( columns.contains(column)) {
+        if( column.getProjectId() == ApiRequest.undefinedID && !columns.contains(column) ) {
+            column.setProjectId(this.id);
             columns.add(column);
+            column.updateToRepo();
         }
-        if( repository != null){
-            repository.postColumn(column.getName(), this.id);
-        }
+
     }
 
     public void removeColumn(Column column) throws ExecutionException, InterruptedException {

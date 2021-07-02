@@ -112,7 +112,9 @@ public class ProjectController extends BorderPane {
         ColumnEditorDialog dialog = new ColumnEditorDialog(repo);
         Optional<Column> res = dialog.showAndWait();
         if(res.isPresent()){
-            addColumn( project.addNewColumn( res.get().getName()) );
+            Column col = res.get();
+            project.addColumn(col);
+            addColumn(col);
         }
     }
 

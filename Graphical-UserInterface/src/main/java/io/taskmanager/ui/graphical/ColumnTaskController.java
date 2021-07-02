@@ -13,6 +13,7 @@ import javafx.scene.layout.FlowPane;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 public class ColumnTaskController extends BorderPane {
 
@@ -64,7 +65,7 @@ public class ColumnTaskController extends BorderPane {
 
     @FXML
     @SuppressWarnings("unused") //used by fxml
-    public void OnView(ActionEvent actionEvent) throws IOException {
+    public void OnView(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
         TaskDialog dialog = new TaskDialog(repository, projectColumnController.getProject(), task);
         Optional<Task> res = dialog.showAndWait();
 
