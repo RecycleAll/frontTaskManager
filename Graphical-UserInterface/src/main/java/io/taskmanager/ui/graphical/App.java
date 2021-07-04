@@ -63,6 +63,7 @@ public class App extends Application {
         stage.setScene(devViewerScene);
         pack();
     }
+
     public void setLoginScene(){
         loginController.reset();
         stage.setScene(loginScene);
@@ -80,28 +81,6 @@ public class App extends Application {
     public void start(Stage stage) throws ExecutionException, InterruptedException {
         this.stage = stage;
 
-      /*  Project project = new Project(repository, 0, "project test", "gitURL");
-
-        Dev dev = new Dev(0, "dev1", "pata", "", "", 0);
-        Dev dev2 = new Dev(0, "dev2", "pata", "", "", 0);
-
-        Task task = new Task(0, "task1", "", LocalDate.now());
-        task.addDev(dev);
-        task.addDev(dev2);
-
-        Column column = new Column(0, "column 1");
-        Column column2 = new Column(0, "column 2");
-        column.addTask(task);
-
-        project.addColumn(column);
-        project.addColumn(column2);
-        project.addDev(dev);
-        project.addDev(dev2);
-
-        dev.addProject(project);*/
-
-        //scene = new Scene( new ProjectController(project) );
-        //scene = new Scene( ProjectColumnController.loadNew(column).scrollPane );
         setLoginScene();
         stage.show();
         pack();

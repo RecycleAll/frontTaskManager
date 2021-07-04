@@ -81,7 +81,7 @@ public class TaskController extends DialogPane {
                 alert.showAndWait();
                 actionEvent.consume();
 
-            }else if(limitDatePicker.getValue().isBefore(task.getCreatedAt().toLocalDate())  ){
+            }else if(limitDatePicker.getValue() == null || limitDatePicker.getValue().isBefore(task.getCreatedAt().toLocalDate())  ){
                 Alert alert = new Alert(Alert.AlertType.ERROR, "You can't set the limit date to be before the creation date", ButtonType.OK);
                 alert.showAndWait();
                 actionEvent.consume();
