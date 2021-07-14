@@ -1,8 +1,10 @@
 package io.taskmanager.api.model;
 
+import io.taskmanager.test.Column;
+
 import java.time.LocalDate;
 
-public class ColumnModel extends BaseModel{
+public class ColumnModel extends ObjectBaseModel<Column>{
 
     private final String name;
     private final int project_id;
@@ -20,4 +22,8 @@ public class ColumnModel extends BaseModel{
         return project_id;
     }
 
+    @Override
+    public Column convert() {
+        return new Column(null, id, name, project_id);
+    }
 }

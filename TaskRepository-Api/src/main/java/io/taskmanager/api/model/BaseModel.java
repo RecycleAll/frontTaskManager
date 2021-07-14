@@ -2,7 +2,7 @@ package io.taskmanager.api.model;
 
 import java.time.LocalDate;
 
-public class BaseModel {
+public abstract class BaseModel {
 
     protected final int id;
     protected final LocalDate updatedAt;
@@ -25,4 +25,6 @@ public class BaseModel {
     public LocalDate getCreatedAt() {
         return createdAt;
     }
+
+
 }

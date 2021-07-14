@@ -75,7 +75,7 @@ public class ProjectController extends BorderPane {
         for (Dev dev:project.getDevs()) {
             devsVBox.getChildren().add( new ProjectDevController(this, dev, isProjectDevControllerEditable(dev)) );
         }
-
+        System.out.println("UI col: "+ project.getColumns());
         for (Column col:project.getColumns()) {
             columnHBox.getChildren().add( new ProjectColumnController(col.getRepository(), this, col));
         }

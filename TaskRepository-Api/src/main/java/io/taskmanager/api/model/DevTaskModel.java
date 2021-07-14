@@ -16,4 +16,5 @@ public class DevTaskModel extends BaseModel{
     public int getTask_id() {
         return task_id;
     }
+
 }

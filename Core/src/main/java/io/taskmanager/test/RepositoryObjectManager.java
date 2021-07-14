@@ -24,7 +24,15 @@ public class RepositoryObjectManager <T extends ApiRequest>{
     }
 
     public void addObject(T obj){
-        list.add(obj);
+        if( list.stream().filter(t -> t.id == obj.id).count() <= 0){
+            list.add(obj);
+        }
+    }
+
+    public void addObject(List<T> objs){
+        for (T obj : objs) {
+            addObject(obj);
+        }
     }
 
 }

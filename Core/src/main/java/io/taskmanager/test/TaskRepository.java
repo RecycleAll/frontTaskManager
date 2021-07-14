@@ -7,10 +7,19 @@ import java.util.concurrent.ExecutionException;
 
 public interface TaskRepository {
 
-    Dev loginDev(String login, String password) throws ExecutionException, InterruptedException;
+    int loginDev(String login, String password) throws ExecutionException, InterruptedException;
 
-
+    /**
+     * @param devID the dev id
+     * @return the map of all project this Dev participate
+     */
     Map<Integer, DevStatus> getAllDevProject(int devID) throws ExecutionException, InterruptedException;
+
+    /**
+     * @param projectId the project id
+     * @return the list of ID of all column of the project id
+     */
+    List<Integer> getProjectColumns(int projectId) throws ExecutionException, InterruptedException;
 
     List<Project> getProjects(Dev dev) throws ExecutionException, InterruptedException;
 
@@ -32,13 +41,14 @@ public interface TaskRepository {
     Task getTask(int id) throws ExecutionException, InterruptedException;
 
 
-    Map<Dev,DevStatus> getProjectDevs(int projectID) throws ExecutionException, InterruptedException;
+    Map<Integer,DevStatus> getProjectDevs(int projectID) throws ExecutionException, InterruptedException;
     Dev getDev(int devID) throws ExecutionException, InterruptedException;
     List<Dev> getAllDev() throws ExecutionException, InterruptedException;
 
     boolean postDevTask(Task task, Dev dev) throws ExecutionException, InterruptedException;
     boolean postDevTask(int taskId, int devId) throws ExecutionException, InterruptedException;
     List<Dev> getTaskDevs(int taskID) throws ExecutionException, InterruptedException;
+    List<Integer> getTaskDevsID(int taskID) throws ExecutionException, InterruptedException;
     boolean deleteDevTAsk(Task task, Dev dev) throws ExecutionException, InterruptedException;
     boolean deleteDevTAsk(int taskId, int devId) throws ExecutionException, InterruptedException;
 

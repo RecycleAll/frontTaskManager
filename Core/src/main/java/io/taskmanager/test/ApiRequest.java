@@ -7,12 +7,17 @@ public abstract class ApiRequest {
 
     public static final int undefinedID = -1;
 
-    protected final RepositoryManager repositoryManager;
+    protected RepositoryManager repositoryManager;
     protected int id;
     protected LocalDate updateAt;
 
     public ApiRequest(RepositoryManager repository) {
         this.repositoryManager = repository;
+        id = undefinedID;
+    }
+
+    public ApiRequest() {
+        this.repositoryManager = null;
         id = undefinedID;
     }
 
@@ -63,5 +68,18 @@ public abstract class ApiRequest {
 
     public int getId() {
         return id;
+    }
+
+
+    public RepositoryManager getRepositoryManager() {
+        return repositoryManager;
+    }
+
+    public void setRepositoryManager(RepositoryManager repositoryManager) {
+        if( this.repositoryManager == null)
+            this.repositoryManager = repositoryManager;
+        else{
+            //TODO
+        }
     }
 }

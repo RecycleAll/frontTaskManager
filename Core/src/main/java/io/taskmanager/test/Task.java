@@ -12,36 +12,33 @@ public class Task extends ApiRequest{
     private String name;
     private String description;
 
-    private LocalDateTime createdAt;
     private LocalDate limitDate;
-    private LocalDateTime updatedAt;
 
     private List<Dev> devs;
     private List<Tag> tags;
 
-    public Task(RepositoryManager repository, int id, String name, String description, LocalDateTime createdAt, LocalDate limitDate, LocalDateTime lastUpdateDate, List<Dev> devs, List<Tag> tags) {
+    public Task(RepositoryManager repository, int id, String name, String description, LocalDate limitDate,  List<Dev> devs, List<Tag> tags) {
         super(repository);
         this.id = id;
         setName(name);
         setDescription(description);
-        setCreatedAt(createdAt);
         setLimitDate(limitDate);
-        setLastUpdateDate(lastUpdateDate);
         this.devs = devs;
         this.tags = tags;
     }
 
     public Task(RepositoryManager repository, int id, String name, String description, LocalDate limitDate, List<Dev> devs) {
-        this(repository,id, name, description, LocalDateTime.now(), limitDate, null, devs, new ArrayList<>());
+        this(repository,id, name, description, limitDate,  devs, new ArrayList<>());
     }
 
     public Task(RepositoryManager repository, int id, String name, String description, LocalDate limitDate) {
-        this(repository,id, name, description, LocalDateTime.now(), limitDate, null, new ArrayList<>(), new ArrayList<>());
+        this(repository,id, name, description,  limitDate,  new ArrayList<>(), new ArrayList<>());
     }
 
     public Task(RepositoryManager repository){
-        this(repository, 0, "", "", LocalDateTime.now(), null, null, new ArrayList<>(), new ArrayList<>());
+        this(repository, 0, "", "",  null, new ArrayList<>(), new ArrayList<>());
     }
+
 
     @Override
     protected boolean myPost() throws ExecutionException, InterruptedException {
@@ -64,11 +61,11 @@ public class Task extends ApiRequest{
     }
 
     public Task(RepositoryManager repository, Task task){
-        this(repository, task.getId(), task.getName(), task.getDescription(), task.getCreatedAt(), task.getLimitDate(), task.getLastUpdateDate(), task.getDevs(), task.tags);
+        this(repository, task.getId(), task.getName(), task.getDescription(),  task.getLimitDate(),  task.getDevs(), task.tags);
     }
 
     public Task(Task task){
-        this(task.repositoryManager, task.getId(), task.getName(), task.getDescription(), task.getCreatedAt(), task.getLimitDate(), task.getLastUpdateDate(), task.getDevs(), task.tags);
+        this(task.repositoryManager, task.getId(), task.getName(), task.getDescription(),  task.getLimitDate(), task.getDevs(), task.tags);
         System.out.println("dev size from copy: "+ devs.size());
     }
 
@@ -144,13 +141,6 @@ public class Task extends ApiRequest{
         this.description = description;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
 
     public LocalDate getLimitDate() {
         return limitDate;
@@ -160,12 +150,5 @@ public class Task extends ApiRequest{
         this.limitDate = limitDate;
     }
 
-    public LocalDateTime getLastUpdateDate() {
-        return updatedAt;
-    }
-
-    public void setLastUpdateDate(LocalDateTime lastUpdateDate) {
-        this.updatedAt = lastUpdateDate;
-    }
 
 }

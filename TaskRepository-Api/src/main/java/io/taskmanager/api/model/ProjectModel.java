@@ -1,8 +1,9 @@
 package io.taskmanager.api.model;
 
-public class ProjectModel extends BaseModel{
+import io.taskmanager.test.Project;
 
-    private int id;
+public class ProjectModel extends ObjectBaseModel<Project>{
+
     private String name;
 
     public ProjectModel(int id) {
@@ -11,5 +12,10 @@ public class ProjectModel extends BaseModel{
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public Project convert() {
+        return new Project(null, id, name, "");
     }
 }

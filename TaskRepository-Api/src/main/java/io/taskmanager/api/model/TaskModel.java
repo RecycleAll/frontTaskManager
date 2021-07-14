@@ -1,8 +1,10 @@
 package io.taskmanager.api.model;
 
+import io.taskmanager.test.Task;
+
 import java.time.LocalDate;
 
-public class TaskModel extends BaseModel{
+public class TaskModel extends ObjectBaseModel<Task>{
 
     private final int column_id;
     private final String name;
@@ -31,5 +33,10 @@ public class TaskModel extends BaseModel{
 
     public LocalDate getLimitDate() {
         return limitDate;
+    }
+
+    @Override
+    public Task convert() {
+        return new Task(null, id, name, description, limitDate);
     }
 }

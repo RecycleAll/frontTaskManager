@@ -11,7 +11,7 @@ public class TaskManagerApplication {
 
         RepositoryManager taskRepository = new RepositoryManager( );
         TaskRepository repository = new TaskRepositoryApi("http://localhost:3000");
-
+        taskRepository.setRepository(repository);
         if(args.length == 0){
             App.launchApp(taskRepository);
         }

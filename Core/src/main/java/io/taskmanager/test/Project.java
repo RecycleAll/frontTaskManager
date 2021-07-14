@@ -107,7 +107,6 @@ public class Project extends ApiRequest{
             columns.add(column);
             column.updateToRepo();
         }
-
     }
 
     public void removeColumn(Column column) throws ExecutionException, InterruptedException {
@@ -192,5 +191,6 @@ public class Project extends ApiRequest{
     public RepositoryManager getRepository() {
         return repositoryManager;
     }
+
 }
 

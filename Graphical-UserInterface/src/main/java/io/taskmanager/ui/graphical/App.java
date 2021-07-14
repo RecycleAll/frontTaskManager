@@ -48,7 +48,7 @@ public class App extends Application {
         devViewerController = new DevViewerController(repository);
         devViewerScene = new Scene( devViewerController);
 
-        loginController = new LoginController(repository.getRepository(), this);
+        loginController = new LoginController(repository, this);
         loginScene = new Scene( loginController );
 
 
