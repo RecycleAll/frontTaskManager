@@ -1,12 +1,8 @@
 package io.taskmanager.ui.graphical;
-import io.taskmanager.test.Column;
-import io.taskmanager.test.Project;
-import io.taskmanager.test.Task;
-import io.taskmanager.test.TaskRepository;
+import io.taskmanager.test.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
@@ -19,7 +15,7 @@ public class ProjectColumnController extends ScrollPane{
 
     private static final String FXML_FILE = "ProjectColumnController.fxml";
 
-    private final TaskRepository repository;
+    private final RepositoryManager repository;
 
     @FXML
     public Label ColumnTitleLabel;
@@ -29,7 +25,7 @@ public class ProjectColumnController extends ScrollPane{
     private Column column;
     private ProjectController projectController;
 
-    public ProjectColumnController(TaskRepository repository, ProjectController projectController, Column column) throws IOException, ExecutionException, InterruptedException {
+    public ProjectColumnController(RepositoryManager repository, ProjectController projectController, Column column) throws IOException, ExecutionException, InterruptedException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
@@ -38,7 +34,7 @@ public class ProjectColumnController extends ScrollPane{
         setColumn(column);
         this.projectController = projectController;
     }
-    public ProjectColumnController(TaskRepository repository, ProjectController projectController) throws IOException, ExecutionException, InterruptedException {
+    public ProjectColumnController(RepositoryManager repository, ProjectController projectController) throws IOException, ExecutionException, InterruptedException {
         this(repository, projectController, null);
     }
 

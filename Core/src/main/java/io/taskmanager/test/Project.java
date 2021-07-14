@@ -3,10 +3,8 @@ package io.taskmanager.test;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
-public class Project {
+public class Project extends ApiRequest{
 
-    private final TaskRepository repository;
-    private final int id;
     private String name;
     private String gitHubUrl;
 
@@ -18,8 +16,8 @@ public class Project {
         return api.getProject(projectID);
     }
 
-    public Project(TaskRepository repository, int id, String name, String gitHubUrl, List<Column> columns, List<Tag> tags, Map<Dev, DevStatus> devs) {
-        this.repository = repository;
+    public Project(RepositoryManager repository, int id, String name, String gitHubUrl, List<Column> columns, List<Tag> tags, Map<Dev, DevStatus> devs) {
+        super(repository);
         this.id = id;
         setName(name);
         setGitHubUrl(gitHubUrl);
@@ -28,12 +26,32 @@ public class Project {
         this.devs = devs;
     }
 
-    public Project(TaskRepository repository, int id, String name, String gitHubUrl) {
+    public Project(RepositoryManager repository, int id, String name, String gitHubUrl) {
         this(repository, id, name, gitHubUrl, new ArrayList<>(), new ArrayList<>(), new HashMap<>());
     }
 
-    public Project(TaskRepository repository) {
+    public Project(RepositoryManager repository) {
         this(repository, -1, "", "");
+    }
+
+    @Override
+    protected boolean myPost() throws ExecutionException, InterruptedException {
+        return false;
+    }
+
+    @Override
+    protected boolean myDelete() throws ExecutionException, InterruptedException {
+        return false;
+    }
+
+    @Override
+    protected boolean myUpdateToRepo() throws ExecutionException, InterruptedException {
+        return false;
+    }
+
+    @Override
+    protected boolean myUpdateFromRepo() {
+        return false;
     }
 
     public void setColumns(List<Column> columns) {
@@ -73,9 +91,9 @@ public class Project {
 
     public Column addNewColumn(String name) throws ExecutionException, InterruptedException {
         System.out.println("add new COl: "+ name);
-        if( repository != null) {
+        if( repositoryManager != null) {
             System.out.println("add new COl repo: "+ name);
-            Column col = repository.postColumn(name, id);
+            Column col = repositoryManager.getRepository().postColumn(name, id);
             columns.add(col);
             return col;
         }
@@ -95,9 +113,9 @@ public class Project {
     public void removeColumn(Column column) throws ExecutionException, InterruptedException {
         columns.remove(column);
         System.out.println("removeColumn: "+ column.getName());
-        if( repository != null){
+        if( repositoryManager != null){
             System.out.println("repo: "+ column.getId());
-            repository.deleteColumn(column);
+            repositoryManager.getRepository().deleteColumn(column);
         }
     }
 
@@ -113,8 +131,8 @@ public class Project {
         if( !devs.containsKey(dev)) {
             devs.put(dev, DevStatus.DEV);
             dev.addProject(this);
-            if( repository != null){
-                repository.postParticipate(this, dev);
+            if( repositoryManager != null){
+                repositoryManager.getRepository().postParticipate(this, dev);
             }
         }
     }
@@ -145,8 +163,8 @@ public class Project {
     public void removeDev(Dev dev) throws ExecutionException, InterruptedException {
         if( devs.remove(dev) != null){
             dev.removeProject(this);
-            if( repository != null){
-                repository.deleteParticipate(this, dev);
+            if( repositoryManager != null){
+                repositoryManager.getRepository().deleteParticipate(this, dev);
             }
             for (Column col : columns) {
                 col.removeDevFromAllTask(dev);
@@ -171,8 +189,8 @@ public class Project {
         this.gitHubUrl = gitHubUrl;
     }
 
-    public TaskRepository getRepository() {
-        return repository;
+    public RepositoryManager getRepository() {
+        return repositoryManager;
     }
 }
 

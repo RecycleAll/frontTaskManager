@@ -1,7 +1,7 @@
 package io.taskmanager.ui.graphical;
 
 import io.taskmanager.test.Column;
-import io.taskmanager.test.TaskRepository;
+import io.taskmanager.test.RepositoryManager;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
@@ -16,7 +16,7 @@ public class ColumnEditor extends DialogPane{
 
     private static final String FXML_FILE = "ColumnEditor.fxml";
 
-    private final TaskRepository repository;
+    private final RepositoryManager repository;
 
     @FXML
     public TextField nameField;
@@ -25,7 +25,7 @@ public class ColumnEditor extends DialogPane{
 
     private final SimpleBooleanProperty isNewColumn = new SimpleBooleanProperty(false);
 
-    public ColumnEditor(TaskRepository repository, Column column) throws IOException, ExecutionException, InterruptedException {
+    public ColumnEditor(RepositoryManager repository, Column column) throws IOException, ExecutionException, InterruptedException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);

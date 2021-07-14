@@ -1,4 +1,4 @@
-package io.taskmanager.api;
+package io.taskmanager.api.model;
 
 public class SessionModel {
 

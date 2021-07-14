@@ -1,9 +1,6 @@
 package io.taskmanager.ui.graphical;
 
-import io.taskmanager.test.Dev;
-import io.taskmanager.test.DevStatus;
-import io.taskmanager.test.Project;
-import io.taskmanager.test.TaskRepository;
+import io.taskmanager.test.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,11 +27,11 @@ public class DevViewerController extends TabPane {
     @FXML
     public Tab overviewTab;
 
-    private final TaskRepository repo;
+    private final RepositoryManager repo;
 
     private Dev dev;
 
-    public DevViewerController(TaskRepository repo, Dev dev) throws IOException {
+    public DevViewerController(RepositoryManager repo, Dev dev) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
@@ -55,7 +52,7 @@ public class DevViewerController extends TabPane {
         this.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
     }
 
-    public DevViewerController(TaskRepository repo) throws IOException {
+    public DevViewerController(RepositoryManager repo) throws IOException {
         this(repo, null);
     }
 

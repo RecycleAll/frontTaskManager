@@ -6,7 +6,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Tab;
 import javafx.scene.layout.*;
 
 import java.io.IOException;
@@ -30,12 +29,12 @@ public class ProjectController extends BorderPane {
     @FXML
     public BorderPane borderPane;
 
-    private TaskRepository repo;
+    private RepositoryManager repo;
 
     private Project project;
     private int loggedDevId;
 
-    public ProjectController(TaskRepository repository, Project project, int loggedDevId) throws IOException, ExecutionException, InterruptedException {
+    public ProjectController(RepositoryManager repository, Project project, int loggedDevId) throws IOException, ExecutionException, InterruptedException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
@@ -121,7 +120,7 @@ public class ProjectController extends BorderPane {
     @FXML
     @SuppressWarnings("unused") //used by fxml
     public void OnAddDev(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
-        ArrayList<Dev> devs = (ArrayList<Dev>) repo.getAllDev();
+        ArrayList<Dev> devs = (ArrayList<Dev>) repo.getRepository().getAllDev();
         System.out.println(devs);
         DevSelectorDialog dialog = new DevSelectorDialog(project, devs);
 

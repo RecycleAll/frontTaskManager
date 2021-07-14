@@ -1,6 +1,7 @@
 package io.taskmanager.api;
 
 import com.google.gson.*;
+import io.taskmanager.api.model.*;
 import io.taskmanager.test.*;
 
 import java.lang.reflect.Type;
@@ -19,24 +20,22 @@ import java.util.stream.Collectors;
 
 public class TaskRepositoryApi implements TaskRepository {
 
-    private final static DateTimeFormatter dataBaseDateFormatOut = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-    private final static DateTimeFormatter dataBaseDateFormatIn = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+    public final static DateTimeFormatter dataBaseDateFormatOut = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    public final static DateTimeFormatter dataBaseDateFormatIn = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 
     private final HttpClient httpClient;
     private final Gson g;
     private final String apiUrl;
 
-    private final List<Dev> loadedDev;
-    private final List<Project> loadedProject;
+    private RepositoryManager repositoryManager;
 
     public TaskRepositoryApi(String apiUrl) {
         httpClient = HttpClient.newHttpClient();
 
-
         g = new GsonBuilder().registerTypeAdapter(LocalDate.class, new JsonDeserializer<LocalDate>() {
             @Override
             public LocalDate deserialize(JsonElement json, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-                return LocalDate.parse(json.getAsJsonPrimitive().getAsString());
+                return LocalDate.parse(json.getAsJsonPrimitive().getAsString(), dataBaseDateFormatOut);
             }
         }).registerTypeAdapter(LocalDateTime.class, new JsonDeserializer<LocalDateTime>() {
             @Override
@@ -45,8 +44,73 @@ public class TaskRepositoryApi implements TaskRepository {
             }
         }).create();
         this.apiUrl = apiUrl;
-        loadedDev = new ArrayList<>();
-        loadedProject = new ArrayList<>();
+    }
+
+    private String resolveUrlGetter(Class<? extends BaseModel> c){
+        if( c == ColumnModel.class){
+            return "/column/one/";
+        }else if( c == ProjectModel.class){
+            return "/project/one/";
+        }else if( c == TaskModel.class){
+            return "/task/one/";
+        }else if( c == DevModel.class){
+            return "/auth";
+        }
+        return "";
+    }
+
+    private Class<? extends BaseModel> convertApiRequestTypeToBaseModel(Class<? extends ApiRequest> c){
+
+        if (Column.class.equals(c)) {
+            return ColumnModel.class;
+        } else if (Task.class.equals(c)) {
+            return TaskModel.class;
+        } else if (Project.class.equals(c)) {
+            return ProjectModel.class;
+        }
+
+        return null;
+    }
+
+    public <T extends ApiRequest> T getObject(int id, Class<? extends ApiRequest> c) throws ExecutionException, InterruptedException {
+        Class<? extends BaseModel> baseModelType =  convertApiRequestTypeToBaseModel(c);
+        return getObject_(id, baseModelType);
+    }
+
+    private <T extends ApiRequest> T getObject_(int id, Class<? extends BaseModel> baseModelType) throws ExecutionException, InterruptedException {
+        String requestStr = apiUrl + resolveUrlGetter(baseModelType) + id;
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(requestStr))
+                .timeout(Duration.ofSeconds(10))
+                .GET()
+                .build();
+        CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+
+        HttpResponse<String> response = projectsAsJson.get();
+        System.out.println("GET: " + baseModelType + " req: " + requestStr + " \n res: "+ response.statusCode());
+        if( response.statusCode() == 200 ) {
+            return ModelConverter.convert(g.fromJson(response.body(), baseModelType));
+        }
+        return null;
+    }
+
+    private <T extends ApiRequest> List<T> getObjectList(int id, Class<? extends BaseModel> baseModelType) throws ExecutionException, InterruptedException {
+        String requestStr = apiUrl + resolveUrlGetter(baseModelType) + id;
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(requestStr))
+                .timeout(Duration.ofSeconds(10))
+                .GET()
+                .build();
+        CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+
+        HttpResponse<String> response = projectsAsJson.get();
+        System.out.println("GET: " + baseModelType + " req: " + requestStr + " \n res: "+ response.statusCode());
+        if( response.statusCode() == 200 ) {
+            return ModelConverter.convert(g.fromJson(response.body(), baseModelType));
+        }
+        return null;
     }
 
     @Override
@@ -71,6 +135,30 @@ public class TaskRepositoryApi implements TaskRepository {
         }else{
             return null;
         }
+    }
+
+    @Override
+    public Map<Integer, DevStatus> getAllDevProject(int devID) throws ExecutionException, InterruptedException {
+
+        Map<Integer, DevStatus> res = new HashMap<>();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/participe/getAll/dev/"+ devID))
+                .timeout(Duration.ofSeconds(10))
+                .GET()
+                .build();
+        CompletableFuture<HttpResponse<String>> tmp = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+
+        HttpResponse<String> response = tmp.get();
+
+        if( response.statusCode() == 200 ) {
+            Participates[] participates = g.fromJson(response.body(), Participates[].class);
+
+            for (Participates participate:participates ) {
+                res.put(participate.getProject_id(), participate.isOwner()? DevStatus.OWNER : DevStatus.DEV );
+            }
+            return res;
+        }
+        return null;
     }
 
     @Override
@@ -100,39 +188,33 @@ public class TaskRepositoryApi implements TaskRepository {
 
     @Override
     public Project getProject(int projectID) throws Exception {
-
         System.out.println("getProject: "+ projectID);
-        Optional<Project> optionalProject = loadedProject.stream().filter(project -> project.getId()== projectID).findFirst();
-        if(optionalProject.isPresent()){
-            return optionalProject.get();
-        }else {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(apiUrl + "/project/one/" + projectID))
-                    .timeout(Duration.ofSeconds(10))
-                    .GET()
-                    .build();
-            CompletableFuture<String> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                    .thenApply(HttpResponse::body);
-            ProjectModel projectModel = g.fromJson(projectsAsJson.get(), ProjectModel.class);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/project/one/" + projectID))
+                .timeout(Duration.ofSeconds(10))
+                .GET()
+                .build();
+        CompletableFuture<String> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body);
+        ProjectModel projectModel = g.fromJson(projectsAsJson.get(), ProjectModel.class);
 
-            Map<Dev, DevStatus> devs = getProjectDevs(projectID);
-            List<Column> columns = getColumns(projectID);
+        Map<Dev, DevStatus> devs = getProjectDevs(projectID);
+        List<Column> columns = getColumns(projectID);
 
-            for (Column col : columns) {
-                for (Task task : col.getTasks()) {
-                    int[] assignedDevs = getTaskDevsID(task.getId());
+        for (Column col : columns) {
+            for (Task task : col.getTasks()) {
+                int[] assignedDevs = getTaskDevsID(task.getId());
 
-                    for (int devID : assignedDevs) {
-                        Dev dev = devs.keySet().stream().filter(dev1 -> dev1.getId() == devID).findFirst().orElseThrow(() -> new Exception("Dev ID inside task is not present inside project"));
-                        task.addDev(dev);
-                    }
+                for (int devID : assignedDevs) {
+                    Dev dev = devs.keySet().stream().filter(dev1 -> dev1.getId() == devID).findFirst().orElseThrow(() -> new Exception("Dev ID inside task is not present inside project"));
+                    task.addDev(dev);
                 }
             }
-            Project project = new Project(this, projectModel.getId(), projectModel.getName(), "", columns, new ArrayList<>(), devs);
-            loadedProject.add(project);
-            System.out.println("getProject return: "+ project);
-            return project;
         }
+        Project project = new Project(repositoryManager, projectModel.getId(), projectModel.getName(), "", columns, new ArrayList<>(), devs);
+
+        System.out.println("getProject return: "+ project);
+        return project;
     }
 
     private int[] getTaskDevsID(int taskID) throws ExecutionException, InterruptedException {
@@ -151,7 +233,6 @@ public class TaskRepositoryApi implements TaskRepository {
         }
         return devsID;
     }
-
 
     @Override
     public Map<Dev,DevStatus> getProjectDevs(int projectID) throws ExecutionException, InterruptedException{
@@ -216,26 +297,8 @@ public class TaskRepositoryApi implements TaskRepository {
     }
 
     @Override
-    public Dev getDev( int devID) throws ExecutionException, InterruptedException{
-        Optional<Dev> optionalDev = loadedDev.stream().filter(dev -> dev.getId() == devID).findFirst();
-        if (optionalDev.isPresent()){
-            return optionalDev.get();
-        }else {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(apiUrl + "/auth/" + devID))
-                    .timeout(Duration.ofSeconds(10))
-                    .GET()
-                    .build();
-            CompletableFuture<String> columnsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                                                                .thenApply(HttpResponse::body);
-
-            Dev dev = g.fromJson(columnsAsJson.get(), Dev.class);
-            loadedDev.add(dev);
-            for (Project pro : getDevProject(devID)) {
-                dev.addProject(pro);
-            }
-            return dev;
-        }
+    public Dev getDev(int id) throws ExecutionException, InterruptedException{
+        return getObject(id, Dev.class);
     }
 
     @Override
@@ -248,20 +311,7 @@ public class TaskRepositoryApi implements TaskRepository {
         CompletableFuture<String> columnsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body);
         Dev[] devs = g.fromJson(columnsAsJson.get(), Dev[].class);
-
-        for (Dev dev: devs) {
-            boolean isAlreadyLoaded = false;
-            for (Dev loadDev:loadedDev) {
-                if( dev.getId() == loadDev.getId()){
-                    isAlreadyLoaded = true;
-                    break;
-                }
-            }
-            if( !isAlreadyLoaded){
-                loadedDev.add(dev);
-            }
-        }
-        return loadedDev;
+        return new ArrayList<>(Arrays.asList(devs));
     }
 
     @Override
@@ -348,7 +398,7 @@ public class TaskRepositoryApi implements TaskRepository {
         List<Column> columns = new ArrayList<>();
 
         for (Column col : columnsArray) {
-            Column c = new Column(this, col);
+            Column c = new Column(repositoryManager, col);
             columns.add(c);
             c.setTasks( getColumnTasks( col.getId()));
         }
@@ -393,7 +443,12 @@ public class TaskRepositoryApi implements TaskRepository {
         CompletableFuture<String> tasksAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body);
         Column col = g.fromJson(tasksAsJson.get(), Column.class);
-        return new Column(this, col.getId(), col.getName(), col.getProjectId(), col.getTasks());
+        return new Column(repositoryManager, col.getId(), col.getName(), col.getProjectId(), col.getTasks());
+    }
+
+    @Override
+    public Column getColumn(int id) throws ExecutionException, InterruptedException {
+        return getObject(id, Column.class);
     }
 
     @Override
@@ -420,6 +475,9 @@ public class TaskRepositoryApi implements TaskRepository {
                         "}"))
                 .build();
         CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+
+
+
         return projectsAsJson.get().statusCode() == 200;
     }
 
@@ -455,7 +513,7 @@ public class TaskRepositoryApi implements TaskRepository {
             try {
                 List<Dev> devs = getTaskDevs(task.getId());
                 task.setDevs(devs);
-                return new Task(this, task);
+                return new Task(repositoryManager, task);
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -473,6 +531,11 @@ public class TaskRepositoryApi implements TaskRepository {
         CompletableFuture<String> taskAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body);
         return g.fromJson(taskAsJson.get(), Task.class);
+    }
+
+    @Override
+    public Task getTask(int id) throws ExecutionException, InterruptedException {
+        return null;
     }
 
     @Override
@@ -591,7 +654,29 @@ public class TaskRepositoryApi implements TaskRepository {
 
         if( projectsAsJson.get().statusCode() == 201 ) {
             TaskModel taskModel = g.fromJson(projectsAsJson.get().body(), TaskModel.class);
-            return new Task(this, taskModel.getId(), taskModel.getName(), taskModel.getDescription(), taskModel.getLimitDate());
+            return new Task(repositoryManager, taskModel.getId(), taskModel.getName(), taskModel.getDescription(), taskModel.getLimitDate());
+        }else{
+            return null;
+        }
+    }
+
+    @Override
+    public Task postTask(Task task, int columnId) throws ExecutionException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/task/"))
+                .timeout(Duration.ofSeconds(10))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString("{ \"name\":\""+task.getName()+"\"," +
+                        "\"description\":\""+task.getDescription()+"\"," +
+                        "\"limitDate\":\""+task.getLimitDate().format(dataBaseDateFormatIn)+"\"," +
+                        "\"columnId\":\""+columnId+"\"}"))
+                .build();
+        CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+
+        if( projectsAsJson.get().statusCode() == 201 ) {
+            TaskModel taskModel = g.fromJson(projectsAsJson.get().body(), TaskModel.class);
+            task.setId(taskModel.getId());
+            return task;
         }else{
             return null;
         }
@@ -611,7 +696,7 @@ public class TaskRepositoryApi implements TaskRepository {
 
         if( projectsAsJson.get().statusCode() == 201 ) {
             ColumnModel columnModel = g.fromJson(projectsAsJson.get().body(), ColumnModel.class);
-            return new Column(this, columnModel.getId(), columnModel.getName(), columnModel.getProject_id());
+            return new Column(repositoryManager, columnModel.getId(), columnModel.getName(), columnModel.getProject_id());
         }else{
             return null;
         }

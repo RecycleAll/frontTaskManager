@@ -1,16 +1,18 @@
 package io.taskmanager.test;
 
+import java.time.LocalDate;
 import java.util.concurrent.ExecutionException;
 
 public abstract class ApiRequest {
 
     public static final int undefinedID = -1;
 
-    protected final TaskRepository repository;
+    protected final RepositoryManager repositoryManager;
     protected int id;
+    protected LocalDate updateAt;
 
-    public ApiRequest(TaskRepository repository) {
-        this.repository = repository;
+    public ApiRequest(RepositoryManager repository) {
+        this.repositoryManager = repository;
         id = undefinedID;
     }
 

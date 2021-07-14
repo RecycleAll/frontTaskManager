@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class Task {
-    private final TaskRepository repository;
-    private final int id;
+public class Task extends ApiRequest{
+
+    private int columnId;
     private String name;
     private String description;
 
@@ -19,9 +19,9 @@ public class Task {
     private List<Dev> devs;
     private List<Tag> tags;
 
-    public Task(TaskRepository repository, int id, String name, String description, LocalDateTime createdAt, LocalDate limitDate, LocalDateTime lastUpdateDate, List<Dev> devs, List<Tag> tags) {
+    public Task(RepositoryManager repository, int id, String name, String description, LocalDateTime createdAt, LocalDate limitDate, LocalDateTime lastUpdateDate, List<Dev> devs, List<Tag> tags) {
+        super(repository);
         this.id = id;
-        this.repository = repository;
         setName(name);
         setDescription(description);
         setCreatedAt(createdAt);
@@ -31,24 +31,44 @@ public class Task {
         this.tags = tags;
     }
 
-    public Task(TaskRepository repository,int id, String name, String description, LocalDate limitDate, List<Dev> devs) {
+    public Task(RepositoryManager repository, int id, String name, String description, LocalDate limitDate, List<Dev> devs) {
         this(repository,id, name, description, LocalDateTime.now(), limitDate, null, devs, new ArrayList<>());
     }
 
-    public Task(TaskRepository repository,int id, String name, String description, LocalDate limitDate) {
+    public Task(RepositoryManager repository, int id, String name, String description, LocalDate limitDate) {
         this(repository,id, name, description, LocalDateTime.now(), limitDate, null, new ArrayList<>(), new ArrayList<>());
     }
 
-    public Task(TaskRepository repository){
+    public Task(RepositoryManager repository){
         this(repository, 0, "", "", LocalDateTime.now(), null, null, new ArrayList<>(), new ArrayList<>());
     }
 
-    public Task(TaskRepository repository, Task task){
+    @Override
+    protected boolean myPost() throws ExecutionException, InterruptedException {
+        return false;
+    }
+
+    @Override
+    protected boolean myDelete() throws ExecutionException, InterruptedException {
+        return false;
+    }
+
+    @Override
+    protected boolean myUpdateToRepo() throws ExecutionException, InterruptedException {
+        return false;
+    }
+
+    @Override
+    protected boolean myUpdateFromRepo() {
+        return false;
+    }
+
+    public Task(RepositoryManager repository, Task task){
         this(repository, task.getId(), task.getName(), task.getDescription(), task.getCreatedAt(), task.getLimitDate(), task.getLastUpdateDate(), task.getDevs(), task.tags);
     }
 
     public Task(Task task){
-        this(task.repository, task.getId(), task.getName(), task.getDescription(), task.getCreatedAt(), task.getLimitDate(), task.getLastUpdateDate(), task.getDevs(), task.tags);
+        this(task.repositoryManager, task.getId(), task.getName(), task.getDescription(), task.getCreatedAt(), task.getLimitDate(), task.getLastUpdateDate(), task.getDevs(), task.tags);
         System.out.println("dev size from copy: "+ devs.size());
     }
 
@@ -97,14 +117,14 @@ public class Task {
 
     public void addDev(Dev dev) throws ExecutionException, InterruptedException {
         devs.add(dev);
-        if( repository != null){
-            repository.postDevTask(this, dev);
+        if( repositoryManager != null){
+            repositoryManager.getRepository().postDevTask(this, dev);
         }
     }
 
     public void removeDev(Dev dev) throws ExecutionException, InterruptedException {
-        if( devs.remove(dev) && repository != null){
-            repository.deleteDevTAsk(this, dev);
+        if( devs.remove(dev) && repositoryManager != null){
+            repositoryManager.getRepository().deleteDevTAsk(this, dev);
         }
     }
 

@@ -3,8 +3,7 @@ package io.taskmanager.test;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-public class Dev {
-    private final int id;
+public class Dev extends ApiRequest{
     private String firstname;
     private String lastname;
     private String email;
@@ -14,6 +13,7 @@ public class Dev {
     private final ArrayList<Project> projects;
 
     public Dev(int id, String firstname, String lastname, String email, String password, int github_id, ArrayList<Project> projects) {
+        super(null);
         this.id = id;
         setFirstname(firstname);
         setLastname(lastname);
@@ -37,6 +37,26 @@ public class Dev {
 
     public ArrayList<Project> getProjects() {
         return projects;
+    }
+
+    @Override
+    protected boolean myPost() throws ExecutionException, InterruptedException {
+        return false;
+    }
+
+    @Override
+    protected boolean myDelete() throws ExecutionException, InterruptedException {
+        return false;
+    }
+
+    @Override
+    protected boolean myUpdateToRepo() throws ExecutionException, InterruptedException {
+        return false;
+    }
+
+    @Override
+    protected boolean myUpdateFromRepo() {
+        return false;
     }
 
     public int getId() {

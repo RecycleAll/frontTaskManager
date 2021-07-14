@@ -1,8 +1,8 @@
 package io.taskmanager.ui.graphical;
 
 import io.taskmanager.test.Dev;
+import io.taskmanager.test.RepositoryManager;
 import io.taskmanager.test.Task;
-import io.taskmanager.test.TaskRepository;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -19,7 +19,7 @@ public class ColumnTaskController extends BorderPane {
 
     private static final String FXML_FILE = "ColumnTaskController.fxml";
 
-    private final TaskRepository repository;
+    private final RepositoryManager repository;
 
     @FXML
     public FlowPane DevsFlowPane;
@@ -29,7 +29,7 @@ public class ColumnTaskController extends BorderPane {
     private Task task;
     private final ProjectColumnController projectColumnController;
 
-    public ColumnTaskController(TaskRepository repository, ProjectColumnController projectColumnController, Task task) throws IOException {
+    public ColumnTaskController(RepositoryManager repository, ProjectColumnController projectColumnController, Task task) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
@@ -39,7 +39,7 @@ public class ColumnTaskController extends BorderPane {
         this.projectColumnController = projectColumnController;
     }
 
-    public ColumnTaskController(TaskRepository repository, ProjectColumnController projectColumnController) throws IOException {
+    public ColumnTaskController(RepositoryManager repository, ProjectColumnController projectColumnController) throws IOException {
         this(repository, projectColumnController, null);
     }
 

@@ -4,12 +4,9 @@ import io.taskmanager.test.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
-import javafx.scene.control.TabPane;
-import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -25,9 +22,9 @@ public class App extends Application {
     private final LoginController loginController;
     private final Scene loginScene;
 
-    private final TaskRepository repository;
+    private final RepositoryManager repository;
 
-    public static void launchApp(TaskRepository repository) throws Exception {
+    public static void launchApp(RepositoryManager repository) throws Exception {
         Platform.startup(() -> {});
 
         App app = new App(repository);
@@ -46,12 +43,12 @@ public class App extends Application {
         });
     }
 
-    public App(TaskRepository repository) throws Exception {
+    public App(RepositoryManager repository) throws Exception {
         super();
         devViewerController = new DevViewerController(repository);
         devViewerScene = new Scene( devViewerController);
 
-        loginController = new LoginController(repository, this);
+        loginController = new LoginController(repository.getRepository(), this);
         loginScene = new Scene( loginController );
 
 
