@@ -84,6 +84,7 @@ public class TaskRepositoryApi implements TaskRepository {
 
         return null;
     }
+
     private String getJson(String url) throws ExecutionException, InterruptedException {
         String requestStr = apiUrl + url;
         HttpRequest request = HttpRequest.newBuilder()
@@ -99,6 +100,32 @@ public class TaskRepositoryApi implements TaskRepository {
             return response.body();
         }
         return null;
+    }
+
+    private String postJson(String url, String jsonStr) throws ExecutionException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + url))
+                .timeout(Duration.ofSeconds(10))
+                .header("Content-Type", "application/json")
+                .POST( HttpRequest.BodyPublishers.ofString(jsonStr))
+                .build();
+
+        CompletableFuture<HttpResponse<String>> responseCompletableFuture = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = responseCompletableFuture.get();
+
+        if( response.statusCode() == 201 ) {
+            return response.body();
+        }
+        return null;
+    }
+
+    private <T> T postObject(String url, String jsonStr, Class<?> objectType) throws ExecutionException, InterruptedException {
+        String responseJson = postJson(url, jsonStr);
+        if(responseJson != null){
+            return g.fromJson(responseJson, (Type) objectType);
+        }else{
+            return null;
+        }
     }
 
     private <T> T getObject2(String url, Class<?> c) throws ExecutionException, InterruptedException {
@@ -149,23 +176,15 @@ public class TaskRepositoryApi implements TaskRepository {
 
     @Override
     public int loginDev(String email, String password) throws ExecutionException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(apiUrl + "/auth/login"))
-                .timeout(Duration.ofSeconds(10))
-                .header("Content-Type", "application/json")
-                .POST( HttpRequest.BodyPublishers.ofString("{ " +
-                        "\"email\":\""+email+"\"," +
-                        "\"password\":\""+password+"\"" +
-                        "}"))
-                .build();
+        String requestJson = "{ " +
+                "\"email\":\""+email+"\"," +
+                "\"password\":\""+password+"\"" +
+                "}";
 
-        CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+        SessionModel model = postObject("/auth/login", requestJson, SessionModel.class );
 
-        //System.out.println("code: "+projectsAsJson.get().statusCode());
-        //System.out.println("json: "+projectsAsJson.get().body());
-        if( projectsAsJson.get().statusCode() == 201 ) {
-            SessionModel session = g.fromJson(projectsAsJson.get().body(), SessionModel.class);
-            return session.getDev_id();
+        if( model != null ) {
+            return model.getDev_id();
         }else{
             return -1;
         }
@@ -450,8 +469,6 @@ public class TaskRepositoryApi implements TaskRepository {
                         "}"))
                 .build();
         CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-
-
 
         return projectsAsJson.get().statusCode() == 200;
     }
