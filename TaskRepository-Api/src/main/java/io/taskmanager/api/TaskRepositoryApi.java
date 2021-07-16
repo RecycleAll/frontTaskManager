@@ -111,9 +111,9 @@ public class TaskRepositoryApi implements TaskRepository {
                 .build();
 
         CompletableFuture<HttpResponse<String>> responseCompletableFuture = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-
+        System.out.println("POST JSON: url: "+ url+" \n req: " + jsonStr );
         HttpResponse<String> response = responseCompletableFuture.get();
-        System.out.println("POST JSON: url: "+ url+" \n req: " + jsonStr + " \n res: "+ response.statusCode());
+        System.out.println("res: "+ response.statusCode());
         if( response.statusCode() == 201 ) {
             return response.body();
         }
@@ -129,9 +129,10 @@ public class TaskRepositoryApi implements TaskRepository {
                 .build();
 
         CompletableFuture<HttpResponse<String>> responseCompletableFuture = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println("PUT JSON: url: "+ url+" \n req: " + jsonStr );
         HttpResponse<String> response = responseCompletableFuture.get();
-        System.out.println("PUT JSON: url: "+ url+" \n req: " + jsonStr + " \n res: "+ response.statusCode());
-        
+        System.out.println("res: "+ response.statusCode());
+
         return response.statusCode() == 200;
     }
 
@@ -601,7 +602,7 @@ public class TaskRepositoryApi implements TaskRepository {
     public int postColumn(Column column) throws ExecutionException, InterruptedException {
         String jsonRequest = "{ " +
                 "\"name\":\""+column.getName()+"\"," +
-                "\"projectId\":\""+column.getProjectId()+"\"}";
+                "\"projectId\":\""+ column.getProjectId() +"\"}";
 
         ColumnModel model = postObject("/column/", jsonRequest, ColumnModel.class);
 

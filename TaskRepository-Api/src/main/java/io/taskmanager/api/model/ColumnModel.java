@@ -24,6 +24,6 @@ public class ColumnModel extends ObjectBaseModel<Column>{
 
     @Override
     public Column convert() {
-        return new Column(null, id, name, project_id);
+        return new Column( id, name, project_id);
     }
 }

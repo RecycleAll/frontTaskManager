@@ -59,7 +59,7 @@ public class ColumnEditor extends DialogPane{
 
     public void setColumn(Column column) throws ExecutionException, InterruptedException {
         if( column == null){
-            this.column = new Column(repository);
+            this.column = new Column(null);
             isNewColumn.set(true);
         }else{
             this.column = column;

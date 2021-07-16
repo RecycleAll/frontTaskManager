@@ -105,7 +105,6 @@ public class Project extends ApiRequest{
         if( column.getProjectId() == ApiRequest.undefinedID && !columns.contains(column) ) {
             column.setProjectId(this.id);
             columns.add(column);
-            column.updateToRepo();
         }
     }
 

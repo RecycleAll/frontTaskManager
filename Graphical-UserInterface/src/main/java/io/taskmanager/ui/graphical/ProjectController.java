@@ -29,7 +29,7 @@ public class ProjectController extends BorderPane {
     @FXML
     public BorderPane borderPane;
 
-    private RepositoryManager repo;
+    private RepositoryManager repositoryManager;
 
     private Project project;
     private int loggedDevId;
@@ -40,7 +40,7 @@ public class ProjectController extends BorderPane {
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
         this.loggedDevId = loggedDevId;
-        this.repo = repository;
+        this.repositoryManager = repository;
         setProject(project);
 
     }
@@ -57,10 +57,10 @@ public class ProjectController extends BorderPane {
 
     public void setProject(Project newProject) throws IOException, ExecutionException, InterruptedException {
         if( newProject == null){
-            this.project = new Project(repo);
+            this.project = new Project(repositoryManager);
         }else {
             this.project = newProject;
-            this.repo = newProject.getRepository();
+            this.repositoryManager = newProject.getRepository();
         }
 
         updateUI();
@@ -108,10 +108,11 @@ public class ProjectController extends BorderPane {
     @FXML
     @SuppressWarnings("unused") //used by fxml
     public void OnAddColumn(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
-        ColumnEditorDialog dialog = new ColumnEditorDialog(repo);
+        ColumnEditorDialog dialog = new ColumnEditorDialog(repositoryManager);
         Optional<Column> res = dialog.showAndWait();
         if(res.isPresent()){
             Column col = res.get();
+            col.setRepositoryManager(repositoryManager);
             project.addColumn(col);
             addColumn(col);
         }
@@ -120,7 +121,7 @@ public class ProjectController extends BorderPane {
     @FXML
     @SuppressWarnings("unused") //used by fxml
     public void OnAddDev(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
-        ArrayList<Dev> devs = (ArrayList<Dev>) repo.getRepository().getAllDev();
+        ArrayList<Dev> devs = (ArrayList<Dev>) repositoryManager.getRepository().getAllDev();
         System.out.println(devs);
         DevSelectorDialog dialog = new DevSelectorDialog(project, devs);
 

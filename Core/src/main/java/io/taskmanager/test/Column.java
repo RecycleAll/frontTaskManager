@@ -18,18 +18,27 @@ public class Column extends ApiRequest{
         this.projectId = projectId;
         this.name = name;
         this.tasks = tasks;
+        try {
+            updateToRepo();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
-    public Column(RepositoryManager repository, int id, String name, int projectId){
+    public Column(RepositoryManager repository, int id, String name, int projectId) throws ExecutionException, InterruptedException {
         this(repository, id, name, projectId, new ArrayList<>());
     }
 
-    public Column(RepositoryManager repository, Column col){
+    public Column( int id, String name, int projectId) {
+        this(null, id, name, projectId, new ArrayList<>());
+    }
+
+    public Column(RepositoryManager repository, Column col) throws ExecutionException, InterruptedException {
         this(repository, col.getId(), col.getName(), col.projectId, col.getTasks() );
     }
 
-    public Column(RepositoryManager repository){
-        this(repository, -1, "", -1, null);
+    public Column(RepositoryManager repository) throws ExecutionException, InterruptedException {
+        this(repository, -1, "", -1, new ArrayList<>());
     }
 
     @Override
@@ -75,8 +84,9 @@ public class Column extends ApiRequest{
         }
     }
 
-    public void setProjectId(int projectId) {
+    public void setProjectId(int projectId) throws ExecutionException, InterruptedException {
         this.projectId = projectId;
+        updateToRepo();
     }
 
     public Task addNewTask(String name, String description, LocalDate limitDate) throws ExecutionException, InterruptedException {
@@ -115,10 +125,7 @@ public class Column extends ApiRequest{
     public void setName(String name) throws ExecutionException, InterruptedException {
         this.name = name;
         System.out.println("column set name"+this.id);
-        if(repositoryManager != null){
-            System.out.println("repo");
-            repositoryManager.getRepository().putColumn(this);
-        }
+        updateToRepo();
     }
 
 }
