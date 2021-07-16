@@ -60,6 +60,7 @@ public class RepositoryManager {
         Dev dev = devsManager.getObject(id);
         if(dev == null){
             dev = repository.getDev(id);
+            devsManager.addObject(dev);
             if(loadProject) {
                 Map<Integer, DevStatus> projects = repository.getAllDevProject(id);
                 if (projects != null) {
@@ -80,6 +81,7 @@ public class RepositoryManager {
 
         if(project == null){
             project = repository.getProject(projectID);
+            projectsManager.addObject(project);
 
             Map<Integer, DevStatus> devs = repository.getProjectDevs(projectID);
             for (Map.Entry<Integer, DevStatus> entry: devs.entrySet()) {
