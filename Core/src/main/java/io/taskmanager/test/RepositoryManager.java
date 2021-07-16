@@ -100,11 +100,16 @@ public class RepositoryManager {
                     for (Integer id: devsID) {
                         task.addDev( getDev(id, false));
                     }
+                    task.setRepositoryManager(this);
                 }
-
+                col.setRepositoryManager(this);
             }
             System.out.println("loaded project: "+ project+"  devs:"+devs.size()+"  col: "+cols.size());
+
             project.setRepositoryManager(this);
+            for (Dev dev: project.getDevs()) {
+                dev.setRepositoryManager(this);
+            }
         }
 
         return project;

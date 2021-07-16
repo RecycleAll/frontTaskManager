@@ -96,8 +96,6 @@ public class Column extends ApiRequest{
         return tasks;
     }
 
-
-
     public int getId() {
         return id;
     }

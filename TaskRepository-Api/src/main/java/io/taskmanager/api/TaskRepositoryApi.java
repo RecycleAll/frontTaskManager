@@ -111,8 +111,9 @@ public class TaskRepositoryApi implements TaskRepository {
                 .build();
 
         CompletableFuture<HttpResponse<String>> responseCompletableFuture = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-        HttpResponse<String> response = responseCompletableFuture.get();
 
+        HttpResponse<String> response = responseCompletableFuture.get();
+        System.out.println("POST JSON: url: "+ url+" \n req: " + jsonStr + " \n res: "+ response.statusCode());
         if( response.statusCode() == 201 ) {
             return response.body();
         }
@@ -128,8 +129,10 @@ public class TaskRepositoryApi implements TaskRepository {
                 .build();
 
         CompletableFuture<HttpResponse<String>> responseCompletableFuture = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-
-        return responseCompletableFuture.get().statusCode() == 200;
+        HttpResponse<String> response = responseCompletableFuture.get();
+        System.out.println("PUT JSON: url: "+ url+" \n req: " + jsonStr + " \n res: "+ response.statusCode());
+        
+        return response.statusCode() == 200;
     }
 
     private <T> T postObject(String url, String jsonStr, Class<?> objectType) throws ExecutionException, InterruptedException {
@@ -472,18 +475,10 @@ public class TaskRepositoryApi implements TaskRepository {
 
     @Override
     public boolean putColumn(Column column) throws ExecutionException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(apiUrl + "/column/"))
-                .timeout(Duration.ofSeconds(10))
-                .header("Content-Type", "application/json")
-                .PUT(HttpRequest.BodyPublishers.ofString("{ " +
-                        "\"id\":\""+column.getId()+"\"," +
-                        "\"name\":\""+column.getName()+"\"" +
-                        "}"))
-                .build();
-        CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-
-        return projectsAsJson.get().statusCode() == 200;
+        return  putObject("/column/", "{ " +
+                                                    "\"id\":\""+column.getId()+"\"," +
+                                                    "\"name\":\""+column.getName()+"\"" +
+                                                    "}");
     }
 
     @Override
@@ -604,20 +599,15 @@ public class TaskRepositoryApi implements TaskRepository {
 
     @Override
     public int postColumn(Column column) throws ExecutionException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(apiUrl + "/column/"))
-                .timeout(Duration.ofSeconds(10))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString("{ " +
-                        "\"name\":\""+column.getName()+"\"," +
-                        "\"projectId\":\""+column.getProjectId()+"\"}"))
-                .build();
-        CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+        String jsonRequest = "{ " +
+                "\"name\":\""+column.getName()+"\"," +
+                "\"projectId\":\""+column.getProjectId()+"\"}";
 
-        if( projectsAsJson.get().statusCode() == 201 ) {
-            ColumnModel columnModel = g.fromJson(projectsAsJson.get().body(), ColumnModel.class);
-            column.setId(columnModel.getId());
-            return columnModel.getId();
+        ColumnModel model = postObject("/column/", jsonRequest, ColumnModel.class);
+
+        if( model != null) {
+            column.setId(model.getId());
+            return model.getId();
         }else{
             return -1;
         }
