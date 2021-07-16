@@ -111,10 +111,7 @@ public class Project extends ApiRequest{
     public void removeColumn(Column column) throws ExecutionException, InterruptedException {
         columns.remove(column);
         System.out.println("removeColumn: "+ column.getName());
-        if( repositoryManager != null){
-            System.out.println("repo: "+ column.getId());
-            repositoryManager.getRepository().deleteColumn(column);
-        }
+        column.deleteFromRepo();
     }
 
     public void addTag(Tag tag) {

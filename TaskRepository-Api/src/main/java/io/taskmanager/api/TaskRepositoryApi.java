@@ -92,10 +92,11 @@ public class TaskRepositoryApi implements TaskRepository {
                 .timeout(Duration.ofSeconds(10))
                 .GET()
                 .build();
-        CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-        HttpResponse<String> response = projectsAsJson.get();
+        CompletableFuture<HttpResponse<String>> responseCompletableFuture = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println("GET JSON: req: " + requestStr );
+        HttpResponse<String> response = responseCompletableFuture.get();
+        System.out.println("res: "+ response.statusCode());
 
-        System.out.println("GET JSON: req: " + requestStr + " \n res: "+ response.statusCode());
         if( response.statusCode() == 200 ) {
             return response.body();
         }
@@ -130,6 +131,21 @@ public class TaskRepositoryApi implements TaskRepository {
 
         CompletableFuture<HttpResponse<String>> responseCompletableFuture = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
         System.out.println("PUT JSON: url: "+ url+" \n req: " + jsonStr );
+        HttpResponse<String> response = responseCompletableFuture.get();
+        System.out.println("res: "+ response.statusCode());
+
+        return response.statusCode() == 200;
+    }
+
+    private boolean deleteObject(String url) throws ExecutionException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + url))
+                .timeout(Duration.ofSeconds(10))
+                .DELETE()
+                .build();
+        CompletableFuture<HttpResponse<String>> responseCompletableFuture = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+
+        System.out.println("DELETE JSON: url: "+ url );
         HttpResponse<String> response = responseCompletableFuture.get();
         System.out.println("res: "+ response.statusCode());
 
@@ -464,14 +480,7 @@ public class TaskRepositoryApi implements TaskRepository {
 
     @Override
     public boolean deleteColumn(Column column) throws ExecutionException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(apiUrl + "/column/" + column.getId()))
-                .timeout(Duration.ofSeconds(10))
-                .DELETE()
-                .build();
-        CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-
-        return projectsAsJson.get().statusCode() == 200;
+        return deleteObject("/column/" + column.getId());
     }
 
     @Override

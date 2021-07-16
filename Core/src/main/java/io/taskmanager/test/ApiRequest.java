@@ -25,7 +25,7 @@ public abstract class ApiRequest {
         return id != undefinedID;
     }
 
-    public final boolean delete() throws ExecutionException, InterruptedException {
+    public final boolean deleteFromRepo() throws ExecutionException, InterruptedException {
         if( isInRepo() && repositoryManager != null){
             return myDelete();
         }else{
@@ -33,7 +33,7 @@ public abstract class ApiRequest {
         }
     }
 
-    public final boolean post() throws ExecutionException, InterruptedException {
+    public final boolean postToRepo() throws ExecutionException, InterruptedException {
         if( !isInRepo() && repositoryManager != null){
             return myPost();
         }else{
