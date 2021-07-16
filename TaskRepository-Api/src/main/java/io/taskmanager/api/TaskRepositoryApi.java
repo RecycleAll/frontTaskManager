@@ -119,6 +119,19 @@ public class TaskRepositoryApi implements TaskRepository {
         return null;
     }
 
+    private boolean putObject(String url, String jsonStr) throws ExecutionException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + url))
+                .timeout(Duration.ofSeconds(10))
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(jsonStr))
+                .build();
+
+        CompletableFuture<HttpResponse<String>> responseCompletableFuture = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+
+        return responseCompletableFuture.get().statusCode() == 200;
+    }
+
     private <T> T postObject(String url, String jsonStr, Class<?> objectType) throws ExecutionException, InterruptedException {
         String responseJson = postJson(url, jsonStr);
         if(responseJson != null){
