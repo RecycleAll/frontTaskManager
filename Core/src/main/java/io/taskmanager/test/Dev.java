@@ -51,7 +51,7 @@ public class Dev extends ApiRequest{
 
     @Override
     protected boolean myUpdateToRepo() throws ExecutionException, InterruptedException {
-        return false;
+        return repositoryManager.getRepository().updateDev(this);
     }
 
     @Override

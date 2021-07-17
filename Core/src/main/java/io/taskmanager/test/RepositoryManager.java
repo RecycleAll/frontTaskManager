@@ -99,6 +99,7 @@ public class RepositoryManager {
 
                 for (Task task: columnTasks) {
                     List<Integer> devsID = repository.getTaskDevsID(task.id);
+                    System.out.println(devsID.toString());
                     for (Integer id: devsID) {
                         task.addDev( getDev(id, false));
                     }

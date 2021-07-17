@@ -386,8 +386,8 @@ public class TaskRepositoryApi implements TaskRepository {
 
     @Override
     public List<Integer> getTaskDevsID(int taskID) throws ExecutionException, InterruptedException{
-        Dev[] devs = getObject2("/devTask/" + taskID, Dev[].class);
-        return Arrays.stream(devs).map(Dev::getId).collect(Collectors.toList());
+        DevTaskModel[] devTaskModels = getObject2("/devTask/" + taskID, DevTaskModel[].class);
+        return Arrays.stream(devTaskModels).map(DevTaskModel::getDev_id).collect(Collectors.toList());
     }
 
     private DevTaskModel getDevTask(int taskId, int devId) throws ExecutionException, InterruptedException {
@@ -588,7 +588,7 @@ public class TaskRepositoryApi implements TaskRepository {
     @Override
     public void registerDev(String firstname, String lastname, String email, String password, String githubId) throws ExecutionException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(apiUrl + "/project/"))
+                .uri(URI.create(apiUrl + "/auth/register"))
                 .timeout(Duration.ofSeconds(10))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString("{ \"firstname\":\""+firstname+"\"," +
@@ -600,6 +600,17 @@ public class TaskRepositoryApi implements TaskRepository {
         CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request,
                 HttpResponse.BodyHandlers.ofString());
         System.out.print(response.get().body());
+    }
+
+    @Override
+    public boolean updateDev(Dev dev) throws ExecutionException, InterruptedException {
+        String json = "{ \"id\":\""+dev.getId()+"\"," +
+                        "\"firstname\":\""+dev.getFirstname()+"\"," +
+                        "\"lastname\":\""+dev.getLastname()+"\"," +
+                        "\"email\":\""+dev.getEmail()+"\"," +
+                        "\"password\":\""+dev.getPassword()+"\"," +
+                        "\"githubId\":\""+dev.getGithub_id()+"\"}";
+        return putObject("/auth/", json);
     }
 
     @Override

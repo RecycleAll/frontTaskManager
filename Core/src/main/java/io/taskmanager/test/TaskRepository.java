@@ -8,7 +8,8 @@ import java.util.concurrent.ExecutionException;
 public interface TaskRepository {
 
     int loginDev(String login, String password) throws ExecutionException, InterruptedException;
-
+    void registerDev(String firstname, String lastname, String email, String password, String githubId) throws ExecutionException, InterruptedException;
+    boolean updateDev(Dev dev)throws ExecutionException, InterruptedException;
     /**
      * @param devID the dev id
      * @return the map of all project this Dev participate
@@ -62,7 +63,7 @@ public interface TaskRepository {
 
     void postProject(Dev dev, Project project) throws ExecutionException, InterruptedException;
 
-    void registerDev(String firstname, String lastname, String email, String password, String githubId) throws ExecutionException, InterruptedException;
+
 
     int postColumn(Column column) throws ExecutionException, InterruptedException;
     Column postColumn(String name, int projectId) throws ExecutionException, InterruptedException;

@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 public class DevEditorController extends DialogPane{
 
@@ -87,14 +88,16 @@ public class DevEditorController extends DialogPane{
             {
                 try {
                     dev.setGithub_id( Integer.parseInt(githubField.getText()));
-
                     dev.setFirstname( firstNameField.getText());
                     dev.setLastname( lastNameField.getText());
                     dev.setEmail( emailField.getText());
+                    dev.updateToRepo();
                 } catch (NumberFormatException e) {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "\""+githubField.getText()+"\" is not a number", ButtonType.OK);
                     alert.showAndWait();
                     actionEvent.consume();
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
 
