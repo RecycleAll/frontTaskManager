@@ -443,7 +443,8 @@ public class TaskRepositoryApi implements TaskRepository {
 
     @Override
     public boolean updateTask(Task task) throws ExecutionException, InterruptedException {
-        String json = "{ \"name\":\""+task.getName()+"\"," +
+        String json = "{ \"id\":\""+task.getId()+"\"," +
+                "\"name\":\""+task.getName()+"\"," +
                 "\"description\":\""+task.getDescription()+"\"," +
                 "\"limitDate\":\""+task.getLimitDate().format(dataBaseDateFormatIn)+"\"}";
         return putObject("/task/", json);
@@ -652,7 +653,7 @@ public class TaskRepositoryApi implements TaskRepository {
         String json = "{ \"name\":\""+task.getName()+"\"," +
                 "\"description\":\""+task.getDescription()+"\"," +
                 "\"limitDate\":\""+task.getLimitDate().format(dataBaseDateFormatIn)+"\"," +
-                "\"columnId\":\""+task.getColumnId()+"\"}";
+                "\"columnId\":\""+0+"\"}";
 
         TaskModel model = postObject("/task/", json, TaskModel.class);
         if( model != null) {

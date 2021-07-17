@@ -70,6 +70,7 @@ public class ColumnTaskController extends BorderPane {
         Optional<Task> res = dialog.showAndWait();
 
         if( res.isPresent()){
+            res.get().updateToRepo();
             updateUI();
         }
         else if(dialog.isShouldBeDelete()){

@@ -87,6 +87,7 @@ public class TaskController extends DialogPane {
                 task.setName( taskNameField.getText());
                 task.setDescription( taskDescriptionArea.getText());
                 task.setLimitDate(limitDatePicker.getValue().atStartOfDay().toLocalDate());
+
             }
 
         });

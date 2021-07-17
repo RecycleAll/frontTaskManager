@@ -20,9 +20,9 @@ public class Task extends ApiRequest{
     public Task(RepositoryManager repository, int id, String name, String description, LocalDate limitDate,  List<Dev> devs, List<Tag> tags) {
         super(repository);
         this.id = id;
-        setName(name);
-        setDescription(description);
-        setLimitDate(limitDate);
+        this.name = name;
+        this.description = description;
+        this.limitDate = limitDate;
         this.devs = devs;
         this.tags = tags;
     }
@@ -57,6 +57,8 @@ public class Task extends ApiRequest{
 
     @Override
     protected boolean myUpdateFromRepo() {
+
+
         return false;
     }
 
@@ -146,15 +148,7 @@ public class Task extends ApiRequest{
         return limitDate;
     }
 
-    public void setLimitDate(LocalDate limitDate) {
+    public void setLimitDate(LocalDate limitDate){
         this.limitDate = limitDate;
-    }
-
-    public int getColumnId() {
-        return columnId;
-    }
-
-    public void setColumnId(int columnId) {
-        this.columnId = columnId;
     }
 }
