@@ -52,7 +52,7 @@ public class Task extends ApiRequest{
 
     @Override
     protected boolean myUpdateToRepo() throws ExecutionException, InterruptedException {
-        return false;
+        return repositoryManager.getRepository().updateTask(this);
     }
 
     @Override
@@ -150,5 +150,11 @@ public class Task extends ApiRequest{
         this.limitDate = limitDate;
     }
 
+    public int getColumnId() {
+        return columnId;
+    }
 
+    public void setColumnId(int columnId) {
+        this.columnId = columnId;
+    }
 }

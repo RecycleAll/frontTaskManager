@@ -35,6 +35,7 @@ public interface TaskRepository {
     boolean updateTask(int taskId) throws ExecutionException, InterruptedException;
     Task postTask(String name, String description, LocalDate limitDate, int columnId) throws ExecutionException, InterruptedException;
     Task postTask(Task task, int columnId) throws ExecutionException, InterruptedException;
+    boolean postTask(Task task) throws ExecutionException, InterruptedException;
     List<Task> getTasks(Project project) throws ExecutionException, InterruptedException;
     List<Task> getColumnTasks(int columnId) throws ExecutionException, InterruptedException;
     Task getTask(Column column) throws ExecutionException, InterruptedException;

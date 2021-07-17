@@ -37,7 +37,6 @@ public class TaskRepositoryApi implements TaskRepository {
         g = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new JsonDeserializer<LocalDateTime>() {
             @Override
             public LocalDateTime deserialize(JsonElement json, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-
                 try{
                     return LocalDateTime.parse(json.getAsJsonPrimitive().getAsString(), dataBaseDateFormatOut);
                 }catch (DateTimeParseException e){
@@ -48,7 +47,6 @@ public class TaskRepositoryApi implements TaskRepository {
         }).registerTypeAdapter(LocalDate.class, new JsonDeserializer<LocalDate>() {
             @Override
             public LocalDate deserialize(JsonElement json, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-                System.out.println("test: "+ json.getAsJsonPrimitive().getAsString());
                 try{
                     return LocalDate.parse(json.getAsJsonPrimitive().getAsString(), dataBaseDateFormatOut);
                 }catch (DateTimeParseException e){
@@ -440,19 +438,15 @@ public class TaskRepositoryApi implements TaskRepository {
 
     @Override
     public boolean deleteTask(int taskId) throws ExecutionException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(apiUrl + "/task/" + taskId))
-                .timeout(Duration.ofSeconds(10))
-                .DELETE()
-                .build();
-        CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-
-        return projectsAsJson.get().statusCode() == 200;
+        return deleteObject("/task/" + taskId);
     }
 
     @Override
     public boolean updateTask(Task task) throws ExecutionException, InterruptedException {
-        return updateTask(task.getId());
+        String json = "{ \"name\":\""+task.getName()+"\"," +
+                "\"description\":\""+task.getDescription()+"\"," +
+                "\"limitDate\":\""+task.getLimitDate().format(dataBaseDateFormatIn)+"\"}";
+        return putObject("/task/", json);
     }
 
     @Override
@@ -625,45 +619,48 @@ public class TaskRepositoryApi implements TaskRepository {
 
     @Override
     public Task postTask(String name, String description, LocalDate limitDate, int columnId) throws ExecutionException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(apiUrl + "/task/"))
-                .timeout(Duration.ofSeconds(10))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString("{ \"name\":\""+name+"\"," +
-                        "\"description\":\""+description+"\"," +
-                        "\"limitDate\":\""+limitDate.format(dataBaseDateFormatIn)+"\"," +
-                        "\"columnId\":\""+columnId+"\"}"))
-                .build();
-        CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+        String json = "{ \"name\":\""+name+"\"," +
+                "\"description\":\""+description+"\"," +
+                "\"limitDate\":\""+limitDate.format(dataBaseDateFormatIn)+"\"," +
+                "\"columnId\":\""+columnId+"\"}";
 
-        if( projectsAsJson.get().statusCode() == 201 ) {
-            TaskModel taskModel = g.fromJson(projectsAsJson.get().body(), TaskModel.class);
-            return new Task(repositoryManager, taskModel.getId(), taskModel.getName(), taskModel.getDescription(), taskModel.getLimitDate());
-        }else{
-            return null;
+        TaskModel model = postObject("/task/", json, TaskModel.class);
+        if( model != null) {
+            return model.convert();
         }
+        return null;
     }
 
     @Override
     public Task postTask(Task task, int columnId) throws ExecutionException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(apiUrl + "/task/"))
-                .timeout(Duration.ofSeconds(10))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString("{ \"name\":\""+task.getName()+"\"," +
-                        "\"description\":\""+task.getDescription()+"\"," +
-                        "\"limitDate\":\""+task.getLimitDate().format(dataBaseDateFormatIn)+"\"," +
-                        "\"columnId\":\""+columnId+"\"}"))
-                .build();
-        CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+        String json = "{ \"name\":\""+task.getName()+"\"," +
+                "\"description\":\""+task.getDescription()+"\"," +
+                "\"limitDate\":\""+task.getLimitDate().format(dataBaseDateFormatIn)+"\"," +
+                "\"columnId\":\""+columnId+"\"}";
 
-        if( projectsAsJson.get().statusCode() == 201 ) {
-            TaskModel taskModel = g.fromJson(projectsAsJson.get().body(), TaskModel.class);
-            task.setId(taskModel.getId());
+        TaskModel model = postObject("/task/", json, TaskModel.class);
+        if( model != null) {
+            task.setId(model.getId());
+            task.setUpdateAt(model.getUpdatedAt());
             return task;
-        }else{
-            return null;
         }
+        return null;
+    }
+
+    @Override
+    public boolean postTask(Task task) throws ExecutionException, InterruptedException {
+        String json = "{ \"name\":\""+task.getName()+"\"," +
+                "\"description\":\""+task.getDescription()+"\"," +
+                "\"limitDate\":\""+task.getLimitDate().format(dataBaseDateFormatIn)+"\"," +
+                "\"columnId\":\""+task.getColumnId()+"\"}";
+
+        TaskModel model = postObject("/task/", json, TaskModel.class);
+        if( model != null) {
+            task.setId(model.getId());
+            task.setUpdateAt(model.getUpdatedAt());
+            return true;
+        }
+        return false;
     }
 
     @Override

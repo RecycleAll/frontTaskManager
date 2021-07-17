@@ -10,15 +10,16 @@ public abstract class ApiRequest {
     protected RepositoryManager repositoryManager;
     protected int id;
     protected LocalDate updateAt;
+    protected boolean edited;
 
     public ApiRequest(RepositoryManager repository) {
         this.repositoryManager = repository;
         id = undefinedID;
+        edited = false;
     }
 
     public ApiRequest() {
-        this.repositoryManager = null;
-        id = undefinedID;
+        this(null);
     }
 
     protected final boolean isInRepo(){
@@ -51,7 +52,7 @@ public abstract class ApiRequest {
         }
     }
 
-    public final boolean updateFromRepo(){
+    public final boolean updateFromRepo() throws ExecutionException, InterruptedException {
         if (isInRepo() && repositoryManager != null){
             return myUpdateFromRepo();
         }else{
@@ -59,10 +60,14 @@ public abstract class ApiRequest {
         }
     }
 
+    public final boolean hasBeenUpdated(ApiRequest other){
+        return !updateAt.isEqual(other.updateAt);
+    }
+
     protected abstract boolean myPost() throws ExecutionException, InterruptedException;
     protected abstract boolean myDelete() throws ExecutionException, InterruptedException;
     protected abstract boolean myUpdateToRepo() throws ExecutionException, InterruptedException;
-    protected abstract boolean myUpdateFromRepo();
+    protected abstract boolean myUpdateFromRepo() throws ExecutionException, InterruptedException;
 
     public void setId(int id) {
         this.id = id;
@@ -72,6 +77,13 @@ public abstract class ApiRequest {
         return id;
     }
 
+    public LocalDate getUpdateAt() {
+        return updateAt;
+    }
+
+    public void setUpdateAt(LocalDate updateAt) {
+        this.updateAt = updateAt;
+    }
 
     public RepositoryManager getRepositoryManager() {
         return repositoryManager;

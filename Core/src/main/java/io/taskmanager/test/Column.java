@@ -57,7 +57,8 @@ public class Column extends ApiRequest{
     }
 
     @Override
-    protected boolean myUpdateFromRepo() {
+    protected boolean myUpdateFromRepo() throws ExecutionException, InterruptedException {
+        Column col = repositoryManager.getRepository().getColumn(id);
         return false;
     }
 

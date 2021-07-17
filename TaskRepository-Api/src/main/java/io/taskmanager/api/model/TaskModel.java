@@ -37,6 +37,8 @@ public class TaskModel extends ObjectBaseModel<Task>{
 
     @Override
     public Task convert() {
-        return new Task(null, id, name, description, limitDate);
+        Task task = new Task(null, id, name, description, limitDate);
+        task.setUpdateAt(updatedAt);
+        return task;
     }
 }
