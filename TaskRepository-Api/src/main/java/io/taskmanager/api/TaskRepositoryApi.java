@@ -432,6 +432,13 @@ public class TaskRepositoryApi implements TaskRepository {
     }
 
     @Override
+    public boolean updateProject(Project project) throws ExecutionException, InterruptedException {
+        String json = "{ \"id\":\""+project.getId()+"\"," +
+                        "\"name\":\""+project.getName()+"\"}";
+        return putObject("/project/", json);
+    }
+
+    @Override
     public boolean deleteTask(Task task) throws ExecutionException, InterruptedException {
         return deleteTask(task.getId());
     }

@@ -49,10 +49,14 @@ public class LoginController extends BorderPane {
         System.out.println(emailField.getText());
         System.out.println(passwordField.getText());
         int devID = repositoryManager.getRepository().loginDev(emailField.getText(), passwordField.getText());
-        dev = repositoryManager.getDev(devID, true);
-        System.out.println("longed dev: "+dev);
-        if(dev != null){
-            app.setDevViewerScene(dev);
+        if( devID >= 1) {
+            dev = repositoryManager.getDev(devID, true);
+            System.out.println("longed dev: " + dev);
+            if (dev != null) {
+                app.setDevViewerScene(dev);
+            }
+        }else{
+            //TODO
         }
     }
 }

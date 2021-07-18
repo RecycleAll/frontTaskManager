@@ -72,6 +72,7 @@ public class RepositoryManager {
                     // TODO
                 }
             }
+            dev.setRepositoryManager(this);
         }
         return dev;
     }

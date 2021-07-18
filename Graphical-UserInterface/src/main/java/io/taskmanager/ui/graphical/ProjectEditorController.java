@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 public class ProjectEditorController extends DialogPane {
 
@@ -57,6 +58,11 @@ public class ProjectEditorController extends DialogPane {
             }else{
                 project.setName(nameField.getText());
                 project.setGitHubUrl(gitHubUrlFiled.getText());
+                try {
+                    project.updateToRepo();
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
         });

@@ -46,7 +46,7 @@ public class Project extends ApiRequest{
 
     @Override
     protected boolean myUpdateToRepo() throws ExecutionException, InterruptedException {
-        return false;
+        return repositoryManager.getRepository().updateProject(this);
     }
 
     @Override
