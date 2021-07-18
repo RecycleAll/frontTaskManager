@@ -15,14 +15,8 @@ public class DevEditorController extends DialogPane{
 
     private static final String FXML_FILE = "DevEditorController.fxml";
 
-    @FXML
-    public TextField firstNameField;
-    @FXML
-    public TextField lastNameField;
-    @FXML
-    public TextField emailField;
-    @FXML
-    public TextField githubField;
+
+    private DevEditorGrid grid;
 
     private final SimpleBooleanProperty isDeletable = new SimpleBooleanProperty(false);
     private Dev dev;
@@ -32,20 +26,20 @@ public class DevEditorController extends DialogPane{
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
-        setDev(dev);
+        grid = new DevEditorGrid(dev);
+        this.dev = dev;
         isDeletable.set(deletable);
+        this.setContent(grid);
     }
+
     public DevEditorController(Dev dev) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
-        fxmlLoader.setController(this);
-        fxmlLoader.setRoot(this);
-        fxmlLoader.load();
-        setDev(dev);
+        this(dev, false);
     }
 
     @FXML
     @SuppressWarnings("unused") //used by fxml loader
     public void initialize() {
+
 
         ButtonType removeButtonType = new ButtonType("delete", ButtonBar.ButtonData.OTHER);
         this.getButtonTypes().add(removeButtonType);
@@ -60,25 +54,25 @@ public class DevEditorController extends DialogPane{
                 alert.showAndWait();
                 actionEvent.consume();
             }
-            else if( firstNameField.getText().isEmpty())
+            else if( grid.getFirstNameString().isEmpty())
             {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Your first name can't be empty", ButtonType.OK);
                 alert.showAndWait();
                 actionEvent.consume();
             }
-            else if( lastNameField.getText().isEmpty())
+            else if( grid.getLastNameString().isEmpty())
             {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Your last name can't be empty", ButtonType.OK);
                 alert.showAndWait();
                 actionEvent.consume();
             }
-            else if( emailField.getText().isEmpty())
+            else if( grid.getEmailString().isEmpty())
             {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Your email can't be empty", ButtonType.OK);
                 alert.showAndWait();
                 actionEvent.consume();
             }
-            else if( githubField.getText().isEmpty() )
+            else if( grid.getGithubString().isEmpty() )
             {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Your github id can't be empty", ButtonType.OK);
                 alert.showAndWait();
@@ -87,13 +81,14 @@ public class DevEditorController extends DialogPane{
             else
             {
                 try {
-                    dev.setGithub_id( Integer.parseInt(githubField.getText()));
-                    dev.setFirstname( firstNameField.getText());
-                    dev.setLastname( lastNameField.getText());
-                    dev.setEmail( emailField.getText());
+                    dev.setGithub_id( Integer.parseInt(grid.getGithubString()));
+                    dev.setFirstname( grid.getFirstNameString());
+                    dev.setLastname( grid.getLastNameString());
+                    dev.setEmail( grid.getEmailString());
                     dev.updateToRepo();
+
                 } catch (NumberFormatException e) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR, "\""+githubField.getText()+"\" is not a number", ButtonType.OK);
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "\""+grid.getGithubString()+"\" is not a number", ButtonType.OK);
                     alert.showAndWait();
                     actionEvent.consume();
                 } catch (ExecutionException | InterruptedException e) {
@@ -104,25 +99,9 @@ public class DevEditorController extends DialogPane{
         });
     }
 
-    public void setDev(Dev newDev){
-        if( newDev == null){
-            this.dev = new Dev();
-            isDeletable.set(false);
-        }else{
-            this.dev = newDev;
-            isDeletable.set(true);
-        }
-
-        firstNameField.setText(this.dev.getFirstname());
-        lastNameField.setText(this.dev.getLastname());
-        emailField.setText(this.dev.getEmail());
-        githubField.setText( String.valueOf(this.dev.getGithub_id()));
-
-    }
-
-    public void OnPasswordChange(ActionEvent actionEvent) throws IOException {
-        PasswordChangeDialog dialog = new PasswordChangeDialog(dev);
-        dialog.showAndWait();
+    public void setDev(Dev dev){
+        this.dev = dev;
+        grid.setDev(dev);
     }
 
     public Dev getDev() {
