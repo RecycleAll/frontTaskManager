@@ -1,6 +1,7 @@
 package io.taskmanager.ui.graphical;
 
 import io.taskmanager.test.Column;
+import io.taskmanager.test.RepositoryEditionConflict;
 import io.taskmanager.test.RepositoryManager;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -50,7 +51,7 @@ public class ColumnEditor extends DialogPane{
             }else{
                 try {
                     column.setName( nameField.getText());
-                } catch (ExecutionException | InterruptedException e) {
+                } catch (ExecutionException | InterruptedException | RepositoryEditionConflict e) {
                     e.printStackTrace();
                 }
             }

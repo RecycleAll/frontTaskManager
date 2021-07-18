@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class Column extends ApiRequest{
+public class Column extends ApiRequest<Column>{
 
     private int projectId;
     private String name;
@@ -20,7 +20,7 @@ public class Column extends ApiRequest{
         this.tasks = tasks;
         try {
             updateToRepo();
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (ExecutionException | InterruptedException | RepositoryEditionConflict e) {
             e.printStackTrace();
         }
     }
@@ -52,7 +52,7 @@ public class Column extends ApiRequest{
     }
 
     @Override
-    protected boolean myUpdateToRepo() throws ExecutionException, InterruptedException {
+    protected boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException {
         return repositoryManager.getRepository().putColumn(this);
     }
 
@@ -60,6 +60,11 @@ public class Column extends ApiRequest{
     protected boolean myUpdateFromRepo() throws ExecutionException, InterruptedException {
         Column col = repositoryManager.getRepository().getColumn(id);
         return false;
+    }
+
+    @Override
+    public Column merge(Column other) {
+        return null;
     }
 
     public void removeDevFromAllTask(Dev dev) throws ExecutionException, InterruptedException {
@@ -85,7 +90,7 @@ public class Column extends ApiRequest{
         }
     }
 
-    public void setProjectId(int projectId) throws ExecutionException, InterruptedException {
+    public void setProjectId(int projectId) throws ExecutionException, InterruptedException, RepositoryEditionConflict {
         this.projectId = projectId;
         updateToRepo();
     }
@@ -123,7 +128,7 @@ public class Column extends ApiRequest{
         return repositoryManager;
     }
 
-    public void setName(String name) throws ExecutionException, InterruptedException {
+    public void setName(String name) throws ExecutionException, InterruptedException, RepositoryEditionConflict {
         this.name = name;
         System.out.println("column set name"+this.id);
         updateToRepo();

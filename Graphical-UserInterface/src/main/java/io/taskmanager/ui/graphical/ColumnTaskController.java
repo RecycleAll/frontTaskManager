@@ -1,6 +1,7 @@
 package io.taskmanager.ui.graphical;
 
 import io.taskmanager.test.Dev;
+import io.taskmanager.test.RepositoryEditionConflict;
 import io.taskmanager.test.RepositoryManager;
 import io.taskmanager.test.Task;
 import javafx.event.ActionEvent;
@@ -65,7 +66,7 @@ public class ColumnTaskController extends BorderPane {
 
     @FXML
     @SuppressWarnings("unused") //used by fxml
-    public void OnView(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
+    public void OnView(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException, RepositoryEditionConflict {
         TaskDialog dialog = new TaskDialog(repository, projectColumnController.getProject(), task);
         Optional<Task> res = dialog.showAndWait();
 

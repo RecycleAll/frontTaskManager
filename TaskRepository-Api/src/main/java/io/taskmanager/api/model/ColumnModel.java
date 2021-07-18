@@ -3,13 +3,14 @@ package io.taskmanager.api.model;
 import io.taskmanager.test.Column;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class ColumnModel extends ObjectBaseModel<Column>{
 
     private final String name;
     private final int project_id;
 
-    public ColumnModel(int id, String name, int project_id, LocalDate updatedAt, LocalDate createdAt) {
+    public ColumnModel(int id, String name, int project_id, LocalDateTime updatedAt, LocalDateTime createdAt) {
         super(id, updatedAt, createdAt);
         this.name = name;
         this.project_id = project_id;

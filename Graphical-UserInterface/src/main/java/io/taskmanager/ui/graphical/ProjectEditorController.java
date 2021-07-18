@@ -1,6 +1,7 @@
 package io.taskmanager.ui.graphical;
 
 import io.taskmanager.test.Project;
+import io.taskmanager.test.RepositoryEditionConflict;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
@@ -60,7 +61,7 @@ public class ProjectEditorController extends DialogPane {
                 project.setGitHubUrl(gitHubUrlFiled.getText());
                 try {
                     project.updateToRepo();
-                } catch (ExecutionException | InterruptedException e) {
+                } catch (ExecutionException | InterruptedException | RepositoryEditionConflict e) {
                     e.printStackTrace();
                 }
             }

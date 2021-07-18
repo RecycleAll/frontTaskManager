@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class Task extends ApiRequest{
+public class Task extends ApiRequest<Task>{
 
     private int columnId;
     private String name;
@@ -51,7 +51,7 @@ public class Task extends ApiRequest{
     }
 
     @Override
-    protected boolean myUpdateToRepo() throws ExecutionException, InterruptedException {
+    protected boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException {
         return repositoryManager.getRepository().updateTask(this);
     }
 
@@ -60,6 +60,11 @@ public class Task extends ApiRequest{
 
 
         return false;
+    }
+
+    @Override
+    public Task merge(Task other){
+        return null;
     }
 
     public Task(RepositoryManager repository, Task task){

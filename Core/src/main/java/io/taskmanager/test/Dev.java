@@ -3,7 +3,7 @@ package io.taskmanager.test;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-public class Dev extends ApiRequest{
+public class Dev extends ApiRequest<Dev>{
     private String firstname;
     private String lastname;
     private String email;
@@ -39,6 +39,15 @@ public class Dev extends ApiRequest{
         return projects;
     }
 
+    public void setAll(Dev dev){
+        id = dev.id;
+        firstname = dev.firstname;
+        lastname = dev.lastname;
+        email = dev.email;
+        password = dev.password;
+        github_id = dev.github_id;
+    }
+
     @Override
     protected boolean myPost() throws ExecutionException, InterruptedException {
         return false;
@@ -50,13 +59,53 @@ public class Dev extends ApiRequest{
     }
 
     @Override
-    protected boolean myUpdateToRepo() throws ExecutionException, InterruptedException {
-        return repositoryManager.getRepository().updateDev(this);
+    protected boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict {
+        if( !edited){
+            return true;
+        }else{
+            Dev dev = repositoryManager.getRepository().getDev(id);
+            if(!force && updatedAt.isBefore(dev.updatedAt)){
+                throw new RepositoryEditionConflict( new RepositoryConflictHandler<Dev>(this, dev, repositoryManager.getRepository()));
+            }else {
+                return repositoryManager.getRepository().updateDev(this);
+            }
+        }
     }
 
     @Override
     protected boolean myUpdateFromRepo() {
         return false;
+    }
+
+    @Override
+    public Dev merge(Dev other) {
+        if( id != other.id){
+            return null;
+        }else {
+            Dev dev = new Dev();
+            dev.setId(id);
+
+            if(firstname.equals(other.firstname)){
+                dev.firstname = firstname;
+            }
+
+            if(lastname.equals(other.lastname)){
+                dev.lastname = lastname;
+            }
+
+            if(email.equals(other.email)){
+                dev.email = email;
+            }
+
+            if(github_id == other.github_id){
+                dev.github_id = github_id;
+            }
+
+            if(password.equals(other.password)){
+                dev.password = password;
+            }
+            return dev;
+        }
     }
 
     public int getId() {
@@ -82,6 +131,7 @@ public class Dev extends ApiRequest{
 
     public void setFirstname(String firstname) {
         this.firstname = firstname;
+        edited = true;
     }
 
     public String getLastname() {
@@ -90,6 +140,7 @@ public class Dev extends ApiRequest{
 
     public void setLastname(String lastname) {
         this.lastname = lastname;
+        edited = true;
     }
 
     public String getEmail() {
@@ -98,6 +149,7 @@ public class Dev extends ApiRequest{
 
     public void setEmail(String email) {
         this.email = email;
+        edited = true;
     }
 
     public String getPassword() {
@@ -106,6 +158,7 @@ public class Dev extends ApiRequest{
 
     public void setPassword(String password) {
         this.password = password;
+        edited = true;
     }
 
     public int getGithub_id() {
@@ -114,6 +167,7 @@ public class Dev extends ApiRequest{
 
     public void setGithub_id(int github_id) {
         this.github_id = github_id;
+        edited = true;
     }
 
     @Override

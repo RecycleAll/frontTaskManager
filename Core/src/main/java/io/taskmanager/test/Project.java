@@ -3,7 +3,7 @@ package io.taskmanager.test;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
-public class Project extends ApiRequest{
+public class Project extends ApiRequest<Project>{
 
     private String name;
     private String gitHubUrl;
@@ -45,13 +45,18 @@ public class Project extends ApiRequest{
     }
 
     @Override
-    protected boolean myUpdateToRepo() throws ExecutionException, InterruptedException {
+    protected boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException {
         return repositoryManager.getRepository().updateProject(this);
     }
 
     @Override
     protected boolean myUpdateFromRepo() {
         return false;
+    }
+
+    @Override
+    public Project merge(Project other){
+        return null;
     }
 
     public void setColumns(List<Column> columns) {
@@ -100,7 +105,7 @@ public class Project extends ApiRequest{
         return null;
     }
 
-    public void addColumn(Column column) throws ExecutionException, InterruptedException {
+    public void addColumn(Column column) throws ExecutionException, InterruptedException, RepositoryEditionConflict {
         System.out.println("addCOl"+ columns +" "+ column);
         if( column.getProjectId() == ApiRequest.undefinedID && !columns.contains(column) ) {
             column.setProjectId(this.id);

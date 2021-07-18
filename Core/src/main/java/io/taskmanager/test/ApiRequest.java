@@ -1,15 +1,16 @@
 package io.taskmanager.test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.concurrent.ExecutionException;
 
-public abstract class ApiRequest {
+public abstract class ApiRequest<T> {
 
     public static final int undefinedID = -1;
 
     protected RepositoryManager repositoryManager;
     protected int id;
-    protected LocalDate updateAt;
+    protected LocalDateTime updatedAt;
     protected boolean edited;
 
     public ApiRequest(RepositoryManager repository) {
@@ -42,17 +43,21 @@ public abstract class ApiRequest {
         }
     }
 
-    public final boolean updateToRepo() throws ExecutionException, InterruptedException {
+    public final boolean updateToRepo() throws ExecutionException, InterruptedException, RepositoryEditionConflict {
+        return updateToRepo(false);
+    }
+
+    public final boolean updateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict {
         if (!isInRepo() && repositoryManager != null){
             return myPost();
         }else if( repositoryManager != null){
-            return myUpdateToRepo();
+            return myUpdateToRepo(force);
         }else{
-            return false;
+            return true;
         }
     }
 
-    public final boolean updateFromRepo() throws ExecutionException, InterruptedException {
+    public final boolean updateFromRepo() throws ExecutionException, InterruptedException, RepositoryEditionConflict {
         if (isInRepo() && repositoryManager != null){
             return myUpdateFromRepo();
         }else{
@@ -61,13 +66,14 @@ public abstract class ApiRequest {
     }
 
     public final boolean hasBeenUpdated(ApiRequest other){
-        return !updateAt.isEqual(other.updateAt);
+        return !updatedAt.isEqual(other.updatedAt);
     }
 
     protected abstract boolean myPost() throws ExecutionException, InterruptedException;
     protected abstract boolean myDelete() throws ExecutionException, InterruptedException;
-    protected abstract boolean myUpdateToRepo() throws ExecutionException, InterruptedException;
+    protected abstract boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict;
     protected abstract boolean myUpdateFromRepo() throws ExecutionException, InterruptedException;
+    public abstract T merge(T other);
 
     public void setId(int id) {
         this.id = id;
@@ -77,12 +83,12 @@ public abstract class ApiRequest {
         return id;
     }
 
-    public LocalDate getUpdateAt() {
-        return updateAt;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdateAt(LocalDate updateAt) {
-        this.updateAt = updateAt;
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public RepositoryManager getRepositoryManager() {

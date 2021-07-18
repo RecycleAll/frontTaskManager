@@ -14,6 +14,8 @@ import java.util.concurrent.ExecutionException;
  */
 public class App extends Application {
 
+    public static App AppInstance;
+
     private Stage stage;
 
     private final DevViewerController devViewerController;
@@ -27,20 +29,22 @@ public class App extends Application {
     public static void launchApp(RepositoryManager repository) throws Exception {
         Platform.startup(() -> {});
 
-        App app = new App(repository);
-        Platform.runLater( () -> {
-            Stage stage = new Stage();
+        if( AppInstance == null) {
+            AppInstance = new App(repository);
+            Platform.runLater(() -> {
+                Stage stage = new Stage();
 
-            stage.sceneProperty().addListener((observableValue, scene, newScene) -> {
-                stage.setMinWidth(newScene.getWidth());
-                stage.setMinHeight(newScene.getHeight());
+                stage.sceneProperty().addListener((observableValue, scene, newScene) -> {
+                    stage.setMinWidth(newScene.getWidth());
+                    stage.setMinHeight(newScene.getHeight());
+                });
+                try {
+                    AppInstance.start(stage);
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
             });
-            try {
-                app.start(stage);
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
+        }
     }
 
     public App(RepositoryManager repository) throws Exception {

@@ -1,11 +1,12 @@
 package io.taskmanager.api.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public abstract class ObjectBaseModel<T> extends BaseModel {
 
 
-    public ObjectBaseModel(int id, LocalDate updatedAt, LocalDate createdAt) {
+    public ObjectBaseModel(int id, LocalDateTime updatedAt, LocalDateTime createdAt) {
         super(id, updatedAt, createdAt);
     }
 

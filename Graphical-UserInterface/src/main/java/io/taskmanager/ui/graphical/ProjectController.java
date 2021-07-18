@@ -107,7 +107,7 @@ public class ProjectController extends BorderPane {
 
     @FXML
     @SuppressWarnings("unused") //used by fxml
-    public void OnAddColumn(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
+    public void OnAddColumn(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException, RepositoryEditionConflict {
         ColumnEditorDialog dialog = new ColumnEditorDialog(repositoryManager);
         Optional<Column> res = dialog.showAndWait();
         if(res.isPresent()){

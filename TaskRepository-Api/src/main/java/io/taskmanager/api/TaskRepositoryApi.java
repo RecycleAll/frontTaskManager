@@ -615,7 +615,7 @@ public class TaskRepositoryApi implements TaskRepository {
                         "\"firstname\":\""+dev.getFirstname()+"\"," +
                         "\"lastname\":\""+dev.getLastname()+"\"," +
                         "\"email\":\""+dev.getEmail()+"\"," +
-                        "\"password\":\""+dev.getPassword()+"\"," +
+                //TODO: "\"password\":\""+dev.getPassword()+"\"," +
                         "\"githubId\":\""+dev.getGithub_id()+"\"}";
         return putObject("/auth/", json);
     }
@@ -660,7 +660,7 @@ public class TaskRepositoryApi implements TaskRepository {
         TaskModel model = postObject("/task/", json, TaskModel.class);
         if( model != null) {
             task.setId(model.getId());
-            task.setUpdateAt(model.getUpdatedAt());
+            task.setUpdatedAt(model.getUpdatedAt());
             return task;
         }
         return null;
@@ -676,7 +676,7 @@ public class TaskRepositoryApi implements TaskRepository {
         TaskModel model = postObject("/task/", json, TaskModel.class);
         if( model != null) {
             task.setId(model.getId());
-            task.setUpdateAt(model.getUpdatedAt());
+            task.setUpdatedAt(model.getUpdatedAt());
             return true;
         }
         return false;

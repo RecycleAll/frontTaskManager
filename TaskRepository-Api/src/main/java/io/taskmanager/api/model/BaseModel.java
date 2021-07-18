@@ -1,14 +1,15 @@
 package io.taskmanager.api.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public abstract class BaseModel {
 
     protected final int id;
-    protected final LocalDate updatedAt;
-    protected final LocalDate createdAt;
+    protected final LocalDateTime updatedAt;
+    protected final LocalDateTime createdAt;
 
-    public BaseModel(int id, LocalDate updatedAt, LocalDate createdAt) {
+    public BaseModel(int id, LocalDateTime updatedAt, LocalDateTime createdAt) {
         this.id = id;
         this.updatedAt = updatedAt;
         this.createdAt = createdAt;
@@ -18,11 +19,11 @@ public abstract class BaseModel {
         return id;
     }
 
-    public LocalDate getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public LocalDate getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
