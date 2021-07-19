@@ -24,7 +24,7 @@ public class Column extends RepositoryObject<Column> {
         this.tasks = tasks;
         try {
             updateToRepo();
-        } catch (ExecutionException | InterruptedException | RepositoryEditionConflict e) {
+        } catch (ExecutionException | InterruptedException | RepositoryEditionConflict | RepositoryObjectDeleted e) {
             e.printStackTrace();
         }
     }
@@ -99,9 +99,8 @@ public class Column extends RepositoryObject<Column> {
         }
     }
 
-    public void setProjectId(int projectId) throws ExecutionException, InterruptedException, RepositoryEditionConflict {
+    public void setProjectId(int projectId) {
         this.projectId = projectId;
-        updateToRepo();
     }
 
     public Task addNewTask(String name, String description, LocalDate limitDate) throws ExecutionException, InterruptedException {
@@ -142,10 +141,8 @@ public class Column extends RepositoryObject<Column> {
         return repositoryManager;
     }
 
-    public void setName(String name) throws ExecutionException, InterruptedException, RepositoryEditionConflict {
+    public void setName(String name){
         this.name = name;
-        System.out.println("column set name"+this.id);
-        updateToRepo();
     }
 
 }

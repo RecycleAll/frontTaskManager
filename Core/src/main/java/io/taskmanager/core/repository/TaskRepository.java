@@ -48,7 +48,7 @@ public interface TaskRepository {
 
 
     Map<Integer,DevStatus> getProjectDevs(int projectID) throws ExecutionException, InterruptedException;
-    Dev getDev(int devID) throws ExecutionException, InterruptedException;
+    Dev getDev(int devID) throws ExecutionException, InterruptedException, RepositoryObjectDeleted;
     List<Dev> getAllDev() throws ExecutionException, InterruptedException;
 
     boolean postDevTask(Task task, Dev dev) throws ExecutionException, InterruptedException;

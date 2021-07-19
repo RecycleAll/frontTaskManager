@@ -94,15 +94,16 @@ public class TaskController extends DialogPane implements IObjectEditor<Task> {
                         TaskConflictDialog dialog = new TaskConflictDialog( (RepositoryConflictHandler<Task>) repositoryEditionConflict.getConflictHandler(), project);
                         Optional<Task> res = dialog.showAndWait();
                         if (res.isPresent()) {
-                            task.setAll(res.get());
                             System.out.println("///////////////////////////////////////////////");
                             System.out.println("task:name -> "+task.getName());
                             task.updateToRepo(true);
                             System.out.println("///////////////////////////////////////////////");
                         }
-                    } catch (IOException | RepositoryEditionConflict | ExecutionException | InterruptedException e) {
+                    } catch (IOException | RepositoryEditionConflict | ExecutionException | InterruptedException | RepositoryObjectDeleted e) {
                         e.printStackTrace();
                     }
+                } catch (RepositoryObjectDeleted repositoryObjectDeleted) {
+                    repositoryObjectDeleted.printStackTrace();
                 }
             }
 
@@ -152,7 +153,6 @@ public class TaskController extends DialogPane implements IObjectEditor<Task> {
         Optional<List<Dev>> res = dialog.showAndWait();
 
         if( res.isPresent()){
-            System.out.println(res.get().size());
             this.setDevs(res.get());
         }
     }
@@ -187,8 +187,21 @@ public class TaskController extends DialogPane implements IObjectEditor<Task> {
             task.setLimitDate(limitDatePicker.getValue().atStartOfDay().toLocalDate());
             try {
                 task.updateDevs(editedDevList);
-            } catch (ExecutionException | RepositoryObjectDeleted | RepositoryEditionConflict | InterruptedException e) {
+            } catch (ExecutionException | RepositoryEditionConflict | InterruptedException e) {
                 e.printStackTrace();
+            } catch ( RepositoryObjectDeleted e){
+
+                Dev devs = (Dev) e.getObjects().get(0);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "The dev "+devs.getFirstname()+" you are trying to add has been deleted from the repo and will be removed", ButtonType.OK);
+                alert.showAndWait();
+
+                for (RepositoryObject<?> obj:e.getObjects()) {
+                    try {
+                        repository.removeDev((Dev) obj);
+                    } catch (ExecutionException | RepositoryObjectDeleted | InterruptedException executionException) {
+                        executionException.printStackTrace();
+                    }
+                }
             }
             return true;
         }else{

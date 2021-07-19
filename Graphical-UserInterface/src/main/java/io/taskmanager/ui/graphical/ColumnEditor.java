@@ -49,11 +49,8 @@ public class ColumnEditor extends DialogPane{
                 alert.showAndWait();
                 actionEvent.consume();
             }else{
-                try {
-                    column.setName( nameField.getText());
-                } catch (ExecutionException | InterruptedException | RepositoryEditionConflict e) {
-                    e.printStackTrace();
-                }
+                column.setName( nameField.getText());
+
             }
         });
     }

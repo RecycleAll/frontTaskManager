@@ -3,6 +3,7 @@ package io.taskmanager.ui.graphical;
 import io.taskmanager.core.Dev;
 import io.taskmanager.core.repository.RepositoryConflictHandler;
 import io.taskmanager.core.repository.RepositoryEditionConflict;
+import io.taskmanager.core.repository.RepositoryObjectDeleted;
 import io.taskmanager.ui.graphical.conflict.DevConflictController;
 import io.taskmanager.ui.graphical.conflict.RepositoryConflictDialog;
 import javafx.beans.binding.Bindings;
@@ -68,13 +69,15 @@ public class DevEditorController extends DialogPane{
                            dev.setAll(res.get());
                            dev.updateToRepo(true);
                        }
-                   } catch (IOException | RepositoryEditionConflict | ExecutionException | InterruptedException e) {
+                   } catch (IOException | RepositoryEditionConflict | ExecutionException | InterruptedException | RepositoryObjectDeleted e) {
                        e.printStackTrace();
                    }
+               } catch (RepositoryObjectDeleted repositoryObjectDeleted) {
+                   repositoryObjectDeleted.printStackTrace();
                }
 
 
-            }
+           }
         });
     }
 

@@ -5,6 +5,7 @@ import io.taskmanager.api.model.*;
 import io.taskmanager.core.*;
 import io.taskmanager.core.repository.RepositoryManager;
 import io.taskmanager.core.RepositoryObject;
+import io.taskmanager.core.repository.RepositoryObjectDeleted;
 import io.taskmanager.core.repository.TaskRepository;
 
 import java.lang.reflect.Type;
@@ -333,9 +334,14 @@ public class TaskRepositoryApi implements TaskRepository {
     }
 
     @Override
-    public Dev getDev(int id) throws ExecutionException, InterruptedException{
+    public Dev getDev(int id) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
         DevModel devModel = getObject2("/auth/"+id, DevModel.class);
-        return devModel.convert();
+        if(devModel != null) {
+            return devModel.convert();
+        }else{
+            return null;
+            //throw new RepositoryObjectDeleted("get dev: "+id);
+        }
     }
 
     @Override

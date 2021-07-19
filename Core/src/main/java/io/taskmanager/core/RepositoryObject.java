@@ -46,11 +46,11 @@ public abstract class RepositoryObject<T> {
         }
     }
 
-    public final boolean updateToRepo() throws ExecutionException, InterruptedException, RepositoryEditionConflict {
+    public final boolean updateToRepo() throws ExecutionException, InterruptedException, RepositoryEditionConflict, RepositoryObjectDeleted {
         return updateToRepo(false);
     }
 
-    public final boolean updateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict {
+    public final boolean updateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict, RepositoryObjectDeleted {
         if (!isInRepo() && repositoryManager != null){
             return myPost();
         }else if( repositoryManager != null){
@@ -79,7 +79,7 @@ public abstract class RepositoryObject<T> {
 
     protected abstract boolean myPost() throws ExecutionException, InterruptedException;
     protected abstract boolean myDelete() throws ExecutionException, InterruptedException;
-    protected abstract boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict;
+    protected abstract boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict, RepositoryObjectDeleted;
     protected abstract boolean myUpdateFromRepo() throws ExecutionException, InterruptedException, RepositoryEditionConflict, RepositoryObjectDeleted;
     public abstract T merge(T other);
 

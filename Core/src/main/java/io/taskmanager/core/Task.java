@@ -90,7 +90,7 @@ public class Task extends RepositoryObject<Task> {
             System.out.println("Task:myUpdateFromRepo -> edited");
             throw new RepositoryEditionConflict( new RepositoryConflictHandler<Task>(this, task, repositoryManager));
         }else if(task == null){
-            throw new RepositoryObjectDeleted();
+            throw new RepositoryObjectDeleted(this);
         }else{
             System.out.println("Task:myUpdateFromRepo -> no conflict");
             setAll(task);
@@ -156,9 +156,19 @@ public class Task extends RepositoryObject<Task> {
 
     public void updateDevs(List<Dev> newDevs) throws ExecutionException, InterruptedException, RepositoryObjectDeleted, RepositoryEditionConflict {
         List<Dev> tmp = new ArrayList<>();
+        RepositoryObjectDeleted eDeleted = null;
+
         for (Dev dev: newDevs) {
             if (!devs.contains(dev)){
-                addDev(dev);
+                try {
+                    addDev(dev);
+                } catch (RepositoryObjectDeleted e){
+                    if(eDeleted == null){
+                        eDeleted = new RepositoryObjectDeleted(e.getObjects());
+                    }else{
+                        eDeleted.addObject(e.getObjects());
+                    }
+                }
             }
         }
 
@@ -170,6 +180,10 @@ public class Task extends RepositoryObject<Task> {
 
         for (Dev dev: tmp) {
             removeDev(dev);
+        }
+
+        if(eDeleted != null){
+            throw eDeleted;
         }
     }
 
@@ -200,38 +214,30 @@ public class Task extends RepositoryObject<Task> {
         tags.remove(tag);
     }
 
-    public void addDev(Dev dev) throws ExecutionException, InterruptedException, RepositoryObjectDeleted, RepositoryEditionConflict {
+    public void addDev(Dev dev) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
         System.out.println("Task:addDev id:"+dev.getId()+" n:"+dev.getFirstname());
         if(!devs.contains(dev)) {
-
-            System.out.println("adding");
-            devs.add(dev);
-
             if (repositoryManager != null) {
                 Dev repoDev = repositoryManager.getRepository().getDev(dev.getId());
+
                 if( repoDev == null){
-                    throw new RepositoryObjectDeleted();
+                    throw new RepositoryObjectDeleted(dev);
                 }
 
                 System.out.println("posting to repo");
+                devs.add(dev);
                 repositoryManager.getRepository().postDevTask(this, dev);
+            }else{
+                devs.add(dev);
             }
         }
     }
 
-    public void removeDev(Dev dev) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
+    public void removeDev(Dev dev) throws ExecutionException, InterruptedException {
         System.out.println("Task:removeDev id:"+dev.getId()+" n:"+dev.getFirstname());
-
         if (devs.remove(dev) && repositoryManager != null) {
-            Dev repoDev = repositoryManager.getRepository().getDev(dev.getId());
-
-            if( repoDev == null){
-                throw new RepositoryObjectDeleted();
-            }
-            System.out.println("deleting from repo");
             repositoryManager.getRepository().deleteDevTAsk(this, dev);
         }
-
     }
 
     public String getName() {

@@ -3,6 +3,7 @@ package io.taskmanager.core.repository;
 import io.taskmanager.core.RepositoryObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,4 +38,7 @@ public class RepositoryObjectManager <T extends RepositoryObject>{
         }
     }
 
+    public final List<T> getList() {
+        return Collections.unmodifiableList(list);
+    }
 }

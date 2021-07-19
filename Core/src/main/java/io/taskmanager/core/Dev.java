@@ -79,7 +79,7 @@ public class Dev extends RepositoryObject<Dev> {
     }
 
     @Override
-    protected boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict {
+    protected boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict, RepositoryObjectDeleted {
         if( !edited){
             System.out.println("Dev:myUpdateToRepo -> not edited");
             return true;
