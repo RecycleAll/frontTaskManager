@@ -358,19 +358,10 @@ public class TaskRepositoryApi implements TaskRepository {
 
     @Override
     public boolean postDevTask(int taskId, int devId) throws ExecutionException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(apiUrl + "/devTask"))
-                .timeout(Duration.ofSeconds(10))
-                .header("Content-Type", "application/json")
-                .POST( HttpRequest.BodyPublishers.ofString("{ " +
-                        "\"devId\":\""+devId+"\"," +
+        String json = "{\"devId\":\""+devId+"\"," +
                         "\"taskId\":\""+taskId+"\"" +
-                        "}"))
-                .build();
-
-        CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-
-        return projectsAsJson.get().statusCode() == 201 ;
+                        "}";
+        return postObject("/devTask", json, DevTaskModel.class) != null;
     }
 
     @Override
@@ -412,14 +403,7 @@ public class TaskRepositoryApi implements TaskRepository {
     @Override
     public boolean deleteDevTAsk(int taskId, int devId) throws ExecutionException, InterruptedException {
         DevTaskModel devTaskModel = getDevTask(taskId, devId);
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(apiUrl + "/devTask/" + devTaskModel.getId()))
-                .timeout(Duration.ofSeconds(10))
-                .DELETE()
-                .build();
-        CompletableFuture<HttpResponse<String>> projectsAsJson = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-
-        return projectsAsJson.get().statusCode() == 200;
+        return deleteObject("/devTask/" + devTaskModel.getId());
     }
 
     @Override

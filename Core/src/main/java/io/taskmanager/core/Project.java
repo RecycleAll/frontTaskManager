@@ -2,6 +2,7 @@ package io.taskmanager.core;
 
 import io.taskmanager.core.repository.RepositoryEditionConflict;
 import io.taskmanager.core.repository.RepositoryManager;
+import io.taskmanager.core.repository.RepositoryObjectDeleted;
 import io.taskmanager.core.repository.TaskRepository;
 
 import java.util.*;
@@ -151,7 +152,7 @@ public class Project extends RepositoryObject<Project> {
         }
     }
 
-    public void updateDevs(List<Dev> newDevs) throws ExecutionException, InterruptedException {
+    public void updateDevs(List<Dev> newDevs) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
         List<Dev> tmp = new ArrayList<>();
         for (Dev dev: newDevs) {
             if (!devs.containsKey(dev)){
@@ -174,7 +175,7 @@ public class Project extends RepositoryObject<Project> {
         devs.put(dev, devStatus);
     }
 
-    public void removeDev(Dev dev) throws ExecutionException, InterruptedException {
+    public void removeDev(Dev dev) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
         if( devs.remove(dev) != null){
             dev.removeProject(this);
             if( repositoryManager != null){

@@ -2,6 +2,7 @@ package io.taskmanager.core;
 
 import io.taskmanager.core.repository.RepositoryConflictHandler;
 import io.taskmanager.core.repository.RepositoryEditionConflict;
+import io.taskmanager.core.repository.RepositoryObjectDeleted;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -141,7 +142,7 @@ public class Dev extends RepositoryObject<Dev> {
         }
     }
 
-    public void removeProject(Project project) throws ExecutionException, InterruptedException {
+    public void removeProject(Project project) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
         if( projects.remove(project) ){
             project.removeDev(this);
         }

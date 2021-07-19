@@ -3,6 +3,7 @@ package io.taskmanager.ui.graphical;
 import io.taskmanager.core.*;
 import io.taskmanager.core.repository.RepositoryEditionConflict;
 import io.taskmanager.core.repository.RepositoryManager;
+import io.taskmanager.core.repository.RepositoryObjectDeleted;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -97,7 +98,7 @@ public class ProjectController extends BorderPane {
         columnHBox.getChildren().add( new ProjectColumnController(column.getRepository(), this, column));
     }
 
-    public void removeDev( ProjectDevController dev) throws ExecutionException, InterruptedException {
+    public void removeDev( ProjectDevController dev) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
         project.removeDev(dev.getDev());
         devsVBox.getChildren().remove(dev);
     }
@@ -122,7 +123,7 @@ public class ProjectController extends BorderPane {
 
     @FXML
     @SuppressWarnings("unused") //used by fxml
-    public void OnAddDev(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
+    public void OnAddDev(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException, RepositoryObjectDeleted {
         ArrayList<Dev> devs = (ArrayList<Dev>) repositoryManager.getRepository().getAllDev();
         System.out.println(devs);
         DevSelectorDialog dialog = new DevSelectorDialog(project, devs);

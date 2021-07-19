@@ -1,6 +1,7 @@
 package io.taskmanager.ui.graphical;
 
 import io.taskmanager.core.Dev;
+import io.taskmanager.core.repository.RepositoryObjectDeleted;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -54,7 +55,7 @@ public class ProjectDevController extends AnchorPane{
         lastNameLabel.setText( dev.getLastname());
     }
 
-    public void OnView(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
+    public void OnView(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException, RepositoryObjectDeleted {
         DevEditorDialog devEditorDialog = new DevEditorDialog(dev);
         Optional<Dev> res = devEditorDialog.showAndWait();
         if(res.isPresent()){

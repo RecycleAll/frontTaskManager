@@ -15,6 +15,7 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DevSelectorController extends DialogPane {
 
@@ -29,14 +30,14 @@ public class DevSelectorController extends DialogPane {
     @FXML
     public TableColumn<DevTableItem, Boolean> presentColumn;
 
-    private final ArrayList<Dev> devs;
+    private final List<Dev> devs;
 
-    public DevSelectorController(Project project, ArrayList<Dev> devs) throws IOException {
+    public DevSelectorController(Project project, ArrayList<Dev> alreadySelectedDev) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
-        this.devs = devs;
+        this.devs = project.getDevs();
 
         firstNameColumn.setCellValueFactory(devTableItemStringCellDataFeatures -> new SimpleStringProperty(devTableItemStringCellDataFeatures.getValue().dev.getFirstname()) );
         lastNameColumn.setCellValueFactory( devTableItemStringCellDataFeatures -> new SimpleStringProperty(devTableItemStringCellDataFeatures.getValue().dev.getLastname()) );
@@ -44,7 +45,7 @@ public class DevSelectorController extends DialogPane {
         presentColumn.setCellFactory( CheckBoxTableCell.forTableColumn(presentColumn));
 
         for (Dev dev :devs ) {
-            table.getItems().add( new DevTableItem( dev, project.getDevs().contains(dev)));
+            table.getItems().add( new DevTableItem( dev, alreadySelectedDev.contains(dev)));
         }
     }
 
@@ -67,6 +68,7 @@ public class DevSelectorController extends DialogPane {
 
     @FXML
     public void initialize() {
+
         Button applyButton = (Button) this.lookupButton(ButtonType.APPLY);
         applyButton.addEventFilter(ActionEvent.ACTION, actionEvent -> {
 
@@ -84,7 +86,7 @@ public class DevSelectorController extends DialogPane {
         table.maxHeightProperty().bind(table.prefHeightProperty());
     }
 
-    public ArrayList<Dev> getDevs(){
+    public List<Dev> getDevs(){
         return devs;
     }
 

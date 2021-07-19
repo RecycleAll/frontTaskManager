@@ -2,6 +2,7 @@ package io.taskmanager.core;
 
 import io.taskmanager.core.repository.RepositoryEditionConflict;
 import io.taskmanager.core.repository.RepositoryManager;
+import io.taskmanager.core.repository.RepositoryObjectDeleted;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -75,7 +76,7 @@ public class Column extends RepositoryObject<Column> {
         return null;
     }
 
-    public void removeDevFromAllTask(Dev dev) throws ExecutionException, InterruptedException {
+    public void removeDevFromAllTask(Dev dev) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
         for (Task task: tasks) {
             task.removeDev(dev);
         }

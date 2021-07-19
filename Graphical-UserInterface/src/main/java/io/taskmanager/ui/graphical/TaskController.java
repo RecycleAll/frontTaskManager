@@ -4,6 +4,7 @@ import io.taskmanager.core.*;
 import io.taskmanager.core.repository.RepositoryConflictHandler;
 import io.taskmanager.core.repository.RepositoryEditionConflict;
 import io.taskmanager.core.repository.RepositoryManager;
+import io.taskmanager.core.repository.RepositoryObjectDeleted;
 import io.taskmanager.ui.graphical.conflict.IObjectEditor;
 import io.taskmanager.ui.graphical.conflict.TaskConflictDialog;
 import javafx.beans.binding.Bindings;
@@ -15,6 +16,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -42,7 +44,7 @@ public class TaskController extends DialogPane implements IObjectEditor<Task> {
 
     private final SimpleBooleanProperty isNewTask;
 
-    private List<Dev> backUpDevList;
+    private List<Dev> editedDevList;
 
     public TaskController(RepositoryManager repository, Project project, Task task, boolean editable) throws IOException {
         this.repository = repository;
@@ -51,6 +53,7 @@ public class TaskController extends DialogPane implements IObjectEditor<Task> {
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
+
         setTask(task);
         this.project = project;
         setEditable(editable);
@@ -77,11 +80,6 @@ public class TaskController extends DialogPane implements IObjectEditor<Task> {
         this.getButtonTypes().add(removeButtonType);
         Button removeButton = (Button) this.lookupButton(removeButtonType);
         removeButton.visibleProperty().bind(Bindings.createBooleanBinding(() -> !isNewTask.get(), isNewTask));
-
-        Button cancelButton = (Button) this.lookupButton(ButtonType.CANCEL);
-        cancelButton.addEventFilter(ActionEvent.ACTION, actionEvent -> {
-            task.setDevs(backUpDevList);
-        });
 
         Button applyButton = (Button) this.lookupButton(ButtonType.APPLY);
         applyButton.addEventFilter(ActionEvent.ACTION, actionEvent -> {
@@ -118,13 +116,14 @@ public class TaskController extends DialogPane implements IObjectEditor<Task> {
         }else{
             this.task = newTask;
         }
-        backUpDevList = this.task.getDevs();
+
+        editedDevList = new ArrayList<>( this.task.getDevs());
 
         taskNameField.setText(this.task.getName());
         taskDescriptionArea.setText(this.task.getDescription());
         limitDatePicker.setValue( this.task.getLimitDate());
 
-        for (Dev dev: this.task.getDevs()) {
+        for (Dev dev: editedDevList) {
             addDevToFlowPane(dev);
         }
     }
@@ -133,18 +132,14 @@ public class TaskController extends DialogPane implements IObjectEditor<Task> {
         devsFlowPane.getChildren().remove(devButton);
     }
 
-    private void addDev(Dev dev){
-        addDevToFlowPane(dev);
-    }
-
-    private void setDevs(List<Dev> devs) throws ExecutionException, InterruptedException {
-        devsFlowPane.getChildren().remove(0, devsFlowPane.getChildren().size() - 1); // the last child id the add button
+    private void setDevs(List<Dev> devs) throws ExecutionException, InterruptedException, RepositoryEditionConflict, RepositoryObjectDeleted {
+        devsFlowPane.getChildren().remove(0, devsFlowPane.getChildren().size() - 1); // the last child is the add button
 
         for (Dev dev: devs ) {
             addDevToFlowPane(dev);
         }
 
-        task.updateDevs(devs);
+        editedDevList = devs;
     }
 
     private void addDevToFlowPane(Dev dev){
@@ -152,8 +147,8 @@ public class TaskController extends DialogPane implements IObjectEditor<Task> {
     }
 
     @FXML
-    public void OnAddDev(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
-        DevSelectorDialog dialog = new DevSelectorDialog( project, task);
+    public void OnAddDev(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException, RepositoryEditionConflict, RepositoryObjectDeleted {
+        DevSelectorDialog dialog = new DevSelectorDialog( project, editedDevList);
         Optional<List<Dev>> res = dialog.showAndWait();
 
         if( res.isPresent()){
@@ -190,6 +185,11 @@ public class TaskController extends DialogPane implements IObjectEditor<Task> {
             task.setName(taskNameField.getText());
             task.setDescription(taskDescriptionArea.getText());
             task.setLimitDate(limitDatePicker.getValue().atStartOfDay().toLocalDate());
+            try {
+                task.updateDevs(editedDevList);
+            } catch (ExecutionException | RepositoryObjectDeleted | RepositoryEditionConflict | InterruptedException e) {
+                e.printStackTrace();
+            }
             return true;
         }else{
             return false;

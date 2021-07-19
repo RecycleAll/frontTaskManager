@@ -154,7 +154,7 @@ public class Task extends RepositoryObject<Task> {
         this.devs = devs;
     }
 
-    public void updateDevs(List<Dev> newDevs) throws ExecutionException, InterruptedException {
+    public void updateDevs(List<Dev> newDevs) throws ExecutionException, InterruptedException, RepositoryObjectDeleted, RepositoryEditionConflict {
         List<Dev> tmp = new ArrayList<>();
         for (Dev dev: newDevs) {
             if (!devs.contains(dev)){
@@ -200,20 +200,38 @@ public class Task extends RepositoryObject<Task> {
         tags.remove(tag);
     }
 
-    public void addDev(Dev dev) throws ExecutionException, InterruptedException {
+    public void addDev(Dev dev) throws ExecutionException, InterruptedException, RepositoryObjectDeleted, RepositoryEditionConflict {
+        System.out.println("Task:addDev id:"+dev.getId()+" n:"+dev.getFirstname());
+        if(!devs.contains(dev)) {
 
-        List<Integer> devsId = repositoryManager.getRepository().getTaskDevsID(id);
+            System.out.println("adding");
+            devs.add(dev);
 
-        devs.add(dev);
-        if( repositoryManager != null){
-            repositoryManager.getRepository().postDevTask(this, dev);
+            if (repositoryManager != null) {
+                Dev repoDev = repositoryManager.getRepository().getDev(dev.getId());
+                if( repoDev == null){
+                    throw new RepositoryObjectDeleted();
+                }
+
+                System.out.println("posting to repo");
+                repositoryManager.getRepository().postDevTask(this, dev);
+            }
         }
     }
 
-    public void removeDev(Dev dev) throws ExecutionException, InterruptedException {
-        if( devs.remove(dev) && repositoryManager != null){
+    public void removeDev(Dev dev) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
+        System.out.println("Task:removeDev id:"+dev.getId()+" n:"+dev.getFirstname());
+
+        if (devs.remove(dev) && repositoryManager != null) {
+            Dev repoDev = repositoryManager.getRepository().getDev(dev.getId());
+
+            if( repoDev == null){
+                throw new RepositoryObjectDeleted();
+            }
+            System.out.println("deleting from repo");
             repositoryManager.getRepository().deleteDevTAsk(this, dev);
         }
+
     }
 
     public String getName() {
