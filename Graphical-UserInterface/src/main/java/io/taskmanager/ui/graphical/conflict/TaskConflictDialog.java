@@ -1,8 +1,8 @@
-package io.taskmanager.ui.graphical;
+package io.taskmanager.ui.graphical.conflict;
 
-import io.taskmanager.test.Project;
-import io.taskmanager.test.RepositoryConflictHandler;
-import io.taskmanager.test.Task;
+import io.taskmanager.core.Project;
+import io.taskmanager.core.repository.RepositoryConflictHandler;
+import io.taskmanager.core.Task;
 
 import java.io.IOException;
 

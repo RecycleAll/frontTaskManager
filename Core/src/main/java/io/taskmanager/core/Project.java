@@ -1,9 +1,13 @@
-package io.taskmanager.test;
+package io.taskmanager.core;
+
+import io.taskmanager.core.repository.RepositoryEditionConflict;
+import io.taskmanager.core.repository.RepositoryManager;
+import io.taskmanager.core.repository.TaskRepository;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
-public class Project extends ApiRequest<Project>{
+public class Project extends RepositoryObject<Project> {
 
     private String name;
     private String gitHubUrl;
@@ -117,7 +121,7 @@ public class Project extends ApiRequest<Project>{
 
     public void addColumn(Column column) throws ExecutionException, InterruptedException, RepositoryEditionConflict {
         System.out.println("addCOl"+ columns +" "+ column);
-        if( column.getProjectId() == ApiRequest.undefinedID && !columns.contains(column) ) {
+        if( column.getProjectId() == RepositoryObject.undefinedID && !columns.contains(column) ) {
             column.setProjectId(this.id);
             columns.add(column);
         }

@@ -1,9 +1,12 @@
-package io.taskmanager.test;
+package io.taskmanager.core;
+
+import io.taskmanager.core.repository.RepositoryConflictHandler;
+import io.taskmanager.core.repository.RepositoryEditionConflict;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-public class Dev extends ApiRequest<Dev>{
+public class Dev extends RepositoryObject<Dev> {
     private String firstname;
     private String lastname;
     private String email;

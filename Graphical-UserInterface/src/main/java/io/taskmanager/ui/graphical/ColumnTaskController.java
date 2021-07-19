@@ -1,9 +1,9 @@
 package io.taskmanager.ui.graphical;
 
-import io.taskmanager.test.Dev;
-import io.taskmanager.test.RepositoryEditionConflict;
-import io.taskmanager.test.RepositoryManager;
-import io.taskmanager.test.Task;
+import io.taskmanager.core.Dev;
+import io.taskmanager.core.repository.RepositoryEditionConflict;
+import io.taskmanager.core.repository.RepositoryManager;
+import io.taskmanager.core.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;

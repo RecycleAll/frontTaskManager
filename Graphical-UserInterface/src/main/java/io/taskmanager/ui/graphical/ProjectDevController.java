@@ -1,6 +1,6 @@
 package io.taskmanager.ui.graphical;
 
-import io.taskmanager.test.Dev;
+import io.taskmanager.core.Dev;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

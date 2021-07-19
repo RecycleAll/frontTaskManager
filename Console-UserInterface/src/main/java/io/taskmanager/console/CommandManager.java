@@ -1,6 +1,6 @@
 package io.taskmanager.console;
 
-import io.taskmanager.test.TaskRepository;
+import io.taskmanager.core.repository.TaskRepository;
 
 public class CommandManager {
     private String[] args;

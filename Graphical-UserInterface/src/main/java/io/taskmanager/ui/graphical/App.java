@@ -1,6 +1,7 @@
 package io.taskmanager.ui.graphical;
 
-import io.taskmanager.test.*;
+import io.taskmanager.core.*;
+import io.taskmanager.core.repository.RepositoryManager;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;

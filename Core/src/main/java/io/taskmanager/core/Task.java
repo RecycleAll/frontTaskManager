@@ -1,11 +1,15 @@
-package io.taskmanager.test;
+package io.taskmanager.core;
+
+import io.taskmanager.core.repository.RepositoryConflictHandler;
+import io.taskmanager.core.repository.RepositoryEditionConflict;
+import io.taskmanager.core.repository.RepositoryManager;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class Task extends ApiRequest<Task>{
+public class Task extends RepositoryObject<Task> {
 
     private String name;
     private String description;
@@ -15,7 +19,7 @@ public class Task extends ApiRequest<Task>{
     private List<Dev> devs;
     private List<Tag> tags;
 
-    public Task(RepositoryManager repository, int id, String name, String description, LocalDate limitDate,  List<Dev> devs, List<Tag> tags) {
+    public Task(RepositoryManager repository, int id, String name, String description, LocalDate limitDate, List<Dev> devs, List<Tag> tags) {
         super(repository);
         this.id = id;
         this.name = name;
@@ -147,7 +151,7 @@ public class Task extends ApiRequest<Task>{
             }
         }
 
-         for (Dev dev: tmp) {
+        for (Dev dev: tmp) {
             removeDev(dev);
         }
     }

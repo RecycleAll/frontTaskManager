@@ -1,4 +1,6 @@
-package io.taskmanager.test;
+package io.taskmanager.core.repository;
+
+import io.taskmanager.core.*;
 
 import java.util.List;
 import java.util.Map;
@@ -94,12 +96,12 @@ public class RepositoryManager {
 
             project.setColumns(cols);
             for (Column col: cols) {
-                List<Task> columnTasks = repository.getColumnTasks(col.id);
+                List<Task> columnTasks = repository.getColumnTasks(col.getId());
                 tasksManager.addObject(columnTasks);
                 col.setTasks(columnTasks);
 
                 for (Task task: columnTasks) {
-                    List<Integer> devsID = repository.getTaskDevsID(task.id);
+                    List<Integer> devsID = repository.getTaskDevsID(task.getId());
                     System.out.println(devsID.toString());
                     for (Integer id: devsID) {
                         task.addDev( getDev(id, false));

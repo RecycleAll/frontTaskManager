@@ -1,8 +1,8 @@
 package io.taskmanager.ui.graphical;
 
-import io.taskmanager.test.Dev;
-import io.taskmanager.test.DevStatus;
-import io.taskmanager.test.Project;
+import io.taskmanager.core.Dev;
+import io.taskmanager.core.DevStatus;
+import io.taskmanager.core.Project;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

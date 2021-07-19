@@ -1,8 +1,8 @@
 package io.taskmanager.ui.graphical;
 
-import io.taskmanager.test.Project;
-import io.taskmanager.test.RepositoryManager;
-import io.taskmanager.test.Task;
+import io.taskmanager.core.Project;
+import io.taskmanager.core.repository.RepositoryManager;
+import io.taskmanager.core.Task;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;

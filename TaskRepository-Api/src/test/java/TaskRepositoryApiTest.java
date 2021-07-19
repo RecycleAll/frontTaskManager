@@ -1,5 +1,5 @@
 import io.taskmanager.api.TaskRepositoryApi;
-import io.taskmanager.test.Column;
+import io.taskmanager.core.Column;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

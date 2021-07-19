@@ -1,8 +1,7 @@
 package io.taskmanager.ui.graphical;
 
-import io.taskmanager.test.Dev;
-import io.taskmanager.test.RepositoryConflictHandler;
-import io.taskmanager.test.RepositoryEditionConflict;
+import io.taskmanager.core.Dev;
+import io.taskmanager.ui.graphical.conflict.IObjectEditor;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,10 +12,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 
-public class DevEditorGrid extends GridPane implements IObjectEditor<Dev>{
+public class DevEditorGrid extends GridPane implements IObjectEditor<Dev> {
 
     private static final String FXML_FILE = "DevEditorGrid.fxml";
 

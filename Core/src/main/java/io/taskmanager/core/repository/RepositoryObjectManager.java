@@ -1,10 +1,12 @@
-package io.taskmanager.test;
+package io.taskmanager.core.repository;
+
+import io.taskmanager.core.RepositoryObject;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class RepositoryObjectManager <T extends ApiRequest>{
+public class RepositoryObjectManager <T extends RepositoryObject>{
 
     private TaskRepository repository;
     private final List<T> list;
@@ -15,7 +17,7 @@ public class RepositoryObjectManager <T extends ApiRequest>{
     }
 
     public T getObject(int id){
-        Optional<T> res = list.stream().filter(column -> column.id == id).findFirst();
+        Optional<T> res = list.stream().filter(column -> column.getId() == id).findFirst();
         if( res.isPresent()){
             return res.get();
         }else{
@@ -24,7 +26,7 @@ public class RepositoryObjectManager <T extends ApiRequest>{
     }
 
     public void addObject(T obj){
-        if( list.stream().filter(t -> t.id == obj.id).count() <= 0){
+        if( list.stream().filter(t -> t.getId() == obj.getId()).count() <= 0){
             list.add(obj);
         }
     }

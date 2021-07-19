@@ -1,6 +1,8 @@
-package io.taskmanager.test;
+package io.taskmanager.core.repository;
 
-public class RepositoryConflictHandler <T extends ApiRequest> {
+import io.taskmanager.core.RepositoryObject;
+
+public class RepositoryConflictHandler <T extends RepositoryObject> {
 
     private T local, repo, merged;
     private RepositoryManager repository;

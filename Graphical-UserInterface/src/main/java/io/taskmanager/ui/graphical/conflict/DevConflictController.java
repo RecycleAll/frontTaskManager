@@ -1,11 +1,13 @@
-package io.taskmanager.ui.graphical;
+package io.taskmanager.ui.graphical.conflict;
 
-import io.taskmanager.test.Dev;
-import io.taskmanager.test.RepositoryConflictHandler;
+import io.taskmanager.core.Dev;
+import io.taskmanager.core.repository.RepositoryConflictHandler;
+import io.taskmanager.ui.graphical.DevEditorGrid;
+import io.taskmanager.ui.graphical.conflict.RepositoryConflictController;
 
 import java.io.IOException;
 
-public class DevConflictController extends RepositoryConflictController<Dev>{
+public class DevConflictController extends RepositoryConflictController<Dev> {
 
     public DevConflictController(RepositoryConflictHandler<Dev> conflictHandler) throws IOException {
         super(conflictHandler);

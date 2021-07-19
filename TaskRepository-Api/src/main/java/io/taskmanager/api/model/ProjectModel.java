@@ -1,6 +1,6 @@
 package io.taskmanager.api.model;
 
-import io.taskmanager.test.Project;
+import io.taskmanager.core.Project;
 
 public class ProjectModel extends ObjectBaseModel<Project>{
 

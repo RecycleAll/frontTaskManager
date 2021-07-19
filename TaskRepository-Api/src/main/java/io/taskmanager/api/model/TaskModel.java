@@ -1,6 +1,6 @@
 package io.taskmanager.api.model;
 
-import io.taskmanager.test.Task;
+import io.taskmanager.core.Task;
 
 import java.time.LocalDate;
 

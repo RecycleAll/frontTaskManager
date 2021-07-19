@@ -1,6 +1,7 @@
 package io.taskmanager.ui.graphical;
 
-import io.taskmanager.test.*;
+import io.taskmanager.core.*;
+import io.taskmanager.core.repository.RepositoryManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

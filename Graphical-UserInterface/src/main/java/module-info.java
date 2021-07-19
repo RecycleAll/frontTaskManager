@@ -9,4 +9,6 @@ module Graphical.UserInterface {
 
     opens io.taskmanager.ui.graphical to javafx.fxml;
     exports io.taskmanager.ui.graphical;
+    exports io.taskmanager.ui.graphical.conflict;
+    opens io.taskmanager.ui.graphical.conflict to javafx.fxml;
 }

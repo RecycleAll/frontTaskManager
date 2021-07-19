@@ -2,8 +2,8 @@ package io.taslmanager.app;
 
 import io.taskmanager.api.TaskRepositoryApi;
 import io.taskmanager.console.CommandManager;
-import io.taskmanager.test.RepositoryManager;
-import io.taskmanager.test.TaskRepository;
+import io.taskmanager.core.repository.RepositoryManager;
+import io.taskmanager.core.repository.TaskRepository;
 import io.taskmanager.ui.graphical.App;
 
 public class TaskManagerApplication {

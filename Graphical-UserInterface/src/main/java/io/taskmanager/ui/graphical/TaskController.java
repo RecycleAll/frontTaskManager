@@ -1,6 +1,11 @@
 package io.taskmanager.ui.graphical;
 
-import io.taskmanager.test.*;
+import io.taskmanager.core.*;
+import io.taskmanager.core.repository.RepositoryConflictHandler;
+import io.taskmanager.core.repository.RepositoryEditionConflict;
+import io.taskmanager.core.repository.RepositoryManager;
+import io.taskmanager.ui.graphical.conflict.IObjectEditor;
+import io.taskmanager.ui.graphical.conflict.TaskConflictDialog;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
@@ -14,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
-public class TaskController extends DialogPane implements IObjectEditor<Task>{
+public class TaskController extends DialogPane implements IObjectEditor<Task> {
 
     private static final String FXML_FILE = "TaskController.fxml";
 

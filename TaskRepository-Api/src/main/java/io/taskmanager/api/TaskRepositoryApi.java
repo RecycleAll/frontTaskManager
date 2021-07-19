@@ -2,7 +2,10 @@ package io.taskmanager.api;
 
 import com.google.gson.*;
 import io.taskmanager.api.model.*;
-import io.taskmanager.test.*;
+import io.taskmanager.core.*;
+import io.taskmanager.core.repository.RepositoryManager;
+import io.taskmanager.core.RepositoryObject;
+import io.taskmanager.core.repository.TaskRepository;
 
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -70,7 +73,7 @@ public class TaskRepositoryApi implements TaskRepository {
         return "";
     }
 
-    private Class<? extends BaseModel> convertApiRequestTypeToBaseModel(Class<? extends ApiRequest> c){
+    private Class<? extends BaseModel> convertApiRequestTypeToBaseModel(Class<? extends RepositoryObject> c){
 
         if (Column.class.equals(c)) {
             return ColumnModel.class;
@@ -164,12 +167,12 @@ public class TaskRepositoryApi implements TaskRepository {
         return g.fromJson(json, (Type) c);
     }
 
-    public <T extends ApiRequest> T getObject(int id, Class<? extends ApiRequest> c) throws ExecutionException, InterruptedException {
+    public <T extends RepositoryObject> T getObject(int id, Class<? extends RepositoryObject> c) throws ExecutionException, InterruptedException {
         Class<? extends BaseModel> baseModelType =  convertApiRequestTypeToBaseModel(c);
         return getObject_(id, baseModelType);
     }
 
-    private <T extends ApiRequest> T getObject_(int id, Class<? extends BaseModel> baseModelType) throws ExecutionException, InterruptedException {
+    private <T extends RepositoryObject> T getObject_(int id, Class<? extends BaseModel> baseModelType) throws ExecutionException, InterruptedException {
         String requestStr = apiUrl + resolveUrlGetter(baseModelType) + id;
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -187,7 +190,7 @@ public class TaskRepositoryApi implements TaskRepository {
         return null;
     }
 
-    private <T extends ApiRequest> List<T> getObjectList(int id, Class<? extends BaseModel> baseModelType) throws ExecutionException, InterruptedException {
+    private <T extends RepositoryObject> List<T> getObjectList(int id, Class<? extends BaseModel> baseModelType) throws ExecutionException, InterruptedException {
         String requestStr = apiUrl + resolveUrlGetter(baseModelType) + id;
 
         HttpRequest request = HttpRequest.newBuilder()

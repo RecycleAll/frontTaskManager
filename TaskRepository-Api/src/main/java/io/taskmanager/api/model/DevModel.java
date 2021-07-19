@@ -1,8 +1,7 @@
 package io.taskmanager.api.model;
 
-import io.taskmanager.test.Dev;
+import io.taskmanager.core.Dev;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class DevModel extends ObjectBaseModel<Dev>{

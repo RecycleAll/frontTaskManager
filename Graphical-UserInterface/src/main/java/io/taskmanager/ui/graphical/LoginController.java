@@ -1,19 +1,15 @@
 package io.taskmanager.ui.graphical;
 
-import io.taskmanager.test.Dev;
-import io.taskmanager.test.RepositoryManager;
-import io.taskmanager.test.TaskRepository;
+import io.taskmanager.core.Dev;
+import io.taskmanager.core.repository.RepositoryManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 public class LoginController extends BorderPane {
 

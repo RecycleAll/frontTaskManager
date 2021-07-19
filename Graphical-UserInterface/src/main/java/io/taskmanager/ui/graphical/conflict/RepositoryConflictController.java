@@ -1,6 +1,8 @@
-package io.taskmanager.ui.graphical;
+package io.taskmanager.ui.graphical.conflict;
 
-import io.taskmanager.test.*;
+import io.taskmanager.core.repository.RepositoryConflictHandler;
+import io.taskmanager.core.RepositoryObject;
+import io.taskmanager.ui.graphical.App;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,7 +13,7 @@ import javafx.scene.layout.Pane;
 
 import java.io.IOException;
 
-public class RepositoryConflictController <T extends ApiRequest<?>> extends DialogPane{
+public class RepositoryConflictController <T extends RepositoryObject<?>> extends DialogPane{
 
     private static final String FXML_FILE = "RepoConflictController.fxml";
 

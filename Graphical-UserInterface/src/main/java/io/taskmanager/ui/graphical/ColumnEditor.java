@@ -1,8 +1,8 @@
 package io.taskmanager.ui.graphical;
 
-import io.taskmanager.test.Column;
-import io.taskmanager.test.RepositoryEditionConflict;
-import io.taskmanager.test.RepositoryManager;
+import io.taskmanager.core.Column;
+import io.taskmanager.core.repository.RepositoryEditionConflict;
+import io.taskmanager.core.repository.RepositoryManager;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;

@@ -1,8 +1,7 @@
 package io.taskmanager.api.model;
 
-import io.taskmanager.test.Column;
+import io.taskmanager.core.Column;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class ColumnModel extends ObjectBaseModel<Column>{

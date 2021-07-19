@@ -1,4 +1,6 @@
-package io.taskmanager.test;
+package io.taskmanager.core.repository;
+
+import io.taskmanager.core.*;
 
 import java.time.LocalDate;
 import java.util.List;

@@ -1,8 +1,8 @@
 package io.taskmanager.ui.graphical;
 
-import io.taskmanager.test.Dev;
-import io.taskmanager.test.Project;
-import io.taskmanager.test.Task;
+import io.taskmanager.core.Dev;
+import io.taskmanager.core.Project;
+import io.taskmanager.core.Task;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import org.jetbrains.annotations.NotNull;

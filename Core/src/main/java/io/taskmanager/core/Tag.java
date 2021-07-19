@@ -1,4 +1,4 @@
-package io.taskmanager.test;
+package io.taskmanager.core;
 
 public class Tag {
     private final int id;

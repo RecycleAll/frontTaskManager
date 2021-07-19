@@ -1,9 +1,12 @@
-package io.taskmanager.test;
+package io.taskmanager.core;
+
+import io.taskmanager.core.repository.RepositoryEditionConflict;
+import io.taskmanager.core.repository.RepositoryManager;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.ExecutionException;
 
-public abstract class ApiRequest<T> {
+public abstract class RepositoryObject<T> {
 
     public static final int undefinedID = -1;
 
@@ -12,13 +15,13 @@ public abstract class ApiRequest<T> {
     protected LocalDateTime updatedAt;
     protected boolean edited;
 
-    public ApiRequest(RepositoryManager repository) {
+    public RepositoryObject(RepositoryManager repository) {
         this.repositoryManager = repository;
         id = undefinedID;
         edited = false;
     }
 
-    public ApiRequest() {
+    public RepositoryObject() {
         this(null);
     }
 
@@ -64,10 +67,10 @@ public abstract class ApiRequest<T> {
         }
     }
 
-    public final boolean hasBeenUpdated(ApiRequest<T> other){
+    public final boolean hasBeenUpdated(RepositoryObject<T> other){
         return !updatedAt.isEqual(other.updatedAt);
     }
-    public boolean compare(ApiRequest<T> other){
+    public boolean compare(RepositoryObject<T> other){
         return id == other.id && updatedAt.isEqual(other.updatedAt);
     }
 

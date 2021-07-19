@@ -1,11 +1,14 @@
-package io.taskmanager.test;
+package io.taskmanager.core;
+
+import io.taskmanager.core.repository.RepositoryEditionConflict;
+import io.taskmanager.core.repository.RepositoryManager;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class Column extends ApiRequest<Column>{
+public class Column extends RepositoryObject<Column> {
 
     private int projectId;
     private String name;
@@ -48,7 +51,7 @@ public class Column extends ApiRequest<Column>{
 
     @Override
     protected boolean myPost() throws ExecutionException, InterruptedException {
-        return repositoryManager.getRepository().postColumn(this) != ApiRequest.undefinedID;
+        return repositoryManager.getRepository().postColumn(this) != RepositoryObject.undefinedID;
     }
 
     @Override
