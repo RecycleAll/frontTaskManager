@@ -35,10 +35,17 @@ public class Dev extends ApiRequest<Dev>{
         this(-1, "", "", "", "", 0);
     }
 
+    @Override
+    public boolean isConflict(Dev dev) {
+        return  !compare(dev) &&
+                updatedAt.isBefore(dev.updatedAt);
+    }
+
     public ArrayList<Project> getProjects() {
         return projects;
     }
 
+    @Override
     public void setAll(Dev dev){
         id = dev.id;
         firstname = dev.firstname;
@@ -46,6 +53,15 @@ public class Dev extends ApiRequest<Dev>{
         email = dev.email;
         password = dev.password;
         github_id = dev.github_id;
+    }
+
+    public boolean compare(Dev dev){
+        return  super.compare(dev) &&
+                firstname.equals(dev.firstname) &&
+                lastname.equals(dev.lastname) &&
+                email.equals(dev.email) &&
+                github_id == dev.github_id &&
+                password.equals(dev.password);
     }
 
     @Override
@@ -61,12 +77,15 @@ public class Dev extends ApiRequest<Dev>{
     @Override
     protected boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict {
         if( !edited){
+            System.out.println("Dev:myUpdateToRepo -> not edited");
             return true;
         }else{
             Dev dev = repositoryManager.getRepository().getDev(id);
-            if(!force && updatedAt.isBefore(dev.updatedAt)){
-                throw new RepositoryEditionConflict( new RepositoryConflictHandler<Dev>(this, dev, repositoryManager.getRepository()));
+            if(!force && isConflict(dev)){
+                System.out.println("Dev:myUpdateToRepo -> conflict");
+                throw new RepositoryEditionConflict( new RepositoryConflictHandler<Dev>(this, dev,  repositoryManager));
             }else {
+                System.out.println("Dev:myUpdateToRepo -> no conflict (f:"+force+")");
                 return repositoryManager.getRepository().updateDev(this);
             }
         }

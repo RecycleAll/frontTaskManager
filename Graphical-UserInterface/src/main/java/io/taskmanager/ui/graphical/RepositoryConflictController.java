@@ -1,10 +1,11 @@
 package io.taskmanager.ui.graphical;
 
-import io.taskmanager.test.ApiRequest;
-import io.taskmanager.test.Dev;
-import io.taskmanager.test.RepositoryConflictHandler;
+import io.taskmanager.test.*;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.layout.Pane;
 
@@ -16,8 +17,9 @@ public class RepositoryConflictController <T extends ApiRequest<?>> extends Dial
 
     @FXML
     public Pane localPane, mergedPane, repoPane;
-
+    RepositoryConflictHandler<T> conflictHandler;
     T mergedObject;
+
     IObjectEditor<T> objectEditor;
 
     public RepositoryConflictController(RepositoryConflictHandler<T> conflictHandler) throws IOException {
@@ -25,19 +27,19 @@ public class RepositoryConflictController <T extends ApiRequest<?>> extends Dial
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
+        this.conflictHandler = conflictHandler;
+    }
 
-        if(conflictHandler.getRepo() instanceof Dev repoDev){
-            //localPane.add( new DevEditorGrid((Dev) conflictHandler.getRepo()), 0, 1);
-            Dev localDev = (Dev) conflictHandler.getLocal();
-            mergedObject = (T) localDev.merge(repoDev);
+    @FXML
+    public void initialize() {
+        Button applyButton = (Button) this.lookupButton(ButtonType.APPLY);
+        applyButton.addEventFilter(ActionEvent.ACTION, actionEvent -> {
 
-            localPane.getChildren().add( new DevEditorGrid( localDev , false));
-            repoPane.getChildren().add( new DevEditorGrid( repoDev, false));
-            DevEditorGrid mergedEditor = new DevEditorGrid( (Dev)mergedObject);
-            objectEditor = (IObjectEditor<T>) mergedEditor;
-            mergedPane.getChildren().add( mergedEditor );
+            if( !objectEditor.validateChange()){
+                actionEvent.consume();
+            }
 
-        }
+        });
     }
 
     public T getMerged(){

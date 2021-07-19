@@ -69,9 +69,9 @@ public class ColumnTaskController extends BorderPane {
     public void OnView(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException, RepositoryEditionConflict {
         TaskDialog dialog = new TaskDialog(repository, projectColumnController.getProject(), task);
         Optional<Task> res = dialog.showAndWait();
-
+        System.out.println("res:isPresent -> "+res.isPresent());
         if( res.isPresent()){
-            res.get().updateToRepo();
+            System.out.println("res:name -> "+res.get().getName());
             updateUI();
         }
         else if(dialog.isShouldBeDelete()){

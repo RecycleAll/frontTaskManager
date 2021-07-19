@@ -1,6 +1,5 @@
 package io.taskmanager.test;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.concurrent.ExecutionException;
 
@@ -65,9 +64,14 @@ public abstract class ApiRequest<T> {
         }
     }
 
-    public final boolean hasBeenUpdated(ApiRequest other){
+    public final boolean hasBeenUpdated(ApiRequest<T> other){
         return !updatedAt.isEqual(other.updatedAt);
     }
+    public boolean compare(ApiRequest<T> other){
+        return id == other.id && updatedAt.isEqual(other.updatedAt);
+    }
+
+    public abstract boolean isConflict(T other);
 
     protected abstract boolean myPost() throws ExecutionException, InterruptedException;
     protected abstract boolean myDelete() throws ExecutionException, InterruptedException;
@@ -102,4 +106,6 @@ public abstract class ApiRequest<T> {
             //TODO
         }
     }
+
+    public abstract void setAll(T object);
 }

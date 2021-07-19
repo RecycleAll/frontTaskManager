@@ -42,6 +42,11 @@ public class Column extends ApiRequest<Column>{
     }
 
     @Override
+    public boolean isConflict(Column other) {
+        return false;
+    }
+
+    @Override
     protected boolean myPost() throws ExecutionException, InterruptedException {
         return repositoryManager.getRepository().postColumn(this) != ApiRequest.undefinedID;
     }
@@ -114,6 +119,11 @@ public class Column extends ApiRequest<Column>{
 
     public int getId() {
         return id;
+    }
+
+    @Override
+    public void setAll(Column object) {
+
     }
 
     public int getProjectId() {

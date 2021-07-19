@@ -35,6 +35,11 @@ public class Project extends ApiRequest<Project>{
     }
 
     @Override
+    public boolean isConflict(Project other) {
+        return false;
+    }
+
+    @Override
     protected boolean myPost() throws ExecutionException, InterruptedException {
         return false;
     }
@@ -92,6 +97,11 @@ public class Project extends ApiRequest<Project>{
 
     public int getId() {
         return id;
+    }
+
+    @Override
+    public void setAll(Project object) {
+
     }
 
     public Column addNewColumn(String name) throws ExecutionException, InterruptedException {

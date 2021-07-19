@@ -15,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<fx:root headerText="Task Editor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" type="DialogPane" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root headerText="Task Editor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" type="DialogPane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <buttonTypes>
       <ButtonType fx:constant="CANCEL" />
       <ButtonType fx:constant="APPLY" />
@@ -65,7 +65,7 @@
             </Label>
             <FlowPane fx:id="devsFlowPane" hgap="10.0" style="-fx-border-width: 1; -fx-border-color: gray;" vgap="10.0">
                <children>
-                  <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#OnAddDev" prefHeight="33.0" text="add Dev">
+                  <Button fx:id="selectDevButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#OnAddDev" prefHeight="33.0" text="add Dev">
                      <graphic>
                         <FontIcon iconLiteral="anto-plus-circle" iconSize="25" />
                      </graphic>

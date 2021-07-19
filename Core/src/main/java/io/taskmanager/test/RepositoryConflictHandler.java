@@ -3,9 +3,9 @@ package io.taskmanager.test;
 public class RepositoryConflictHandler <T extends ApiRequest> {
 
     private T local, repo, merged;
-    private TaskRepository repository;
+    private RepositoryManager repository;
 
-    public RepositoryConflictHandler(T local, T repo, TaskRepository repository) {
+    public RepositoryConflictHandler(T local, T repo, RepositoryManager repository) {
         this.local = local;
         this.repo = repo;
         this.repository = repository;
@@ -19,7 +19,7 @@ public class RepositoryConflictHandler <T extends ApiRequest> {
         return repo;
     }
 
-    public TaskRepository getRepository() {
+    public RepositoryManager getRepository() {
         return repository;
     }
 }

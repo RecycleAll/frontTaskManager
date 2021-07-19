@@ -1,14 +1,12 @@
 package io.taskmanager.test;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class Task extends ApiRequest<Task>{
 
-    private int columnId;
     private String name;
     private String description;
 
@@ -39,6 +37,16 @@ public class Task extends ApiRequest<Task>{
         this(repository, 0, "", "",  null, new ArrayList<>(), new ArrayList<>());
     }
 
+    public Task(){
+        this((RepositoryManager) null);
+    }
+
+    @Override
+    public boolean isConflict(Task other) {
+        return !compare(other) &&
+                updatedAt.isBefore(other.updatedAt);
+    }
+
 
     @Override
     protected boolean myPost() throws ExecutionException, InterruptedException {
@@ -51,20 +59,65 @@ public class Task extends ApiRequest<Task>{
     }
 
     @Override
-    protected boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException {
-        return repositoryManager.getRepository().updateTask(this);
+    protected boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict {
+        if(!edited){
+            System.out.println("Task:myUpdateToRepo -> not edited");
+            return true;
+        }else{
+            Task task = repositoryManager.getRepository().getTask(id);
+            System.out.println("Task: myUpdateToRepo ->\nlocal: "+updatedAt+"\nrepo: "+task.updatedAt);
+            if(!force && isConflict(task)){
+                System.out.println("Task:myUpdateToRepo ->conflict");
+                throw new RepositoryEditionConflict( new RepositoryConflictHandler<Task>(this, task, repositoryManager));
+            }else{
+                System.out.println("Task:myUpdateToRepo -> no conflict (f:"+force+")");
+                return repositoryManager.getRepository().updateTask(this);
+            }
+        }
     }
 
     @Override
     protected boolean myUpdateFromRepo() {
-
-
         return false;
     }
 
+    public boolean compare(Task task){
+        if(devs != null && task.devs != null){
+            if( devs.size() != task.devs.size()){
+                return false;
+            }else {
+                if( devs.stream().anyMatch(dev -> task.devs.stream().anyMatch(dev1 -> dev.id != dev1.id)) ){
+                    return false;
+                }
+            }
+        }else if(devs != task.devs){
+            return false;
+        }
+
+        return  name.equals(task.name) &&
+                description.equals(task.description) &&
+                limitDate.isEqual(task.limitDate);
+    }
+
     @Override
-    public Task merge(Task other){
-        return null;
+    public Task merge(Task task){
+        if(id != task.id){
+            return null;
+        }else {
+            Task mergedTask = new Task();
+            mergedTask.setId(id);
+
+            if (name.equals(task.name))
+                mergedTask.setName(name);
+
+            if (description.equals(task.description))
+                mergedTask.setDescription(description);
+
+            if (limitDate.isEqual(task.limitDate))
+                mergedTask.setLimitDate(limitDate);
+
+            return mergedTask;
+        }
     }
 
     public Task(RepositoryManager repository, Task task){
@@ -111,6 +164,13 @@ public class Task extends ApiRequest<Task>{
         return id;
     }
 
+    @Override
+    public void setAll(Task task) {
+        id = task.id;
+        name = task.name;
+        description = task.description;
+    }
+
     public void addTag(Tag tag){
         tags.add(tag);
     }
@@ -138,6 +198,7 @@ public class Task extends ApiRequest<Task>{
 
     public void setName(String name) {
         this.name = name;
+        edited = true;
     }
 
     public String getDescription() {
@@ -146,6 +207,7 @@ public class Task extends ApiRequest<Task>{
 
     public void setDescription(String description) {
         this.description = description;
+        edited = true;
     }
 
 
@@ -155,5 +217,6 @@ public class Task extends ApiRequest<Task>{
 
     public void setLimitDate(LocalDate limitDate){
         this.limitDate = limitDate;
+        edited = true;
     }
 }

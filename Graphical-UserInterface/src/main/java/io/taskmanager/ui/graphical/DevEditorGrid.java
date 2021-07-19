@@ -115,6 +115,11 @@ public class DevEditorGrid extends GridPane implements IObjectEditor<Dev>{
     }
 
     @Override
+    public boolean applyChange() {
+        return false;
+    }
+
+    @Override
     public Dev getEditedObject() {
         if( validateChange()) {
             return dev;

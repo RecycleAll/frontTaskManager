@@ -57,8 +57,9 @@ public class DevEditorController extends DialogPane{
                } catch (ExecutionException | InterruptedException e) {
                    e.printStackTrace();
                } catch (RepositoryEditionConflict repositoryEditionConflict) {
+                   System.out.println("catch");
                    try {
-                       RepositoryConflictDialog<Dev> dialog = new RepositoryConflictDialog<>((RepositoryConflictHandler<Dev>) repositoryEditionConflict.getConflictHandler());
+                       RepositoryConflictDialog<Dev> dialog = new RepositoryConflictDialog<Dev>( new DevConflictController( (RepositoryConflictHandler<Dev>) repositoryEditionConflict.getConflictHandler()) );
 
                        Optional<Dev> res = dialog.showAndWait();
                        if (res.isPresent()) {
