@@ -3,6 +3,7 @@ package io.taskmanager.core;
 import io.taskmanager.core.repository.RepositoryConflictHandler;
 import io.taskmanager.core.repository.RepositoryEditionConflict;
 import io.taskmanager.core.repository.RepositoryManager;
+import io.taskmanager.core.repository.RepositoryObjectDeleted;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,6 +11,8 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class Task extends RepositoryObject<Task> {
+
+    private Project project;
 
     private String name;
     private String description;
@@ -81,8 +84,22 @@ public class Task extends RepositoryObject<Task> {
     }
 
     @Override
-    protected boolean myUpdateFromRepo() {
-        return false;
+    protected boolean myUpdateFromRepo() throws RepositoryEditionConflict, ExecutionException, InterruptedException, RepositoryObjectDeleted {
+        Task task = repositoryManager.getRepository().getTask(id);
+        if( edited){
+            System.out.println("Task:myUpdateFromRepo -> edited");
+            throw new RepositoryEditionConflict( new RepositoryConflictHandler<Task>(this, task, repositoryManager));
+        }else if(task == null){
+            throw new RepositoryObjectDeleted();
+        }else{
+            System.out.println("Task:myUpdateFromRepo -> no conflict");
+            setAll(task);
+
+            List<Integer> devsId = repositoryManager.getRepository().getTaskDevsID(id);
+
+            edited = false;
+            return true;
+        }
     }
 
     public boolean compare(Task task){
@@ -184,6 +201,9 @@ public class Task extends RepositoryObject<Task> {
     }
 
     public void addDev(Dev dev) throws ExecutionException, InterruptedException {
+
+        List<Integer> devsId = repositoryManager.getRepository().getTaskDevsID(id);
+
         devs.add(dev);
         if( repositoryManager != null){
             repositoryManager.getRepository().postDevTask(this, dev);

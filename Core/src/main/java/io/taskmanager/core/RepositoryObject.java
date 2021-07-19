@@ -2,6 +2,7 @@ package io.taskmanager.core;
 
 import io.taskmanager.core.repository.RepositoryEditionConflict;
 import io.taskmanager.core.repository.RepositoryManager;
+import io.taskmanager.core.repository.RepositoryObjectDeleted;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.ExecutionException;
@@ -59,7 +60,7 @@ public abstract class RepositoryObject<T> {
         }
     }
 
-    public final boolean updateFromRepo() throws ExecutionException, InterruptedException, RepositoryEditionConflict {
+    public final boolean updateFromRepo() throws ExecutionException, InterruptedException, RepositoryEditionConflict, RepositoryObjectDeleted {
         if (isInRepo() && repositoryManager != null){
             return myUpdateFromRepo();
         }else{
@@ -79,7 +80,7 @@ public abstract class RepositoryObject<T> {
     protected abstract boolean myPost() throws ExecutionException, InterruptedException;
     protected abstract boolean myDelete() throws ExecutionException, InterruptedException;
     protected abstract boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict;
-    protected abstract boolean myUpdateFromRepo() throws ExecutionException, InterruptedException;
+    protected abstract boolean myUpdateFromRepo() throws ExecutionException, InterruptedException, RepositoryEditionConflict, RepositoryObjectDeleted;
     public abstract T merge(T other);
 
     public void setId(int id) {
