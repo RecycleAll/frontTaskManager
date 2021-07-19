@@ -13,8 +13,8 @@ import java.util.List;
 
 public class DevSelectorDialog extends Dialog<List<Dev>> {
 
-    public DevSelectorDialog(@NotNull Project project, List<Dev> devs) throws IOException {
-        DevSelectorController controller = new DevSelectorController( project.getDevs(), new ArrayList<>( devs));
+    public DevSelectorDialog(List<Dev> selectableDevs, List<Dev> selectedDevs) throws IOException {
+        DevSelectorController controller = new DevSelectorController( selectableDevs, new ArrayList<>( selectedDevs));
         this.setDialogPane( controller);
 
         setResultConverter(buttonType -> {

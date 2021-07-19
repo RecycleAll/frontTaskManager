@@ -2,7 +2,6 @@ package io.taskmanager.core.repository;
 
 import io.taskmanager.core.*;
 
-import java.util.Formattable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -80,8 +79,10 @@ public class RepositoryManager {
         return dev;
     }
 
-    public List<Dev> getAllDev(){
-        return null;
+    public List<Dev> getAllDev() throws ExecutionException, InterruptedException {
+        List<Dev> devs = repository.getAllDev();
+        devsManager.addObject(devs);
+        return devsManager.getList();
     }
 
     public void removeDev(Dev dev) throws ExecutionException, RepositoryObjectDeleted, InterruptedException {

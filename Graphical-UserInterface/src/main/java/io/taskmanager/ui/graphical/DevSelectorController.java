@@ -37,14 +37,14 @@ public class DevSelectorController extends DialogPane {
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
-        this.devs = selectableDev;
+        this.devs = alreadySelectedDev;
 
         firstNameColumn.setCellValueFactory(devTableItemStringCellDataFeatures -> new SimpleStringProperty(devTableItemStringCellDataFeatures.getValue().dev.getFirstname()) );
         lastNameColumn.setCellValueFactory( devTableItemStringCellDataFeatures -> new SimpleStringProperty(devTableItemStringCellDataFeatures.getValue().dev.getLastname()) );
         presentColumn.setCellValueFactory(devTableItemBooleanCellDataFeatures -> devTableItemBooleanCellDataFeatures.getValue().isSelected );
         presentColumn.setCellFactory( CheckBoxTableCell.forTableColumn(presentColumn));
 
-        for (Dev dev :devs ) {
+        for (Dev dev :selectableDev ) {
             table.getItems().add( new DevTableItem( dev, alreadySelectedDev.contains(dev)));
         }
     }

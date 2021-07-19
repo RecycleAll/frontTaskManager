@@ -149,7 +149,7 @@ public class TaskController extends DialogPane implements IObjectEditor<Task> {
 
     @FXML
     public void OnAddDev(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException, RepositoryEditionConflict, RepositoryObjectDeleted {
-        DevSelectorDialog dialog = new DevSelectorDialog( project, editedDevList);
+        DevSelectorDialog dialog = new DevSelectorDialog( project.getDevs(), editedDevList);
         Optional<List<Dev>> res = dialog.showAndWait();
 
         if( res.isPresent()){

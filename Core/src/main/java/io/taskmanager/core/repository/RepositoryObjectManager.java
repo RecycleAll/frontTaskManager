@@ -27,7 +27,7 @@ public class RepositoryObjectManager <T extends RepositoryObject>{
     }
 
     public void addObject(T obj){
-        if( list.stream().filter(t -> t.getId() == obj.getId()).count() <= 0){
+        if(list.stream().noneMatch(t -> t.getId() == obj.getId())){
             list.add(obj);
         }
     }

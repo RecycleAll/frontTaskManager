@@ -126,7 +126,7 @@ public class ProjectController extends BorderPane {
     public void OnAddDev(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException, RepositoryObjectDeleted {
         ArrayList<Dev> devs = (ArrayList<Dev>) repositoryManager.getRepository().getAllDev();
         System.out.println(devs);
-        DevSelectorDialog dialog = new DevSelectorDialog(project, devs);
+        DevSelectorDialog dialog = new DevSelectorDialog(repositoryManager.getAllDev(), project.getDevs());
 
         Optional<List<Dev>> res = dialog.showAndWait();
         if(res.isPresent()){
