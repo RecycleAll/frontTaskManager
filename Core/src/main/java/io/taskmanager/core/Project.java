@@ -122,8 +122,14 @@ public class Project extends RepositoryObject<Project> {
 
     public void addColumn(Column column) throws ExecutionException, InterruptedException, RepositoryEditionConflict {
         System.out.println("addCOl"+ columns +" "+ column);
-        if( column.getProjectId() == RepositoryObject.undefinedID && !columns.contains(column) ) {
+        if( !columns.contains(column) ) {
+
             column.setProjectId(this.id);
+
+            if(repositoryManager != null){
+                repositoryManager.getRepository().postColumn(column);
+            }
+
             columns.add(column);
         }
     }
