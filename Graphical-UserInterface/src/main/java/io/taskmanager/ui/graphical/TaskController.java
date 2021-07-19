@@ -112,7 +112,7 @@ public class TaskController extends DialogPane implements IObjectEditor<Task> {
 
     public void setTask(Task newTask) {
         if( newTask == null){
-            this.task = new Task(repository);
+            this.task = new Task();
             isNewTask.set(true);
         }else{
             this.task = newTask;

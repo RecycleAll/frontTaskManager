@@ -48,6 +48,12 @@ public class RepositoryManager {
         return col;
     }
 
+    public void removeColumn(Column column) throws ExecutionException, RepositoryObjectDeleted, InterruptedException {
+        for (Project project: projectsManager.getList()) {
+            project.removeColumn(column);
+        }
+    }
+
     public Task getTask(int id) throws ExecutionException, InterruptedException{
         Task obj = tasksManager.getObject(id);
         if(obj == null){

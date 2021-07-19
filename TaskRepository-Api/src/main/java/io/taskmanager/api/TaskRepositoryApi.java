@@ -520,7 +520,11 @@ public class TaskRepositoryApi implements TaskRepository {
     @Override
     public Task getTask(int id) throws ExecutionException, InterruptedException {
         TaskModel model = getObject2("/task/one/"+id, TaskModel.class);
-        return model.convert();
+        if( model != null) {
+            return model.convert();
+        }else{
+            return null;
+        }
     }
 
     @Override

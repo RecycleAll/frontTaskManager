@@ -1,9 +1,12 @@
 package io.taskmanager.ui.graphical;
 import io.taskmanager.core.*;
 import io.taskmanager.core.repository.RepositoryManager;
+import io.taskmanager.core.repository.RepositoryObjectDeleted;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
@@ -79,10 +82,24 @@ public class ProjectColumnController extends ScrollPane{
     public void OnAddTask(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
         TaskDialog dialog = new TaskDialog(repository, getProject());
         Optional<Task> res = dialog.showAndWait();
+
         if(res.isPresent()){
             Task task = res.get();
-            task = column.addNewTask(task.getName(), task.getDescription(), task.getLimitDate());
-            addTask(task);
+            try {
+                column.addTask(task);
+                addTask(task);
+            } catch (RepositoryObjectDeleted repositoryObjectDeleted) {
+                Column column = (Column) repositoryObjectDeleted.getObjects().get(0);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "The Column "+column.getName()+" has been deleted from the repo", ButtonType.OK);
+                alert.showAndWait();
+
+                try {
+                    repository.removeColumn(column);
+                    projectController.removeColumn(this);
+                } catch (RepositoryObjectDeleted objectDeleted) {
+                    objectDeleted.printStackTrace();
+                }
+            }
         }
     }
 

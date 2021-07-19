@@ -44,6 +44,15 @@ public class Task extends RepositoryObject<Task> {
         this(repository, 0, "", "",  null, new ArrayList<>(), new ArrayList<>());
     }
 
+    public Task(RepositoryManager repository, Task task){
+        this(repository, task.getId(), task.getName(), task.getDescription(),  task.getLimitDate(),  task.getDevs(), task.tags);
+    }
+
+    public Task(Task task){
+        this(task.repositoryManager, task.getId(), task.getName(), task.getDescription(),  task.getLimitDate(), task.getDevs(), task.tags);
+        System.out.println("dev size from copy: "+ devs.size());
+    }
+
     public Task(){
         this((RepositoryManager) null);
     }
@@ -95,8 +104,6 @@ public class Task extends RepositoryObject<Task> {
             System.out.println("Task:myUpdateFromRepo -> no conflict");
             setAll(task);
 
-            List<Integer> devsId = repositoryManager.getRepository().getTaskDevsID(id);
-
             edited = false;
             return true;
         }
@@ -139,15 +146,6 @@ public class Task extends RepositoryObject<Task> {
 
             return mergedTask;
         }
-    }
-
-    public Task(RepositoryManager repository, Task task){
-        this(repository, task.getId(), task.getName(), task.getDescription(),  task.getLimitDate(),  task.getDevs(), task.tags);
-    }
-
-    public Task(Task task){
-        this(task.repositoryManager, task.getId(), task.getName(), task.getDescription(),  task.getLimitDate(), task.getDevs(), task.tags);
-        System.out.println("dev size from copy: "+ devs.size());
     }
 
     public void setDevs(List<Dev> devs) {

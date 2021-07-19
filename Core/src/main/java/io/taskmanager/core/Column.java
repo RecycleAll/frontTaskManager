@@ -86,14 +86,25 @@ public class Column extends RepositoryObject<Column> {
         this.tasks = tasks;
     }
 
-    public void addTask(Task task) throws ExecutionException, InterruptedException {
-        tasks.add(task);
-        if( repositoryManager != null){
-            repositoryManager.getRepository().postTask(task, id);
+    public void addTask(Task task) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
+
+        if(!tasks.contains(task)){
+            if( repositoryManager != null){
+                Column column = repositoryManager.getRepository().getColumn(id);
+
+                if( column == null){
+                    throw  new RepositoryObjectDeleted(this);
+                }
+
+                tasks.add(task);
+                repositoryManager.getRepository().postTask(task, id);
+            }else{
+                tasks.add(task);
+            }
         }
     }
 
-    public void addTask(List<Task> tasks) throws ExecutionException, InterruptedException {
+    public void addTask(List<Task> tasks) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
         for (Task task: tasks) {
             addTask(task);
         }

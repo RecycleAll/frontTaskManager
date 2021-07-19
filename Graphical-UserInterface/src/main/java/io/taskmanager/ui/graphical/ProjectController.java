@@ -35,7 +35,7 @@ public class ProjectController extends BorderPane {
     private RepositoryManager repositoryManager;
 
     private Project project;
-    private int loggedDevId;
+    private final int loggedDevId;
 
     public ProjectController(RepositoryManager repository, Project project, int loggedDevId) throws IOException, ExecutionException, InterruptedException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
