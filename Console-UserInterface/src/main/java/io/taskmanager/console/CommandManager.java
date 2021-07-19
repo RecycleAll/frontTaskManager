@@ -4,19 +4,18 @@ import io.taskmanager.test.Dev;
 import io.taskmanager.test.TaskRepository;
 
 import java.io.Console;
-import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 public class CommandManager {
     private final String[] args;
     private final TaskRepository taskRepository;
 
-    public CommandManager(String[] args, TaskRepository taskRepository){
+    public CommandManager(String[] args, TaskRepository taskRepository) {
         this.args = args;
         this.taskRepository = taskRepository;
     }
 
-    public void apply(){
+    public void apply() {
         switch (args[0]) {
             case "show" -> show();
             case "create" -> create();
@@ -24,7 +23,7 @@ public class CommandManager {
         }
     }
 
-    private void show(){
+    private void show() {
         switch (args[1]) {
             case "dev" -> showDev();
             case "project" -> showProjects();
@@ -70,7 +69,7 @@ public class CommandManager {
         }
     }
 
-    private void create(){
+    private void create() {
         switch (args[1]) {
             case "dev" -> createDev();
             case "project" -> createProject();
@@ -95,7 +94,7 @@ public class CommandManager {
 
     }
 
-    private void update(){
+    private void update() {
         switch (args[1]) {
             case "dev" -> updateDev();
             case "project" -> updateProject();
@@ -126,6 +125,6 @@ public class CommandManager {
         String login = console.readLine();
         System.out.println("Enter your password:");
         String password = String.valueOf(console.readPassword());
-        return taskRepository.loginDev(login,password);
+        return taskRepository.loginDev(login, password);
     }
 }
