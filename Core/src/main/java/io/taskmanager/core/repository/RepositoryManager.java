@@ -79,6 +79,11 @@ public class RepositoryManager {
         }
         return dev;
     }
+
+    public List<Dev> getAllDev(){
+        return null;
+    }
+
     public void removeDev(Dev dev) throws ExecutionException, RepositoryObjectDeleted, InterruptedException {
         for (Project project: projectsManager.getList()) {
             project.removeDev(dev);

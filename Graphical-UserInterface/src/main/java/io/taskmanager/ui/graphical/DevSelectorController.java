@@ -32,12 +32,12 @@ public class DevSelectorController extends DialogPane {
 
     private final List<Dev> devs;
 
-    public DevSelectorController(Project project, ArrayList<Dev> alreadySelectedDev) throws IOException {
+    public DevSelectorController(List<Dev> selectableDev, List<Dev> alreadySelectedDev) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
-        this.devs = project.getDevs();
+        this.devs = selectableDev;
 
         firstNameColumn.setCellValueFactory(devTableItemStringCellDataFeatures -> new SimpleStringProperty(devTableItemStringCellDataFeatures.getValue().dev.getFirstname()) );
         lastNameColumn.setCellValueFactory( devTableItemStringCellDataFeatures -> new SimpleStringProperty(devTableItemStringCellDataFeatures.getValue().dev.getLastname()) );
@@ -46,23 +46,6 @@ public class DevSelectorController extends DialogPane {
 
         for (Dev dev :devs ) {
             table.getItems().add( new DevTableItem( dev, alreadySelectedDev.contains(dev)));
-        }
-    }
-
-    public DevSelectorController(Project project, Task task) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
-        fxmlLoader.setController(this);
-        fxmlLoader.setRoot(this);
-        fxmlLoader.load();
-        this.devs = (ArrayList<Dev>) project.getDevs();
-
-        firstNameColumn.setCellValueFactory(devTableItemStringCellDataFeatures -> new SimpleStringProperty(devTableItemStringCellDataFeatures.getValue().dev.getFirstname()) );
-        lastNameColumn.setCellValueFactory( devTableItemStringCellDataFeatures -> new SimpleStringProperty(devTableItemStringCellDataFeatures.getValue().dev.getLastname()) );
-        presentColumn.setCellValueFactory(devTableItemBooleanCellDataFeatures -> devTableItemBooleanCellDataFeatures.getValue().isSelected );
-        presentColumn.setCellFactory( CheckBoxTableCell.forTableColumn(presentColumn));
-
-        for (Dev dev :project.getDevs() ) {
-            table.getItems().add( new DevTableItem( dev, task.getDevs().contains(dev)));
         }
     }
 
