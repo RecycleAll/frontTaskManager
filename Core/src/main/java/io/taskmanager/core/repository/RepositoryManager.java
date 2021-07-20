@@ -48,7 +48,7 @@ public class RepositoryManager {
         return col;
     }
 
-    public void removeColumn(Column column) throws ExecutionException, RepositoryObjectDeleted, InterruptedException {
+    public void removeColumn(Column column) throws ExecutionException, InterruptedException {
         for (Project project: projectsManager.getList()) {
             project.removeColumn(column);
         }

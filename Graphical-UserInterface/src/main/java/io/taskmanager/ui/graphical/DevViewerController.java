@@ -137,5 +137,9 @@ public class DevViewerController extends TabPane {
         project.setDevStatus(dev, DevStatus.OWNER);
         addProject(project);
     }
+
+    public Dev getDev() {
+        return dev;
+    }
 }
 

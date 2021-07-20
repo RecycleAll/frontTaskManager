@@ -93,12 +93,8 @@ public class ProjectColumnController extends ScrollPane{
                 Alert alert = new Alert(Alert.AlertType.ERROR, "The Column "+column.getName()+" has been deleted from the repo", ButtonType.OK);
                 alert.showAndWait();
 
-                try {
-                    repository.removeColumn(column);
-                    projectController.removeColumn(this);
-                } catch (RepositoryObjectDeleted objectDeleted) {
-                    objectDeleted.printStackTrace();
-                }
+                repository.removeColumn(column);
+                projectController.removeColumn(this);
             }
         }
     }
@@ -108,6 +104,7 @@ public class ProjectColumnController extends ScrollPane{
     public void OnEdit(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
         ColumnEditorDialog dialog = new ColumnEditorDialog(repository, column);
         Optional<Column> res = dialog.showAndWait();
+        System.out.println(" ProjectColumnController:OnEdit -> res:"+res.isPresent()+"  d: "+dialog.isShouldBeDelete());
         if( res.isPresent()){
             ColumnTitleLabel.setText( res.get().getName());
         }

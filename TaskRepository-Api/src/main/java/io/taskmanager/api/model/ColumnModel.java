@@ -24,6 +24,8 @@ public class ColumnModel extends ObjectBaseModel<Column>{
 
     @Override
     public Column convert() {
-        return new Column( id, name, project_id);
+        Column col =new Column( id, name, project_id);
+        col.setUpdatedAt(updatedAt);
+        return col;
     }
 }

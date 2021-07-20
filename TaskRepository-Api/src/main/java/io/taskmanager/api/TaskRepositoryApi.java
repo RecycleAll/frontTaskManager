@@ -123,7 +123,7 @@ public class TaskRepositoryApi implements TaskRepository {
         return null;
     }
 
-    private boolean putObject(String url, String jsonStr) throws ExecutionException, InterruptedException {
+    private LocalDateTime putObject(String url, String jsonStr, Class<? extends BaseModel> clazz) throws ExecutionException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiUrl + url))
                 .timeout(Duration.ofSeconds(10))
@@ -136,7 +136,13 @@ public class TaskRepositoryApi implements TaskRepository {
         HttpResponse<String> response = responseCompletableFuture.get();
         System.out.println("res: "+ response.statusCode());
 
-        return response.statusCode() == 200;
+        if( response.statusCode() == 200 ){
+            BaseModel model = g.fromJson(response.body(), (Type) clazz);
+            return model.getUpdatedAt();
+        }else{
+            return null;
+        }
+
     }
 
     private boolean deleteObject(String url) throws ExecutionException, InterruptedException {
@@ -428,7 +434,14 @@ public class TaskRepositoryApi implements TaskRepository {
     public boolean updateProject(Project project) throws ExecutionException, InterruptedException {
         String json = "{ \"id\":\""+project.getId()+"\"," +
                         "\"name\":\""+project.getName()+"\"}";
-        return putObject("/project/", json);
+
+        LocalDateTime time = putObject("/project/", json, ProjectModel.class);
+        if( time != null) {
+            project.setUpdatedAt(time);
+            return true;
+        }else{
+            return false;
+        }
     }
 
     @Override
@@ -447,7 +460,14 @@ public class TaskRepositoryApi implements TaskRepository {
                 "\"name\":\""+task.getName()+"\"," +
                 "\"description\":\""+task.getDescription()+"\"," +
                 "\"limitDate\":\""+task.getLimitDate().format(dataBaseDateFormatIn)+"\"}";
-        return putObject("/task/", json);
+
+        LocalDateTime time = putObject("/task/", json, TaskModel.class);
+        if( time != null) {
+            task.setUpdatedAt(time);
+            return true;
+        }else{
+            return false;
+        }
     }
 
     @Override
@@ -470,7 +490,12 @@ public class TaskRepositoryApi implements TaskRepository {
 
     @Override
     public Column getColumn(int id) throws ExecutionException, InterruptedException {
-        return getObject(id, Column.class);
+        ColumnModel model = getObject2("/column/one/" +id, ColumnModel.class);
+        if( model != null){
+            return model.convert();
+        }else{
+            return null;
+        }
     }
 
     @Override
@@ -480,10 +505,19 @@ public class TaskRepositoryApi implements TaskRepository {
 
     @Override
     public boolean putColumn(Column column) throws ExecutionException, InterruptedException {
-        return  putObject("/column/", "{ " +
-                                                    "\"id\":\""+column.getId()+"\"," +
-                                                    "\"name\":\""+column.getName()+"\"" +
-                                                    "}");
+
+
+        LocalDateTime time = putObject("/column/", "{ " +
+                                            "\"id\":\""+column.getId()+"\"," +
+                                            "\"name\":\""+column.getName()+"\"" +
+                                            "}",
+                                            ColumnModel.class);
+        if( time != null) {
+            column.setUpdatedAt(time);
+            return true;
+        }else{
+            return false;
+        }
     }
 
     @Override
@@ -615,7 +649,15 @@ public class TaskRepositoryApi implements TaskRepository {
                         "\"email\":\""+dev.getEmail()+"\"," +
                 //TODO: "\"password\":\""+dev.getPassword()+"\"," +
                         "\"githubId\":\""+dev.getGithub_id()+"\"}";
-        return putObject("/auth/", json);
+
+        LocalDateTime time = putObject("/auth/", json,
+                ColumnModel.class);
+        if( time != null) {
+            dev.setUpdatedAt(time);
+            return true;
+        }else{
+            return false;
+        }
     }
 
     @Override

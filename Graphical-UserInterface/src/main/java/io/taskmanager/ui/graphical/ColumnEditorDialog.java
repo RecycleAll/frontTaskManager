@@ -20,6 +20,9 @@ public class ColumnEditorDialog extends Dialog<Column> {
 
         setResultConverter(buttonType -> {
             if( buttonType == ButtonType.APPLY){
+                Column res = controller.getColumn();
+                if(res == null)
+                    shouldBeDelete = true;
                 return controller.getColumn();
             }else if( buttonType.getButtonData() == ButtonBar.ButtonData.OTHER){
                 shouldBeDelete = true;
