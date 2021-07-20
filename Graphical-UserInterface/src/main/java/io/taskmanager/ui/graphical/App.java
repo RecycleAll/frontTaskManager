@@ -1,6 +1,7 @@
 package io.taskmanager.ui.graphical;
 
 import io.taskmanager.core.Dev;
+import io.taskmanager.core.Project;
 import io.taskmanager.core.repository.RepositoryManager;
 import io.taskmanager.ui.graphical.plugin.PluginInterface;
 import io.taskmanager.ui.graphical.plugin.PluginLoader;
@@ -41,8 +42,6 @@ public class App extends Application {
 
     private final RepositoryManager repository;
 
-    private final List<PluginInterface> plugins;
-
     public static void launchApp(RepositoryManager repository) throws Exception {
         Platform.startup(() -> {});
 
@@ -71,7 +70,6 @@ public class App extends Application {
 
     public App(RepositoryManager repository) throws Exception {
         super();
-        plugins = new ArrayList<>();
         devViewerController = new DevViewerController(repository);
 
 
@@ -89,7 +87,6 @@ public class App extends Application {
                 PluginLoader pluginLoader = new PluginLoader();
                 Optional<PluginInterface> pluginInterface = pluginLoader.loadPlugin(file);
                 if (pluginInterface.isPresent()) {
-                    //plugins.add(pluginInterface.get());
                     MenuItem newPlugin = new Menu(file.getName());
                     usePlugin.getItems().add(newPlugin);
                     newPlugin.setOnAction(actionEvent1 -> {
@@ -147,6 +144,10 @@ public class App extends Application {
 
         stage.show();
         pack();
+    }
+
+    public RepositoryManager getProjects(){
+        return repository;
     }
 
 }
