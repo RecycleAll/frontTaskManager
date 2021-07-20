@@ -4,13 +4,10 @@ import io.taskmanager.core.*;
 import io.taskmanager.core.repository.RepositoryManager;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -55,6 +52,10 @@ public class App extends Application {
                 }
             });
         }
+    }
+
+    public Dev getConnectedDev(){
+        return devViewerController.getDev();
     }
 
     public App(RepositoryManager repository) throws Exception {
