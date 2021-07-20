@@ -1,18 +1,19 @@
 package io.taskmanager.ui.graphical;
 
-import io.taskmanager.core.*;
+import io.taskmanager.core.Dev;
 import io.taskmanager.core.repository.RepositoryManager;
+import io.taskmanager.ui.graphical.plugin.PluginInterface;
+import io.taskmanager.ui.graphical.plugin.PluginLoader;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -33,9 +34,10 @@ public class App extends Application {
     private final RepositoryManager repository;
 
     public static void launchApp(RepositoryManager repository) throws Exception {
-        Platform.startup(() -> {});
+        Platform.startup(() -> {
+        });
 
-        if( AppInstance == null) {
+        if (AppInstance == null) {
             AppInstance = new App(repository);
             Platform.runLater(() -> {
                 Stage stage = new Stage();
@@ -54,7 +56,7 @@ public class App extends Application {
         }
     }
 
-    public Dev getConnectedDev(){
+    public Dev getConnectedDev() {
         return devViewerController.getDev();
     }
 
@@ -63,21 +65,37 @@ public class App extends Application {
         devViewerController = new DevViewerController(repository);
 
 
-        Menu menu = new Menu("Plugins");
-        MenuItem item = new Menu("add plugin");
+        Menu pluginMenu = new Menu("Plugins");
+        MenuItem addPluginMenu = new Menu("add plugin");
+        Menu usePlugin = new Menu("use plugin");
 
-        item.setOnAction(actionEvent -> {
+        addPluginMenu.setOnAction(actionEvent -> {
             FileChooser chooser = new FileChooser();
             chooser.setTitle("select a jar file");
             chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JAR files (*.jar)", "*.jar"));
 
             File file = chooser.showOpenDialog(stage);
+            if (file != null) {
+                PluginLoader pluginLoader = new PluginLoader();
+                Optional<PluginInterface> pluginInterface = pluginLoader.loadPlugin(file);
+                if (pluginInterface.isPresent()) {
+                    MenuItem newPlugin = new Menu(file.getName());
+                    usePlugin.getItems().add(newPlugin);
+                    newPlugin.setOnAction(actionEvent1 -> {
+                        pluginInterface.get().startPlugin(this);
+                    });
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "plugin isn't valid", ButtonType.OK);
+                    alert.showAndWait();
+                }
+            }
 
         });
         mainController = new MainController();
 
-        menu.getItems().add(item);
-        mainController.menuBar.getMenus().add( menu);
+        pluginMenu.getItems().add(addPluginMenu);
+        pluginMenu.getItems().add(usePlugin);
+        mainController.menuBar.getMenus().add(pluginMenu);
 
         loginController = new LoginController(repository, this);
 
@@ -91,28 +109,28 @@ public class App extends Application {
     public void setDevViewerScene(Dev dev) throws IOException {
         devViewerController.setDev(dev);
         mainController.contentPane.getChildren().clear();
-        mainController.contentPane.setCenter( devViewerController);
+        mainController.contentPane.setCenter(devViewerController);
         pack();
     }
 
-    public void setLoginScene(){
+    public void setLoginScene() {
         loginController.reset();
         mainController.contentPane.getChildren().clear();
         mainController.contentPane.setCenter(loginController);
         pack();
     }
 
-    private void pack(){
+    private void pack() {
         Scene scene = stage.getScene();
         stage.sizeToScene();
-       // stage.setMinWidth( stage.getWidth());
-       // stage.setMinHeight( stage.getHeight());
+        // stage.setMinWidth( stage.getWidth());
+        // stage.setMinHeight( stage.getHeight());
     }
 
     @Override
     public void start(Stage stage) throws ExecutionException, InterruptedException {
         this.stage = stage;
-        this.stage.setScene( new Scene(mainController));
+        this.stage.setScene(new Scene(mainController));
         setLoginScene();
 
         stage.show();

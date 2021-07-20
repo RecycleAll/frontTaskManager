@@ -1,4 +1,4 @@
-package io.taslmanager.app;
+package io.taskmanager.app;
 
 import io.taskmanager.api.TaskRepositoryApi;
 import io.taskmanager.console.CommandManager;
