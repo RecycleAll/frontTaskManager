@@ -6,6 +6,8 @@ import io.taskmanager.core.repository.RepositoryEditionConflict;
 import io.taskmanager.core.repository.RepositoryManager;
 import io.taskmanager.core.repository.RepositoryObjectDeleted;
 import io.taskmanager.ui.graphical.conflict.IObjectEditor;
+import io.taskmanager.ui.graphical.conflict.RepositoryConflictDialog;
+import io.taskmanager.ui.graphical.conflict.TaskConflictController;
 import io.taskmanager.ui.graphical.conflict.TaskConflictDialog;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -91,12 +93,15 @@ public class TaskController extends DialogPane implements IObjectEditor<Task> {
                     e.printStackTrace();
                 } catch (RepositoryEditionConflict repositoryEditionConflict) {
                     try {
-                        TaskConflictDialog dialog = new TaskConflictDialog( (RepositoryConflictHandler<Task>) repositoryEditionConflict.getConflictHandler(), project);
+                        //TaskConflictDialog dialog = new TaskConflictDialog( (RepositoryConflictHandler<Task>) repositoryEditionConflict.getConflictHandler(), project);
+                        RepositoryConflictDialog<Task> dialog = new RepositoryConflictDialog<Task>( new TaskConflictController((RepositoryConflictHandler<Task>) repositoryEditionConflict.getConflictHandler(), project));
                         Optional<Task> res = dialog.showAndWait();
                         if (res.isPresent()) {
+                            task.setAll(res.get());
                             System.out.println("///////////////////////////////////////////////");
                             System.out.println("task:name -> "+task.getName());
                             task.updateToRepo(true);
+                            System.out.println("task:name -> "+task.getName());
                             System.out.println("///////////////////////////////////////////////");
                         }
                     } catch (IOException | RepositoryEditionConflict | ExecutionException | InterruptedException | RepositoryObjectDeleted e) {
@@ -209,9 +214,15 @@ public class TaskController extends DialogPane implements IObjectEditor<Task> {
         }
     }
 
+    public Task getTask() {
+        return task;
+    }
+
     @Override
     public Task getEditedObject() {
+        System.out.println("taskController:getEditedObject -> "+task.getName());
         applyChange();
+        System.out.println("taskController:getEditedObject -> "+task.getName());
         return task;
     }
 

@@ -16,7 +16,6 @@ public class TaskConflictController extends  RepositoryConflictController<Task>{
         Task repoTask = conflictHandler.getRepo();
         RepositoryManager repository = conflictHandler.getRepository();
 
-        mergedObject = localTask.merge(repoTask);
         TaskController controller = new TaskController(repository, project, localTask, false);
         controller.getButtonTypes().clear();
         localPane.getChildren().add( controller);
@@ -25,7 +24,9 @@ public class TaskConflictController extends  RepositoryConflictController<Task>{
         controller.getButtonTypes().clear();
         repoPane.getChildren().add( controller);
 
+        mergedObject = localTask.merge(repoTask);
         TaskController mergedEditor = new TaskController(repository, project, mergedObject);
+        mergedEditor.getButtonTypes().clear();
         objectEditor = mergedEditor;
 
         mergedPane.getChildren().add( mergedEditor );
