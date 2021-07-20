@@ -1,27 +1,18 @@
 package io.taskmanager.ui.graphical;
 
 import io.taskmanager.core.Dev;
-import io.taskmanager.core.Project;
 import io.taskmanager.core.repository.RepositoryManager;
 import io.taskmanager.ui.graphical.plugin.PluginInterface;
 import io.taskmanager.ui.graphical.plugin.PluginLoader;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.*;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
@@ -43,7 +34,8 @@ public class App extends Application {
     private final RepositoryManager repository;
 
     public static void launchApp(RepositoryManager repository) throws Exception {
-        Platform.startup(() -> {});
+        Platform.startup(() -> {
+        });
 
         if (AppInstance == null) {
             AppInstance = new App(repository);
@@ -64,7 +56,7 @@ public class App extends Application {
         }
     }
 
-    public Dev getConnectedDev(){
+    public Dev getConnectedDev() {
         return devViewerController.getDev();
     }
 
@@ -92,8 +84,7 @@ public class App extends Application {
                     newPlugin.setOnAction(actionEvent1 -> {
                         pluginInterface.get().startPlugin(this);
                     });
-                }
-                else {
+                } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "plugin isn't valid", ButtonType.OK);
                     alert.showAndWait();
                 }
@@ -104,7 +95,7 @@ public class App extends Application {
 
         pluginMenu.getItems().add(addPluginMenu);
         pluginMenu.getItems().add(usePlugin);
-        mainController.menuBar.getMenus().add( pluginMenu);
+        mainController.menuBar.getMenus().add(pluginMenu);
 
         loginController = new LoginController(repository, this);
 
@@ -118,7 +109,7 @@ public class App extends Application {
     public void setDevViewerScene(Dev dev) throws IOException {
         devViewerController.setDev(dev);
         mainController.contentPane.getChildren().clear();
-        mainController.contentPane.setCenter( devViewerController);
+        mainController.contentPane.setCenter(devViewerController);
         pack();
     }
 
@@ -132,22 +123,18 @@ public class App extends Application {
     private void pack() {
         Scene scene = stage.getScene();
         stage.sizeToScene();
-       // stage.setMinWidth( stage.getWidth());
-       // stage.setMinHeight( stage.getHeight());
+        // stage.setMinWidth( stage.getWidth());
+        // stage.setMinHeight( stage.getHeight());
     }
 
     @Override
     public void start(Stage stage) throws ExecutionException, InterruptedException {
         this.stage = stage;
-        this.stage.setScene( new Scene(mainController));
+        this.stage.setScene(new Scene(mainController));
         setLoginScene();
 
         stage.show();
         pack();
-    }
-
-    public RepositoryManager getProjects(){
-        return repository;
     }
 
 }
