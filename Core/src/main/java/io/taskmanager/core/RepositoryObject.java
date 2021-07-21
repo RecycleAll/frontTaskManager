@@ -74,6 +74,7 @@ public abstract class RepositoryObject<T> {
     public boolean compare(RepositoryObject<T> other){
         return id == other.id && updatedAt.isEqual(other.updatedAt);
     }
+    public abstract boolean compare(T other);
 
     public abstract boolean isConflict(T other);
 
@@ -109,6 +110,11 @@ public abstract class RepositoryObject<T> {
         else{
             //TODO
         }
+    }
+    public final void setAll(RepositoryObject<T> object){
+        id = object.id;
+        updatedAt = object.updatedAt;
+        edited = object.edited;
     }
 
     public abstract void setAll(T object);

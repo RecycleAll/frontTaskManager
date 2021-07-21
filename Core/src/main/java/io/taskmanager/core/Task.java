@@ -109,7 +109,12 @@ public class Task extends RepositoryObject<Task> {
         }
     }
 
+    @Override
     public boolean compare(Task task){
+        if( !super.compare( (RepositoryObject<Task>) task)){
+            return false;
+        }
+
         if(devs != null && task.devs != null){
             if( devs.size() != task.devs.size()){
                 return false;

@@ -1,9 +1,6 @@
 package io.taskmanager.core;
 
-import io.taskmanager.core.repository.RepositoryEditionConflict;
-import io.taskmanager.core.repository.RepositoryManager;
-import io.taskmanager.core.repository.RepositoryObjectDeleted;
-import io.taskmanager.core.repository.TaskRepository;
+import io.taskmanager.core.repository.*;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -16,10 +13,6 @@ public class Project extends RepositoryObject<Project> {
     private List<Column> columns;
     private List<Tag> tags;
     private Map<Dev, DevStatus> devs;
-
-    public static Project loadFromApi(TaskRepository api, int projectID) throws Exception {
-        return api.getProject(projectID);
-    }
 
     public Project(RepositoryManager repository, int id, String name, String gitHubUrl, List<Column> columns, List<Tag> tags, Map<Dev, DevStatus> devs) {
         super(repository);
@@ -40,8 +33,16 @@ public class Project extends RepositoryObject<Project> {
     }
 
     @Override
-    public boolean isConflict(Project other) {
-        return false;
+    public boolean compare(Project project) {
+        return  super.compare( (RepositoryObject<Project>) project) &&
+                name.equals(project.name) &&
+                gitHubUrl.equals(project.gitHubUrl);
+    }
+
+    @Override
+    public boolean isConflict(Project project) {
+        return !compare(project) &&
+                updatedAt.isBefore(project.updatedAt);
     }
 
     @Override
@@ -55,18 +56,57 @@ public class Project extends RepositoryObject<Project> {
     }
 
     @Override
-    protected boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException {
-        return repositoryManager.getRepository().updateProject(this);
+    protected boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict {
+        if(!edited){
+            System.out.println("Project:myUpdateToRepo -> not edited");
+            return true;
+        }else{
+            Project project = repositoryManager.getRepository().getProject(id);
+            System.out.println("Project: myUpdateToRepo ->\nlocal: "+updatedAt+"\nrepo: "+project.updatedAt);
+            if(!force && isConflict(project)){
+                System.out.println("Project:myUpdateToRepo ->conflict");
+                throw new RepositoryEditionConflict( new RepositoryConflictHandler<Project>(this, project, repositoryManager));
+            }else{
+                System.out.println("Project:myUpdateToRepo -> no conflict (f:"+force+")");
+                edited = false;
+                return repositoryManager.getRepository().updateProject(this);
+            }
+        }
     }
 
     @Override
-    protected boolean myUpdateFromRepo() {
-        return false;
+    protected boolean myUpdateFromRepo() throws ExecutionException, InterruptedException, RepositoryEditionConflict, RepositoryObjectDeleted {
+        Project project = repositoryManager.getRepository().getProject(id);
+        if( edited){
+            System.out.println("Project:myUpdateFromRepo -> edited");
+            throw new RepositoryEditionConflict( new RepositoryConflictHandler<Project>(this, project, repositoryManager));
+        }else if(project == null){
+            System.out.println("Project:myUpdateFromRepo -> deleted");
+            throw new RepositoryObjectDeleted(this);
+        }else{
+            System.out.println("Project:myUpdateFromRepo -> no conflict");
+            setAll(project);
+            edited = false;
+            return true;
+        }
     }
 
     @Override
-    public Project merge(Project other){
-        return null;
+    public Project merge(Project project){
+        if(id != project.id){
+            return null;
+        }else {
+            Project mergedProject = new Project(null);
+            mergedProject.setId(id);
+
+            if (name.equals(project.name))
+                mergedProject.setName(name);
+
+            if (gitHubUrl.equals(project.gitHubUrl))
+                mergedProject.setGitHubUrl(gitHubUrl);
+
+            return mergedProject;
+        }
     }
 
     public void setColumns(List<Column> columns) {
@@ -105,8 +145,10 @@ public class Project extends RepositoryObject<Project> {
     }
 
     @Override
-    public void setAll(Project object) {
-
+    public void setAll(Project project) {
+        setAll( (RepositoryObject<Project>) project);
+        name = project.name;
+        gitHubUrl = project.gitHubUrl;
     }
 
     public Column addNewColumn(String name) throws ExecutionException, InterruptedException {
@@ -200,6 +242,7 @@ public class Project extends RepositoryObject<Project> {
 
     public void setName(String name) {
         this.name = name;
+        edited = true;
     }
 
     public String getGitHubUrl() {
@@ -208,6 +251,7 @@ public class Project extends RepositoryObject<Project> {
 
     public void setGitHubUrl(String gitHubUrl) {
         this.gitHubUrl = gitHubUrl;
+        edited = true;
     }
 
     public RepositoryManager getRepository() {

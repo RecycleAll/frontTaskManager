@@ -1,7 +1,6 @@
 package io.taskmanager.ui.graphical;
 
 import io.taskmanager.core.Column;
-import io.taskmanager.core.Task;
 import io.taskmanager.core.repository.RepositoryConflictHandler;
 import io.taskmanager.core.repository.RepositoryEditionConflict;
 import io.taskmanager.core.repository.RepositoryManager;
@@ -9,7 +8,6 @@ import io.taskmanager.core.repository.RepositoryObjectDeleted;
 import io.taskmanager.ui.graphical.conflict.ColumnConflictController;
 import io.taskmanager.ui.graphical.conflict.IObjectEditor;
 import io.taskmanager.ui.graphical.conflict.RepositoryConflictDialog;
-import io.taskmanager.ui.graphical.conflict.TaskConflictDialog;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;

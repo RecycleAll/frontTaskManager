@@ -59,8 +59,9 @@ public class Dev extends RepositoryObject<Dev> {
         github_id = dev.github_id;
     }
 
+    @Override
     public boolean compare(Dev dev){
-        return  super.compare(dev) &&
+        return  super.compare( (RepositoryObject<Dev>) dev) &&
                 firstname.equals(dev.firstname) &&
                 lastname.equals(dev.lastname) &&
                 email.equals(dev.email) &&

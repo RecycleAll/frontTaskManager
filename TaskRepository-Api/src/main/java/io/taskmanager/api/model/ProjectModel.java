@@ -16,6 +16,8 @@ public class ProjectModel extends ObjectBaseModel<Project>{
 
     @Override
     public Project convert() {
-        return new Project(null, id, name, "");
+        Project project  = new Project(null, id, name, "");
+        project.setUpdatedAt( updatedAt);
+        return project;
     }
 }

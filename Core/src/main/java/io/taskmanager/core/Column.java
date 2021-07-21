@@ -47,6 +47,11 @@ public class Column extends RepositoryObject<Column> {
     }
 
     @Override
+    public boolean compare(Column other) {
+        return false;
+    }
+
+    @Override
     public boolean isConflict(Column other) {
         return !compare(other) &&
                 updatedAt.isBefore(other.updatedAt);
