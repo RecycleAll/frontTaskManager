@@ -59,7 +59,6 @@ public class LoginController extends BorderPane {
         }
     }
 
-
     @FXML
     @SuppressWarnings("unused") //used by fxml loader
     public void onRegister(ActionEvent actionEvent) throws Exception {

@@ -65,6 +65,13 @@ public class App extends Application {
         devViewerController = new DevViewerController(repository);
 
 
+        Menu connectionMenu = new Menu("Connection");
+        MenuItem disconnectMenuItem = new MenuItem("Disconnect");
+        connectionMenu.getItems().add(disconnectMenuItem);
+        disconnectMenuItem.setOnAction(actionEvent -> {
+            setLoginScene();
+        });
+
         Menu pluginMenu = new Menu("Plugins");
         MenuItem addPluginMenu = new Menu("add plugin");
         Menu usePlugin = new Menu("use plugin");
@@ -95,6 +102,8 @@ public class App extends Application {
 
         pluginMenu.getItems().add(addPluginMenu);
         pluginMenu.getItems().add(usePlugin);
+
+        mainController.menuBar.getMenus().add(connectionMenu);
         mainController.menuBar.getMenus().add(pluginMenu);
 
         loginController = new LoginController(repository, this);
