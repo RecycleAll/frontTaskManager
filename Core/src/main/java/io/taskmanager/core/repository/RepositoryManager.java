@@ -72,7 +72,7 @@ public class RepositoryManager {
         }
     }
 
-    public Dev getDev(int id, boolean loadProject) throws Exception {
+    public Dev getDev(int id, boolean loadProject) throws ExecutionException, RepositoryObjectDeleted, InterruptedException {
         Dev dev = devsManager.getObject(id);
         if (dev == null) {
             dev = repository.getDev(id);
@@ -111,7 +111,7 @@ public class RepositoryManager {
         }
     }
 
-    public Project getProject(int projectID) throws Exception {
+    public Project getProject(int projectID) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
         Project project = projectsManager.getObject(projectID);
 
         if (project == null) {
