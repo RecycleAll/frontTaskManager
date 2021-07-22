@@ -1,90 +1,142 @@
 package io.taskmanager.ui.graphical;
 
-import io.taskmanager.test.*;
+import io.taskmanager.core.Dev;
+import io.taskmanager.core.repository.RepositoryManager;
+import io.taskmanager.ui.graphical.plugin.PluginInterface;
+import io.taskmanager.ui.graphical.plugin.PluginLoader;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 /**
  * JavaFX App
  */
 public class App extends Application {
 
-    private static Scene scene;
+    public static App AppInstance;
+
     private Stage stage;
 
     private final DevViewerController devViewerController;
-    private final Scene devViewerScene;
 
     private final LoginController loginController;
-    private final Scene loginScene;
 
-    private final TaskRepository repository;
+    private final MainController mainController;
 
-    public static void launchApp(TaskRepository repository) throws Exception {
-        Platform.startup(() -> {});
-        App app = new App(repository);
-        Platform.runLater( () -> {
-            Stage stage = new Stage();
-            stage.setMaxWidth(999999);
-            app.start(stage);
+    public static void launchApp(RepositoryManager repository) throws Exception {
+        Platform.startup(() -> {
         });
+
+        if (AppInstance == null) {
+            AppInstance = new App(repository);
+            Platform.runLater(() -> {
+                Stage stage = new Stage();
+
+                stage.sceneProperty().addListener((observableValue, scene, newScene) -> {
+                    stage.setMinWidth(newScene.getWidth());
+                    stage.setMinHeight(newScene.getHeight());
+                });
+
+                try {
+                    AppInstance.start(stage);
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 
-    public App(TaskRepository repository) throws Exception {
-        super();
-        devViewerController = new DevViewerController();
-        devViewerScene = new Scene( devViewerController);
-        loginController = new LoginController(repository, this);
-        loginScene = new Scene( loginController );
+    @SuppressWarnings("unused") //used by the plugin
+    public Dev getConnectedDev() {
+        return devViewerController.getDev();
+    }
 
-        this.repository = repository;
+    public App(RepositoryManager repository) throws Exception {
+        super();
+        devViewerController = new DevViewerController(repository);
+
+
+        Menu connectionMenu = new Menu("Connection");
+        MenuItem disconnectMenuItem = new MenuItem("Disconnect");
+        connectionMenu.getItems().add(disconnectMenuItem);
+        disconnectMenuItem.setOnAction(actionEvent -> setLoginScene());
+
+        Menu pluginMenu = new Menu("Plugins");
+        MenuItem addPluginMenu = new Menu("add plugin");
+        Menu usePlugin = new Menu("use plugin");
+
+        addPluginMenu.setOnAction(actionEvent -> {
+            FileChooser chooser = new FileChooser();
+            chooser.setTitle("select a jar file");
+            chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JAR files (*.jar)", "*.jar"));
+
+            File file = chooser.showOpenDialog(stage);
+            if (file != null) {
+                PluginLoader pluginLoader = new PluginLoader();
+                Optional<PluginInterface> pluginInterface = pluginLoader.loadPlugin(file);
+                if (pluginInterface.isPresent()) {
+                    MenuItem newPlugin = new Menu(file.getName());
+                    usePlugin.getItems().add(newPlugin);
+                    newPlugin.setOnAction(actionEvent1 -> pluginInterface.get().startPlugin(this));
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "plugin isn't valid", ButtonType.OK);
+                    alert.showAndWait();
+                }
+            }
+
+        });
+        mainController = new MainController();
+
+        pluginMenu.getItems().add(addPluginMenu);
+        pluginMenu.getItems().add(usePlugin);
+
+        mainController.menuBar.getMenus().add(connectionMenu);
+        mainController.menuBar.getMenus().add(pluginMenu);
+
+        loginController = new LoginController(repository, this);
+
+    }
+
+    @SuppressWarnings("unused") //used by the plugin
+    public MenuBar getMenuBar() {
+        return mainController.menuBar;
     }
 
     public void setDevViewerScene(Dev dev) throws IOException {
         devViewerController.setDev(dev);
-        stage.setScene(devViewerScene);
-        stage.sizeToScene();
+        mainController.contentPane.getChildren().clear();
+        mainController.contentPane.setCenter(devViewerController);
+        pack();
     }
-    public void setLoginScene(){
+
+    public void setLoginScene() {
         loginController.reset();
-        stage.setScene(loginScene);
+        mainController.contentPane.getChildren().clear();
+        mainController.contentPane.setCenter(loginController);
+        pack();
+    }
+
+    private void pack() {
+        stage.getScene();
         stage.sizeToScene();
     }
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws ExecutionException, InterruptedException {
         this.stage = stage;
+        this.stage.setScene(new Scene(mainController));
+        setLoginScene();
 
-        Project project = new Project(0, "project test", "gitURL");
-
-        Dev dev = new Dev(0, "dev1", "pata", "", "", 0);
-        Dev dev2 = new Dev(0, "dev2", "pata", "", "", 0);
-
-        Task task = new Task(0, "task1", "", LocalDate.now());
-        task.addDev(dev);
-        task.addDev(dev2);
-
-        Column column = new Column(0, "column 1");
-        Column column2 = new Column(0, "column 2");
-        column.addTask(task);
-
-        project.addColumn(column);
-        project.addColumn(column2);
-        project.addDev(dev);
-        project.addDev(dev2);
-
-        dev.addProject(project);
-
-        //scene = new Scene( new ProjectController(project) );
-        //scene = new Scene( ProjectColumnController.loadNew(column).scrollPane );
-
-        stage.setScene(loginScene);
         stage.show();
+        pack();
     }
 
 }

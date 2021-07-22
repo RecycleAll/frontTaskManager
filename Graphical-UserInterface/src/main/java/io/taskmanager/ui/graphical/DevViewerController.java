@@ -1,7 +1,9 @@
 package io.taskmanager.ui.graphical;
 
-import io.taskmanager.test.Dev;
-import io.taskmanager.test.Project;
+import io.taskmanager.core.Dev;
+import io.taskmanager.core.DevStatus;
+import io.taskmanager.core.Project;
+import io.taskmanager.core.repository.RepositoryManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +15,7 @@ import javafx.scene.layout.VBox;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 public class DevViewerController extends TabPane {
 
@@ -24,19 +27,36 @@ public class DevViewerController extends TabPane {
     public Label lastNameLabel;
     @FXML
     public VBox projectVBox;
+    @FXML
+    public Tab overviewTab;
+
+    private final RepositoryManager repositoryManager;
 
     private Dev dev;
 
-    public DevViewerController(Dev dev) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
+    public DevViewerController(RepositoryManager repo, Dev dev) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
+        this.repositoryManager = repo;
         setDev(dev);
+
+        this.getSelectionModel().selectedItemProperty().addListener((observableValue, tab, t1) -> {
+            if (t1 == overviewTab) {
+                try {
+                    updateUI();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        this.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
     }
 
-    public DevViewerController() throws IOException {
-        this(null);
+    public DevViewerController(RepositoryManager repo) throws IOException {
+        this(repo, null);
     }
 
     public void setDev(Dev dev) throws IOException {
@@ -44,54 +64,93 @@ public class DevViewerController extends TabPane {
         updateUI();
     }
 
-    private void addProjectViewer(Project project) throws IOException {
+    private void addProjectViewer(Project project) throws IOException, ExecutionException, InterruptedException {
         Optional<Tab> optionalTab = this.getTabs().stream().filter(tab -> {
-            if(tab instanceof ProjectController myTab) {
+            if (tab.getContent() instanceof ProjectController myTab) {
                 return project == myTab.getProject();
-            }else{
+            } else {
                 return false;
             }
         }).findFirst();
 
-        if( optionalTab.isPresent()){
+        if (optionalTab.isPresent()) {
             this.getSelectionModel().select(optionalTab.get());
-        }else{
-            ProjectController projectControllerTab = new ProjectController(project);
-            this.getTabs().add( projectControllerTab);
-            this.getSelectionModel().select(projectControllerTab);
+        } else {
+            ProjectController projectController = new ProjectController(repositoryManager, project, dev.getId());
+            Tab tab = new Tab(projectController.getProject().getName());
+            tab.setContent(projectController);
+            this.getTabs().add(tab);
+            this.getSelectionModel().select(tab);
             this.getScene().getWindow().sizeToScene();
         }
-
     }
 
+
     private void updateUI() throws IOException {
-        if( dev == null){
+        projectVBox.getChildren().clear();
+
+        if (dev == null) {
             firstNameLabel.setText("No Dev");
             lastNameLabel.setText("");
 
-            projectVBox.getChildren().clear();
-        }else {
+        } else {
             firstNameLabel.setText(dev.getFirstname());
             lastNameLabel.setText(dev.getLastname().toUpperCase(Locale.ROOT));
 
-            projectVBox.getChildren().clear();
             for (Project project : dev.getProjects()) {
-                DevProjectController devProjectController = new DevProjectController(project);
-                devProjectController.setOnMouseClicked(mouseEvent -> {
-                    try {
-                        addProjectViewer(project);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-                projectVBox.getChildren().add(devProjectController);
+                addProject(project);
             }
         }
     }
 
-    @FXML
-    public void OnEdit(ActionEvent actionEvent){
+    private void addProject(Project project) throws IOException {
+        DevProjectController devProjectController = new DevProjectController(this, project, dev);
+        devProjectController.setOnMouseClicked(mouseEvent -> {
+            try {
+                addProjectViewer(project);
+            } catch (IOException | ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        projectVBox.getChildren().add(devProjectController);
+    }
 
+    public void removeProject(DevProjectController controller) {
+        projectVBox.getChildren().remove(controller);
+    }
+
+    public RepositoryManager getRepositoryManager() {
+        return repositoryManager;
+    }
+
+    @FXML
+    @SuppressWarnings("unused") // used by FXML
+    public void OnEditDev(ActionEvent actionEvent) throws IOException {
+        DevEditorDialog dialog = new DevEditorDialog(dev, false);
+        Optional<Dev> dev = dialog.showAndWait();
+        if (dev.isPresent()) {
+            updateUI();
+        }
+    }
+
+    @FXML
+    @SuppressWarnings("unused") // used by FXML
+    public void onAddProjectButton(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
+        ProjectEditorDialog dialog = new ProjectEditorDialog(repositoryManager);
+        Optional<Project> res = dialog.showAndWait();
+        if (res.isPresent()) {
+            Project project = res.get();
+            project.addDev(dev, DevStatus.OWNER);
+
+            project.setRepositoryManager(repositoryManager);
+            project.postToRepo();
+
+            addProject(project);
+        }
+    }
+
+    public Dev getDev() {
+        return dev;
     }
 }
 

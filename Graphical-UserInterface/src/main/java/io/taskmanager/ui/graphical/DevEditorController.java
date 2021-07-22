@@ -1,121 +1,93 @@
 package io.taskmanager.ui.graphical;
 
-import io.taskmanager.test.Dev;
+import io.taskmanager.core.Dev;
+import io.taskmanager.core.repository.RepositoryConflictHandler;
+import io.taskmanager.core.repository.RepositoryEditionConflict;
+import io.taskmanager.core.repository.RepositoryObjectDeleted;
+import io.taskmanager.ui.graphical.conflict.DevConflictController;
+import io.taskmanager.ui.graphical.conflict.RepositoryConflictDialog;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogPane;
 
 import java.io.IOException;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
-public class DevEditorController extends DialogPane{
+public class DevEditorController extends DialogPane {
 
     private static final String FXML_FILE = "DevEditorController.fxml";
 
-    @FXML
-    public TextField firstNameField;
-    @FXML
-    public TextField lastNameField;
-    @FXML
-    public TextField emailField;
-    @FXML
-    public TextField githubField;
+    private final DevEditorGrid grid;
 
-    private final SimpleBooleanProperty isNewDev = new SimpleBooleanProperty(false);
-    private Dev dev;
+    private final SimpleBooleanProperty isDeletable = new SimpleBooleanProperty(false);
 
-    public DevEditorController(Dev dev) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
+    public DevEditorController(Dev dev, boolean deletable, boolean register) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
-        setDev(dev);
+        grid = new DevEditorGrid(dev, true, register);
+        isDeletable.set(deletable);
+        this.setContent(grid);
     }
+
 
     @FXML
     @SuppressWarnings("unused") //used by fxml loader
     public void initialize() {
-
         ButtonType removeButtonType = new ButtonType("delete", ButtonBar.ButtonData.OTHER);
         this.getButtonTypes().add(removeButtonType);
         Button removeButton = (Button) this.lookupButton(removeButtonType);
-        removeButton.visibleProperty().bind(Bindings.createBooleanBinding(() -> !isNewDev.get(), isNewDev));
+        removeButton.visibleProperty().bind(Bindings.createBooleanBinding(isDeletable::get, isDeletable));
 
         Button applyButton = (Button) this.lookupButton(ButtonType.APPLY);
         applyButton.addEventFilter(ActionEvent.ACTION, actionEvent -> {
-            if( dev == null)
-            {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Internal error dev is null", ButtonType.OK);
-                alert.showAndWait();
+
+            if (!grid.validateChange()) {
                 actionEvent.consume();
-            }
-            else if( firstNameField.getText().isEmpty())
-            {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Your first name can't be empty", ButtonType.OK);
-                alert.showAndWait();
-                actionEvent.consume();
-            }
-            else if( lastNameField.getText().isEmpty())
-            {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Your last name can't be empty", ButtonType.OK);
-                alert.showAndWait();
-                actionEvent.consume();
-            }
-            else if( emailField.getText().isEmpty())
-            {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Your email can't be empty", ButtonType.OK);
-                alert.showAndWait();
-                actionEvent.consume();
-            }
-            else if( githubField.getText().isEmpty() )
-            {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Your github id can't be empty", ButtonType.OK);
-                alert.showAndWait();
-                actionEvent.consume();
-            }
-            else
-            {
+            } else {
+                Dev dev = grid.getEditedObject();
+
                 try {
-                    dev.setGithub_id( Integer.parseInt(githubField.getText()));
-                } catch (NumberFormatException e) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR, "\""+githubField.getText()+"\" is not a number", ButtonType.OK);
-                    alert.showAndWait();
-                    actionEvent.consume();
+                    dev.updateToRepo();
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                } catch (RepositoryEditionConflict repositoryEditionConflict) {
+                    System.out.println("catch");
+                    try {
+                        @SuppressWarnings("unchecked")
+                        RepositoryConflictDialog<Dev> dialog = new RepositoryConflictDialog<>(new DevConflictController((RepositoryConflictHandler<Dev>) repositoryEditionConflict.getConflictHandler()));
+
+                        Optional<Dev> res = dialog.showAndWait();
+                        if (res.isPresent()) {
+                            dev.setAll(res.get());
+                            dev.updateToRepo(true);
+                        }
+                    } catch (IOException | RepositoryEditionConflict | ExecutionException | InterruptedException | RepositoryObjectDeleted e) {
+                        e.printStackTrace();
+                    }
+                } catch (RepositoryObjectDeleted repositoryObjectDeleted) {
+                    repositoryObjectDeleted.printStackTrace();
                 }
+
+
             }
-
-            dev.setFirstname( firstNameField.getText());
-            dev.setLastname( lastNameField.getText());
-            dev.setEmail( emailField.getText());
-
         });
     }
 
-    public void setDev(Dev newDev){
-        if( newDev == null){
-            this.dev = new Dev();
-            isNewDev.set(true);
-        }else{
-            this.dev = newDev;
-            isNewDev.set(false);
-        }
-
-        firstNameField.setText(this.dev.getFirstname());
-        lastNameField.setText(this.dev.getLastname());
-        emailField.setText(this.dev.getEmail());
-        githubField.setText( String.valueOf(this.dev.getGithub_id()));
-
-    }
-
-    public void OnPasswordChange(ActionEvent actionEvent) throws IOException {
-        PasswordChangeDialog dialog = new PasswordChangeDialog(dev);
-        dialog.showAndWait();
+    public void setDev(Dev dev) {
+        grid.setDev(dev);
     }
 
     public Dev getDev() {
-        return dev;
+        return grid.getEditedObject();
     }
 
 

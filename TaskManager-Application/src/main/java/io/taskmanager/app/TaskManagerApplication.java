@@ -1,8 +1,9 @@
-package io.taslmanager.app;
+package io.taskmanager.app;
 
 import io.taskmanager.api.TaskRepositoryApi;
 import io.taskmanager.console.CommandManager;
-import io.taskmanager.test.TaskRepository;
+import io.taskmanager.core.repository.RepositoryManager;
+import io.taskmanager.core.repository.TaskRepository;
 import io.taskmanager.ui.graphical.App;
 
 import java.io.Console;
@@ -11,9 +12,11 @@ import java.util.Arrays;
 
 public class TaskManagerApplication {
     public static void main(String[] args) throws Exception {
-        TaskRepository taskRepository = new TaskRepositoryApi("http://localhost:3000");
+        RepositoryManager repositoryManager = new RepositoryManager();
+        TaskRepository repository = new TaskRepositoryApi("http://localhost:3000");
+        repositoryManager.setRepository(repository);
         if(args.length == 0){
-            App.launchApp(taskRepository);
+            App.launchApp(repositoryManager);
         }
         else {
             Console console = System.console();
@@ -23,7 +26,7 @@ public class TaskManagerApplication {
                 Runtime.getRuntime().exec(arrays.stream().reduce((aze,aze2)-> aze+" "+aze2).orElseThrow());
             }
             else{
-                CommandManager commandManager = new CommandManager(args, taskRepository);
+                CommandManager commandManager = new CommandManager(args, repositoryManager);
                 commandManager.apply();
             }
 

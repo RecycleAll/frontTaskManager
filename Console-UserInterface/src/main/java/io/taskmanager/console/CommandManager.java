@@ -1,18 +1,19 @@
 package io.taskmanager.console;
 
-import io.taskmanager.test.Dev;
-import io.taskmanager.test.TaskRepository;
+
+import io.taskmanager.core.Dev;
+import io.taskmanager.core.repository.RepositoryManager;
 
 import java.io.Console;
 import java.util.concurrent.ExecutionException;
 
 public class CommandManager {
     private final String[] args;
-    private final TaskRepository taskRepository;
+    private final RepositoryManager repositoryManager;
 
-    public CommandManager(String[] args, TaskRepository taskRepository) {
+    public CommandManager(String[] args, RepositoryManager repositoryManager) {
         this.args = args;
-        this.taskRepository = taskRepository;
+        this.repositoryManager = repositoryManager;
     }
 
     public void apply() {
@@ -37,7 +38,7 @@ public class CommandManager {
             Dev dev = askToLogin();
             System.out.print(dev);
 
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -45,9 +46,9 @@ public class CommandManager {
     private void showProjects() {
         try {
             Dev dev = askToLogin();
-            taskRepository.getProjects(dev);
+            //repositoryManager.(dev);
 
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -56,7 +57,7 @@ public class CommandManager {
         try {
             Dev dev = askToLogin();
 
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -65,7 +66,7 @@ public class CommandManager {
         try {
             Dev dev = askToLogin();
 
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -83,7 +84,7 @@ public class CommandManager {
         try {
             Dev dev = askToLogin();
 
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -92,7 +93,7 @@ public class CommandManager {
         try {
             Dev dev = askToLogin();
 
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -101,7 +102,7 @@ public class CommandManager {
         try {
             Dev dev = askToLogin();
 
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -110,7 +111,7 @@ public class CommandManager {
         try {
             Dev dev = askToLogin();
 
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -128,7 +129,7 @@ public class CommandManager {
         try {
             Dev dev = askToLogin();
 
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -137,7 +138,7 @@ public class CommandManager {
         try {
             Dev dev = askToLogin();
 
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -146,7 +147,7 @@ public class CommandManager {
         try {
             Dev dev = askToLogin();
 
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -155,17 +156,18 @@ public class CommandManager {
         try {
             Dev dev = askToLogin();
 
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private Dev askToLogin() throws ExecutionException, InterruptedException {
-        Console console = System.console();
-        System.out.println("Enter your login:");
-        String login = console.readLine();
-        System.out.println("Enter your password:");
-        String password = String.valueOf(console.readPassword());
-        return taskRepository.loginDev(login, password);
+    private Dev askToLogin() throws Exception {
+            Console console = System.console();
+            System.out.println("Enter your login:");
+            String login = console.readLine();
+            System.out.println("Enter your password:");
+            String password = String.valueOf(console.readPassword());
+            int devId = repositoryManager.getRepository().loginDev(login, password);
+            return repositoryManager.getDev(devId, true);
     }
 }

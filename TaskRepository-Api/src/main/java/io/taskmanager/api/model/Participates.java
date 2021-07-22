@@ -1,17 +1,13 @@
-package io.taskmanager.api;
+package io.taskmanager.api.model;
 
-public class Participates {
+public class Participates extends BaseModel {
 
-    private int id;
     private int dev_id;
     private int project_id;
     private boolean owner;
 
     public Participates() {
-    }
-
-    public int getId() {
-        return id;
+        super(-1, null, null);
     }
 
     public int getDev_id() {

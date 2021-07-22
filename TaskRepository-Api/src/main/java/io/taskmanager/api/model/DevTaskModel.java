@@ -1,16 +1,12 @@
-package io.taskmanager.api;
+package io.taskmanager.api.model;
 
-public class DevTaskModel {
+public class DevTaskModel extends BaseModel {
 
-    private int id;
     private int dev_id;
     private int task_id;
 
-    public DevTaskModel() {
-    }
-
-    public int getId() {
-        return id;
+    public DevTaskModel(int id) {
+        super(id, null, null);
     }
 
     public int getDev_id() {
@@ -20,4 +16,5 @@ public class DevTaskModel {
     public int getTask_id() {
         return task_id;
     }
+
 }

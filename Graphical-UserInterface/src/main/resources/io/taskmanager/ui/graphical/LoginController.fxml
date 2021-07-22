@@ -28,6 +28,7 @@
             <Label text="password" GridPane.rowIndex="1" />
             <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <TextField fx:id="emailField" GridPane.columnIndex="1" />
+            <Button mnemonicParsing="false" onAction="#onRegister" text="Register" GridPane.columnIndex="1" GridPane.rowIndex="2" />
          </children>
          <BorderPane.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
