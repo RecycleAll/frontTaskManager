@@ -22,12 +22,12 @@ public class RepositoryManager {
         columnsManager = new RepositoryObjectManager<>(repository);
     }
 
-    public RepositoryManager(){
+    public RepositoryManager() {
         this(null);
     }
 
     public void setRepository(TaskRepository repository) {
-        if(this.repository == null)
+        if (this.repository == null)
             this.repository = repository;
     }
 
@@ -36,24 +36,23 @@ public class RepositoryManager {
     }
 
 
-
     public Column getColumn(int id) throws ExecutionException, InterruptedException {
         Column col = columnsManager.getObject(id);
-        if(col == null){
+        if (col == null) {
             col = repository.getColumn(id);
         }
         return col;
     }
 
     public void removeColumn(Column column) throws ExecutionException, InterruptedException {
-        for (Project project: projectsManager.getList()) {
+        for (Project project : projectsManager.getList()) {
             project.removeColumn(column);
         }
     }
 
     public void removeProject(Project project) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
-        if( projectsManager.remove(project)){
-            for (Dev dev :project.getDevs()) {
+        if (projectsManager.remove(project)) {
+            for (Dev dev : project.getDevs()) {
                 dev.removeProject(project);
             }
         }
@@ -61,24 +60,24 @@ public class RepositoryManager {
 
     public Task getTask(int id) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
         Task obj = tasksManager.getObject(id);
-        if(obj == null){
+        if (obj == null) {
             obj = repository.getTask(id);
         }
         return obj;
     }
 
     public void removeTask(Task task) throws ExecutionException, InterruptedException {
-        for (Project project: projectsManager.getList()) {
+        for (Project project : projectsManager.getList()) {
             project.removeTask(task);
         }
     }
 
     public Dev getDev(int id, boolean loadProject) throws Exception {
         Dev dev = devsManager.getObject(id);
-        if(dev == null){
+        if (dev == null) {
             dev = repository.getDev(id);
             devsManager.addObject(dev);
-            if(loadProject) {
+            if (loadProject) {
                 Map<Integer, DevStatus> projects = repository.getAllDevProject(id);
                 if (projects != null) {
                     for (Map.Entry<Integer, DevStatus> entry : projects.entrySet()) {
@@ -101,13 +100,13 @@ public class RepositoryManager {
     }
 
     public void removeDev(Dev dev) throws ExecutionException, RepositoryObjectDeleted, InterruptedException {
-        for (Project project: projectsManager.getList()) {
+        for (Project project : projectsManager.getList()) {
             project.removeDev(dev);
         }
     }
 
     public void removeDev(List<Dev> devs) throws ExecutionException, RepositoryObjectDeleted, InterruptedException {
-        for (Dev dev: devs){
+        for (Dev dev : devs) {
             removeDev(dev);
         }
     }
@@ -115,38 +114,38 @@ public class RepositoryManager {
     public Project getProject(int projectID) throws Exception {
         Project project = projectsManager.getObject(projectID);
 
-        if(project == null){
+        if (project == null) {
             project = repository.getProject(projectID);
             projectsManager.addObject(project);
 
             Map<Integer, DevStatus> devs = repository.getProjectDevs(projectID);
-            for (Map.Entry<Integer, DevStatus> entry: devs.entrySet()) {
-                project.addDev( getDev(entry.getKey(), false), entry.getValue());
+            for (Map.Entry<Integer, DevStatus> entry : devs.entrySet()) {
+                project.addDev(getDev(entry.getKey(), false), entry.getValue());
             }
 
             List<Column> cols = repository.getColumns(projectID);
             columnsManager.addObject(cols);
 
             project.setColumns(cols);
-            for (Column col: cols) {
+            for (Column col : cols) {
                 List<Task> columnTasks = repository.getColumnTasks(col.getId());
                 tasksManager.addObject(columnTasks);
                 col.setTasks(columnTasks);
 
-                for (Task task: columnTasks) {
+                for (Task task : columnTasks) {
                     List<Integer> devsID = repository.getTaskDevsID(task.getId());
                     System.out.println(devsID.toString());
-                    for (Integer id: devsID) {
-                        task.addDev( getDev(id, false));
+                    for (Integer id : devsID) {
+                        task.addDev(getDev(id, false));
                     }
                     task.setRepositoryManager(this);
                 }
                 col.setRepositoryManager(this);
             }
-            System.out.println("loaded project: "+ project+"  devs:"+devs.size()+"  col: "+cols.size());
+            System.out.println("loaded project: " + project + "  devs:" + devs.size() + "  col: " + cols.size());
 
             project.setRepositoryManager(this);
-            for (Dev dev: project.getDevs()) {
+            for (Dev dev : project.getDevs()) {
                 dev.setRepositoryManager(this);
             }
         }

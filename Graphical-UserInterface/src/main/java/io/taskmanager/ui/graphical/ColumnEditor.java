@@ -65,7 +65,10 @@ public class ColumnEditor extends DialogPane implements IObjectEditor<Column> {
                 } catch (RepositoryEditionConflict repositoryEditionConflict) {
 
                     try {
-                        RepositoryConflictDialog<Column> conflictDialog = new RepositoryConflictDialog<Column>( new ColumnConflictController((RepositoryConflictHandler<Column>) repositoryEditionConflict.getConflictHandler()));
+
+                        RepositoryConflictHandler<Column> handler = (RepositoryConflictHandler<Column>) repositoryEditionConflict.getConflictHandler();
+
+                        RepositoryConflictDialog<Column> conflictDialog = new RepositoryConflictDialog<Column>( new ColumnConflictController(handler));
                         Optional<Column> res =conflictDialog.showAndWait();
                         if (res.isPresent()) {
                             column.setAll(res.get());

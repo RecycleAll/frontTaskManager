@@ -31,8 +31,6 @@ public class App extends Application {
 
     private final MainController mainController;
 
-    private final RepositoryManager repository;
-
     public static void launchApp(RepositoryManager repository) throws Exception {
         Platform.startup(() -> {
         });
@@ -56,6 +54,7 @@ public class App extends Application {
         }
     }
 
+    @SuppressWarnings("unused") //used by the plugin
     public Dev getConnectedDev() {
         return devViewerController.getDev();
     }
@@ -68,9 +67,7 @@ public class App extends Application {
         Menu connectionMenu = new Menu("Connection");
         MenuItem disconnectMenuItem = new MenuItem("Disconnect");
         connectionMenu.getItems().add(disconnectMenuItem);
-        disconnectMenuItem.setOnAction(actionEvent -> {
-            setLoginScene();
-        });
+        disconnectMenuItem.setOnAction(actionEvent -> setLoginScene());
 
         Menu pluginMenu = new Menu("Plugins");
         MenuItem addPluginMenu = new Menu("add plugin");
@@ -88,9 +85,7 @@ public class App extends Application {
                 if (pluginInterface.isPresent()) {
                     MenuItem newPlugin = new Menu(file.getName());
                     usePlugin.getItems().add(newPlugin);
-                    newPlugin.setOnAction(actionEvent1 -> {
-                        pluginInterface.get().startPlugin(this);
-                    });
+                    newPlugin.setOnAction(actionEvent1 -> pluginInterface.get().startPlugin(this));
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "plugin isn't valid", ButtonType.OK);
                     alert.showAndWait();
@@ -108,9 +103,9 @@ public class App extends Application {
 
         loginController = new LoginController(repository, this);
 
-        this.repository = repository;
     }
 
+    @SuppressWarnings("unused") //used by the plugin
     public MenuBar getMenuBar() {
         return mainController.menuBar;
     }
@@ -130,10 +125,8 @@ public class App extends Application {
     }
 
     private void pack() {
-        Scene scene = stage.getScene();
+        stage.getScene();
         stage.sizeToScene();
-        // stage.setMinWidth( stage.getWidth());
-        // stage.setMinHeight( stage.getHeight());
     }
 
     @Override

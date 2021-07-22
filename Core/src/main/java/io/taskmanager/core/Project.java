@@ -1,8 +1,14 @@
 package io.taskmanager.core;
 
-import io.taskmanager.core.repository.*;
+import io.taskmanager.core.repository.RepositoryConflictHandler;
+import io.taskmanager.core.repository.RepositoryEditionConflict;
+import io.taskmanager.core.repository.RepositoryManager;
+import io.taskmanager.core.repository.RepositoryObjectDeleted;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class Project extends RepositoryObject<Project> {
@@ -34,7 +40,7 @@ public class Project extends RepositoryObject<Project> {
 
     @Override
     public boolean compare(Project project) {
-        return  super.compare( (RepositoryObject<Project>) project) &&
+        return super.compare((RepositoryObject<Project>) project) &&
                 name.equals(project.name) &&
                 gitHubUrl.equals(project.gitHubUrl);
     }
@@ -48,15 +54,15 @@ public class Project extends RepositoryObject<Project> {
     @Override
     protected boolean myPost() throws ExecutionException, InterruptedException {
 
-        if(devs.isEmpty()){
+        if (devs.isEmpty()) {
             return false;
         }
 
         Dev owner = null;
 
-        for (Dev dev: devs.keySet()) {
+        for (Dev dev : devs.keySet()) {
             dev.postToRepo();
-            if(owner == null && devs.get(dev) == DevStatus.OWNER){
+            if (owner == null && devs.get(dev) == DevStatus.OWNER) {
                 owner = dev;
             }
         }
@@ -65,26 +71,26 @@ public class Project extends RepositoryObject<Project> {
     }
 
     @Override
-    protected boolean myDelete() throws ExecutionException, InterruptedException {
+    protected boolean myDelete() {
         return false;
     }
 
     @Override
     protected boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict, RepositoryObjectDeleted {
-        if(!edited){
+        if (!edited) {
             System.out.println("Project:myUpdateToRepo -> not edited");
             return true;
-        }else{
+        } else {
             Project project = repositoryManager.getRepository().getProject(id);
-            if( project == null){
+            if (project == null) {
                 throw new RepositoryObjectDeleted(this);
             }
-            System.out.println("Project: myUpdateToRepo ->\nlocal: "+updatedAt+"\nrepo: "+project.updatedAt);
-            if(!force && isConflict(project)){
+            System.out.println("Project: myUpdateToRepo ->\nlocal: " + updatedAt + "\nrepo: " + project.updatedAt);
+            if (!force && isConflict(project)) {
                 System.out.println("Project:myUpdateToRepo ->conflict");
-                throw new RepositoryEditionConflict( new RepositoryConflictHandler<Project>(this, project, repositoryManager));
-            }else{
-                System.out.println("Project:myUpdateToRepo -> no conflict (f:"+force+")");
+                throw new RepositoryEditionConflict(new RepositoryConflictHandler<>(this, project, repositoryManager));
+            } else {
+                System.out.println("Project:myUpdateToRepo -> no conflict (f:" + force + ")");
                 edited = false;
                 return repositoryManager.getRepository().updateProject(this);
             }
@@ -94,13 +100,13 @@ public class Project extends RepositoryObject<Project> {
     @Override
     protected boolean myUpdateFromRepo() throws ExecutionException, InterruptedException, RepositoryEditionConflict, RepositoryObjectDeleted {
         Project project = repositoryManager.getRepository().getProject(id);
-        if( edited){
+        if (edited) {
             System.out.println("Project:myUpdateFromRepo -> edited");
-            throw new RepositoryEditionConflict( new RepositoryConflictHandler<Project>(this, project, repositoryManager));
-        }else if(project == null){
+            throw new RepositoryEditionConflict(new RepositoryConflictHandler<>(this, project, repositoryManager));
+        } else if (project == null) {
             System.out.println("Project:myUpdateFromRepo -> deleted");
             throw new RepositoryObjectDeleted(this);
-        }else{
+        } else {
             System.out.println("Project:myUpdateFromRepo -> no conflict");
             setAll(project);
             edited = false;
@@ -109,10 +115,10 @@ public class Project extends RepositoryObject<Project> {
     }
 
     @Override
-    public Project merge(Project project){
-        if(id != project.id){
+    public Project merge(Project project) {
+        if (id != project.id) {
             return null;
-        }else {
+        } else {
             Project mergedProject = new Project(null);
             mergedProject.setId(id);
 
@@ -130,10 +136,6 @@ public class Project extends RepositoryObject<Project> {
         this.columns = columns;
     }
 
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
-    }
-
     public void setDevs(Map<Dev, DevStatus> devs) {
         System.out.println("setDevs: " + devs.size());
         this.devs = devs;
@@ -144,17 +146,16 @@ public class Project extends RepositoryObject<Project> {
         // return null;
     }
 
-    public DevStatus getDevStatus(Dev dev){
+    public DevStatus getDevStatus(Dev dev) {
         return devs.get(dev);
     }
 
-    public void setDevStatus(Dev dev, DevStatus status){
+    public void setDevStatus(Dev dev, DevStatus status) {
         devs.put(dev, status);
     }
 
     public List<Column> getColumns() {
         return columns;
-        //return null;
     }
 
     public int getId() {
@@ -163,29 +164,18 @@ public class Project extends RepositoryObject<Project> {
 
     @Override
     public void setAll(Project project) {
-        setAll( (RepositoryObject<Project>) project);
+        setAll((RepositoryObject<Project>) project);
         name = project.name;
         gitHubUrl = project.gitHubUrl;
     }
 
-    public Column addNewColumn(String name) throws ExecutionException, InterruptedException {
-        System.out.println("add new COl: "+ name);
-        if( repositoryManager != null) {
-            System.out.println("add new COl repo: "+ name);
-            Column col = repositoryManager.getRepository().postColumn(name, id);
-            columns.add(col);
-            return col;
-        }
-        return null;
-    }
-
-    public void addColumn(Column column) throws ExecutionException, InterruptedException, RepositoryEditionConflict {
-        System.out.println("addCOl"+ columns +" "+ column);
-        if( !columns.contains(column) ) {
+    public void addColumn(Column column) throws ExecutionException, InterruptedException {
+        System.out.println("addCOl" + columns + " " + column);
+        if (!columns.contains(column)) {
 
             column.setProjectId(this.id);
 
-            if(repositoryManager != null){
+            if (repositoryManager != null) {
                 repositoryManager.getRepository().postColumn(column);
             }
 
@@ -195,7 +185,7 @@ public class Project extends RepositoryObject<Project> {
 
     public void removeColumn(Column column) throws ExecutionException, InterruptedException {
         columns.remove(column);
-        System.out.println("removeColumn: "+ column.getName());
+        System.out.println("removeColumn: " + column.getName());
         column.deleteFromRepo();
     }
 
@@ -208,10 +198,10 @@ public class Project extends RepositoryObject<Project> {
     }
 
     public void addDev(Dev dev) throws ExecutionException, InterruptedException {
-        if( !devs.containsKey(dev)) {
+        if (!devs.containsKey(dev)) {
             devs.put(dev, DevStatus.DEV);
             dev.addProject(this);
-            if( repositoryManager != null){
+            if (repositoryManager != null) {
                 repositoryManager.getRepository().postParticipate(this, dev);
             }
         }
@@ -219,15 +209,15 @@ public class Project extends RepositoryObject<Project> {
 
 
     public void removeTask(Task task) throws ExecutionException, InterruptedException {
-        for (Column col: columns) {
+        for (Column col : columns) {
             col.removeTask(task);
         }
     }
 
     public void updateDevs(List<Dev> newDevs) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
         List<Dev> tmp = new ArrayList<>();
-        for (Dev dev: newDevs) {
-            if (!devs.containsKey(dev)){
+        for (Dev dev : newDevs) {
+            if (!devs.containsKey(dev)) {
                 addDev(dev);
             }
         }
@@ -238,7 +228,7 @@ public class Project extends RepositoryObject<Project> {
             }
         }
 
-        for (Dev dev: tmp ) {
+        for (Dev dev : tmp) {
             removeDev(dev);
         }
     }
@@ -248,9 +238,9 @@ public class Project extends RepositoryObject<Project> {
     }
 
     public void removeDev(Dev dev) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
-        if( devs.remove(dev) != null){
+        if (devs.remove(dev) != null) {
             dev.removeProject(this);
-            if( repositoryManager != null){
+            if (repositoryManager != null) {
                 repositoryManager.getRepository().deleteParticipate(this, dev);
             }
             for (Column col : columns) {

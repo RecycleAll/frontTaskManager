@@ -27,21 +27,21 @@ public class Dev extends RepositoryObject<Dev> {
         this.projects = projects;
     }
 
-    public Dev(int id, String firstname, String lastname, String email, String password, int github_id){
+    public Dev(int id, String firstname, String lastname, String email, String password, int github_id) {
         this(id, firstname, lastname, email, password, github_id, new ArrayList<>());
     }
 
-    public Dev(Dev dev){
+    public Dev(Dev dev) {
         this(dev.id, dev.firstname, dev.lastname, dev.email, dev.password, dev.github_id, dev.projects);
     }
 
-    public Dev(){
+    public Dev() {
         this(-1, "", "", "", "", 0);
     }
 
     @Override
     public boolean isConflict(Dev dev) {
-        return  !compare(dev) &&
+        return !compare(dev) &&
                 updatedAt.isBefore(dev.updatedAt);
     }
 
@@ -50,7 +50,7 @@ public class Dev extends RepositoryObject<Dev> {
     }
 
     @Override
-    public void setAll(Dev dev){
+    public void setAll(Dev dev) {
         id = dev.id;
         firstname = dev.firstname;
         lastname = dev.lastname;
@@ -60,8 +60,8 @@ public class Dev extends RepositoryObject<Dev> {
     }
 
     @Override
-    public boolean compare(Dev dev){
-        return  super.compare( (RepositoryObject<Dev>) dev) &&
+    public boolean compare(Dev dev) {
+        return super.compare((RepositoryObject<Dev>) dev) &&
                 firstname.equals(dev.firstname) &&
                 lastname.equals(dev.lastname) &&
                 email.equals(dev.email) &&
@@ -70,27 +70,27 @@ public class Dev extends RepositoryObject<Dev> {
     }
 
     @Override
-    protected boolean myPost() throws ExecutionException, InterruptedException {
+    protected boolean myPost() {
         return false;
     }
 
     @Override
-    protected boolean myDelete() throws ExecutionException, InterruptedException {
+    protected boolean myDelete() {
         return false;
     }
 
     @Override
     protected boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict, RepositoryObjectDeleted {
-        if( !edited){
+        if (!edited) {
             System.out.println("Dev:myUpdateToRepo -> not edited");
             return true;
-        }else{
+        } else {
             Dev dev = repositoryManager.getRepository().getDev(id);
-            if(!force && isConflict(dev)){
+            if (!force && isConflict(dev)) {
                 System.out.println("Dev:myUpdateToRepo -> conflict");
-                throw new RepositoryEditionConflict( new RepositoryConflictHandler<Dev>(this, dev,  repositoryManager));
-            }else {
-                System.out.println("Dev:myUpdateToRepo -> no conflict (f:"+force+")");
+                throw new RepositoryEditionConflict(new RepositoryConflictHandler<>(this, dev, repositoryManager));
+            } else {
+                System.out.println("Dev:myUpdateToRepo -> no conflict (f:" + force + ")");
                 return repositoryManager.getRepository().updateDev(this);
             }
         }
@@ -103,29 +103,29 @@ public class Dev extends RepositoryObject<Dev> {
 
     @Override
     public Dev merge(Dev other) {
-        if( id != other.id){
+        if (id != other.id) {
             return null;
-        }else {
+        } else {
             Dev dev = new Dev();
             dev.setId(id);
 
-            if(firstname.equals(other.firstname)){
+            if (firstname.equals(other.firstname)) {
                 dev.firstname = firstname;
             }
 
-            if(lastname.equals(other.lastname)){
+            if (lastname.equals(other.lastname)) {
                 dev.lastname = lastname;
             }
 
-            if(email.equals(other.email)){
+            if (email.equals(other.email)) {
                 dev.email = email;
             }
 
-            if(github_id == other.github_id){
+            if (github_id == other.github_id) {
                 dev.github_id = github_id;
             }
 
-            if(password.equals(other.password)){
+            if (password.equals(other.password)) {
                 dev.password = password;
             }
             return dev;
@@ -137,14 +137,14 @@ public class Dev extends RepositoryObject<Dev> {
     }
 
     public void addProject(Project project) throws ExecutionException, InterruptedException {
-        if( !projects.contains( project)){
+        if (!projects.contains(project)) {
             projects.add(project);
             project.addDev(this);
         }
     }
 
     public void removeProject(Project project) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
-        if( projects.remove(project) ){
+        if (projects.remove(project)) {
             project.removeDev(this);
         }
     }
@@ -195,7 +195,7 @@ public class Dev extends RepositoryObject<Dev> {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return firstname;
     }
 }

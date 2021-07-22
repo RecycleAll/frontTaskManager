@@ -12,8 +12,6 @@ import java.util.concurrent.ExecutionException;
 
 public class Task extends RepositoryObject<Task> {
 
-    private Project project;
-
     private String name;
     private String description;
 
@@ -33,27 +31,27 @@ public class Task extends RepositoryObject<Task> {
     }
 
     public Task(RepositoryManager repository, int id, String name, String description, LocalDate limitDate, List<Dev> devs) {
-        this(repository,id, name, description, limitDate,  devs, new ArrayList<>());
+        this(repository, id, name, description, limitDate, devs, new ArrayList<>());
     }
 
     public Task(RepositoryManager repository, int id, String name, String description, LocalDate limitDate) {
-        this(repository,id, name, description,  limitDate,  new ArrayList<>(), new ArrayList<>());
+        this(repository, id, name, description, limitDate, new ArrayList<>(), new ArrayList<>());
     }
 
-    public Task(RepositoryManager repository){
-        this(repository, 0, "", "",  null, new ArrayList<>(), new ArrayList<>());
+    public Task(RepositoryManager repository) {
+        this(repository, 0, "", "", null, new ArrayList<>(), new ArrayList<>());
     }
 
-    public Task(RepositoryManager repository, Task task){
-        this(repository, task.getId(), task.getName(), task.getDescription(),  task.getLimitDate(),  task.getDevs(), task.tags);
+    public Task(RepositoryManager repository, Task task) {
+        this(repository, task.getId(), task.getName(), task.getDescription(), task.getLimitDate(), task.getDevs(), task.tags);
     }
 
-    public Task(Task task){
-        this(task.repositoryManager, task.getId(), task.getName(), task.getDescription(),  task.getLimitDate(), task.getDevs(), task.tags);
-        System.out.println("dev size from copy: "+ devs.size());
+    public Task(Task task) {
+        this(task.repositoryManager, task.getId(), task.getName(), task.getDescription(), task.getLimitDate(), task.getDevs(), task.tags);
+        System.out.println("dev size from copy: " + devs.size());
     }
 
-    public Task(){
+    public Task() {
         this((RepositoryManager) null);
     }
 
@@ -65,21 +63,21 @@ public class Task extends RepositoryObject<Task> {
 
 
     @Override
-    protected boolean myPost() throws ExecutionException, InterruptedException {
+    protected boolean myPost() {
         return false;
     }
 
     @Override
-    protected boolean myDelete() throws ExecutionException, InterruptedException {
+    protected boolean myDelete() {
         return false;
     }
 
     @Override
     protected boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict, RepositoryObjectDeleted {
-        if(!edited){
+        if (!edited) {
             System.out.println("Task:myUpdateToRepo -> not edited");
             return true;
-        }else{
+        } else {
             Task task;
             try {
                 task = repositoryManager.getRepository().getTask(id);
@@ -87,12 +85,12 @@ public class Task extends RepositoryObject<Task> {
                 repositoryObjectDeleted.addObject(this);
                 throw repositoryObjectDeleted;
             }
-            System.out.println("Task: myUpdateToRepo ->\nlocal: "+updatedAt+"\nrepo: "+task.updatedAt);
-            if(!force && isConflict(task)){
+            System.out.println("Task: myUpdateToRepo ->\nlocal: " + updatedAt + "\nrepo: " + task.updatedAt);
+            if (!force && isConflict(task)) {
                 System.out.println("Task:myUpdateToRepo ->conflict");
-                throw new RepositoryEditionConflict( new RepositoryConflictHandler<Task>(this, task, repositoryManager));
-            }else{
-                System.out.println("Task:myUpdateToRepo -> no conflict (f:"+force+")");
+                throw new RepositoryEditionConflict(new RepositoryConflictHandler<>(this, task, repositoryManager));
+            } else {
+                System.out.println("Task:myUpdateToRepo -> no conflict (f:" + force + ")");
                 return repositoryManager.getRepository().updateTask(this);
             }
         }
@@ -101,12 +99,12 @@ public class Task extends RepositoryObject<Task> {
     @Override
     protected boolean myUpdateFromRepo() throws RepositoryEditionConflict, ExecutionException, InterruptedException, RepositoryObjectDeleted {
         Task task = repositoryManager.getRepository().getTask(id);
-        if( edited){
+        if (edited) {
             System.out.println("Task:myUpdateFromRepo -> edited");
-            throw new RepositoryEditionConflict( new RepositoryConflictHandler<Task>(this, task, repositoryManager));
-        }else if(task == null){
+            throw new RepositoryEditionConflict(new RepositoryConflictHandler<>(this, task, repositoryManager));
+        } else if (task == null) {
             throw new RepositoryObjectDeleted(this);
-        }else{
+        } else {
             System.out.println("Task:myUpdateFromRepo -> no conflict");
             setAll(task);
 
@@ -116,33 +114,33 @@ public class Task extends RepositoryObject<Task> {
     }
 
     @Override
-    public boolean compare(Task task){
-        if( !super.compare( (RepositoryObject<Task>) task)){
+    public boolean compare(Task task) {
+        if (!super.compare((RepositoryObject<Task>) task)) {
             return false;
         }
 
-        if(devs != null && task.devs != null){
-            if( devs.size() != task.devs.size()){
+        if (devs != null && task.devs != null) {
+            if (devs.size() != task.devs.size()) {
                 return false;
-            }else {
-                if( devs.stream().anyMatch(dev -> task.devs.stream().anyMatch(dev1 -> dev.id != dev1.id)) ){
+            } else {
+                if (devs.stream().anyMatch(dev -> task.devs.stream().anyMatch(dev1 -> dev.id != dev1.id))) {
                     return false;
                 }
             }
-        }else if(devs != task.devs){
+        } else if (devs != task.devs) {
             return false;
         }
 
-        return  name.equals(task.name) &&
+        return name.equals(task.name) &&
                 description.equals(task.description) &&
                 limitDate.isEqual(task.limitDate);
     }
 
     @Override
-    public Task merge(Task task){
-        if(id != task.id){
+    public Task merge(Task task) {
+        if (id != task.id) {
             return null;
-        }else {
+        } else {
             Task mergedTask = new Task();
             mergedTask.setId(id);
 
@@ -167,31 +165,31 @@ public class Task extends RepositoryObject<Task> {
         List<Dev> tmp = new ArrayList<>();
         RepositoryObjectDeleted eDeleted = null;
 
-        for (Dev dev: newDevs) {
-            if (!devs.contains(dev)){
+        for (Dev dev : newDevs) {
+            if (!devs.contains(dev)) {
                 try {
                     addDev(dev);
-                } catch (RepositoryObjectDeleted e){
-                    if(eDeleted == null){
+                } catch (RepositoryObjectDeleted e) {
+                    if (eDeleted == null) {
                         eDeleted = new RepositoryObjectDeleted(e.getObjects());
-                    }else{
+                    } else {
                         eDeleted.addObject(e.getObjects());
                     }
                 }
             }
         }
 
-        for (Dev dev: devs) {
-            if (!newDevs.contains(dev)){
+        for (Dev dev : devs) {
+            if (!newDevs.contains(dev)) {
                 tmp.add(dev);
             }
         }
 
-        for (Dev dev: tmp) {
+        for (Dev dev : tmp) {
             removeDev(dev);
         }
 
-        if(eDeleted != null){
+        if (eDeleted != null) {
             throw eDeleted;
         }
     }
@@ -215,35 +213,35 @@ public class Task extends RepositoryObject<Task> {
         description = task.description;
     }
 
-    public void addTag(Tag tag){
+    public void addTag(Tag tag) {
         tags.add(tag);
     }
 
-    public void removeTag(Tag tag){
+    public void removeTag(Tag tag) {
         tags.remove(tag);
     }
 
     public void addDev(Dev dev) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
-        System.out.println("Task:addDev id:"+dev.getId()+" n:"+dev.getFirstname());
-        if(!devs.contains(dev)) {
+        System.out.println("Task:addDev id:" + dev.getId() + " n:" + dev.getFirstname());
+        if (!devs.contains(dev)) {
             if (repositoryManager != null) {
                 Dev repoDev = repositoryManager.getRepository().getDev(dev.getId());
 
-                if( repoDev == null){
+                if (repoDev == null) {
                     throw new RepositoryObjectDeleted(dev);
                 }
 
                 System.out.println("posting to repo");
                 devs.add(dev);
                 repositoryManager.getRepository().postDevTask(this, dev);
-            }else{
+            } else {
                 devs.add(dev);
             }
         }
     }
 
     public void removeDev(Dev dev) throws ExecutionException, InterruptedException {
-        System.out.println("Task:removeDev id:"+dev.getId()+" n:"+dev.getFirstname());
+        System.out.println("Task:removeDev id:" + dev.getId() + " n:" + dev.getFirstname());
         if (devs.remove(dev) && repositoryManager != null) {
             repositoryManager.getRepository().deleteDevTAsk(this, dev);
         }
@@ -272,7 +270,7 @@ public class Task extends RepositoryObject<Task> {
         return limitDate;
     }
 
-    public void setLimitDate(LocalDate limitDate){
+    public void setLimitDate(LocalDate limitDate) {
         this.limitDate = limitDate;
         edited = true;
     }

@@ -2,10 +2,11 @@ package io.taskmanager.core.repository;
 
 import io.taskmanager.core.RepositoryObject;
 
-public class RepositoryConflictHandler <T extends RepositoryObject> {
+public class RepositoryConflictHandler <T extends RepositoryObject<?>> {
 
-    private T local, repo, merged;
-    private RepositoryManager repository;
+    private final T local, repo;
+    private T merged;
+    private final RepositoryManager repository;
 
     public RepositoryConflictHandler(T local, T repo, RepositoryManager repository) {
         this.local = local;

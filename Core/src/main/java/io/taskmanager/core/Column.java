@@ -5,7 +5,6 @@ import io.taskmanager.core.repository.RepositoryEditionConflict;
 import io.taskmanager.core.repository.RepositoryManager;
 import io.taskmanager.core.repository.RepositoryObjectDeleted;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -17,7 +16,7 @@ public class Column extends RepositoryObject<Column> {
 
     private List<Task> tasks;
 
-    public Column(RepositoryManager repository, int id, String name, int projectId, List<Task> tasks){
+    public Column(RepositoryManager repository, int id, String name, int projectId, List<Task> tasks) {
         super(repository);
         this.id = id;
         this.projectId = projectId;
@@ -30,16 +29,16 @@ public class Column extends RepositoryObject<Column> {
         }
     }
 
-    public Column(RepositoryManager repository, int id, String name, int projectId)  {
+    public Column(RepositoryManager repository, int id, String name, int projectId) {
         this(repository, id, name, projectId, new ArrayList<>());
     }
 
-    public Column( int id, String name, int projectId) {
+    public Column(int id, String name, int projectId) {
         this(null, id, name, projectId, new ArrayList<>());
     }
 
-    public Column(RepositoryManager repository, Column col){
-        this(repository, col.getId(), col.getName(), col.projectId, col.getTasks() );
+    public Column(RepositoryManager repository, Column col) {
+        this(repository, col.getId(), col.getName(), col.projectId, col.getTasks());
     }
 
     public Column(RepositoryManager repository) {
@@ -69,36 +68,36 @@ public class Column extends RepositoryObject<Column> {
 
     @Override
     protected boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict, RepositoryObjectDeleted {
-        if(!edited){
+        if (!edited) {
             System.out.println("Column:myUpdateToRepo -> not edited");
             return true;
-        }else{
+        } else {
             Column column = repositoryManager.getRepository().getColumn(id);
             //System.out.println("Column: myUpdateToRepo ->\nlocal: "+updatedAt+"\nrepo: "+column.updatedAt);
-            if( column == null){
+            if (column == null) {
                 System.out.println("Column:myUpdateToRepo -> deleted");
                 throw new RepositoryObjectDeleted(this);
-            }else if(!force && isConflict(column)){
-                System.out.println("Column:myUpdateToRepo -> conflict\blocal: "+updatedAt+"\nrepo: "+column.updatedAt);
-                throw new RepositoryEditionConflict( new RepositoryConflictHandler<Column>(this, column, repositoryManager));
-            }else{
-                System.out.println("Column:myUpdateToRepo -> no conflict (f:"+force+")");
+            } else if (!force && isConflict(column)) {
+                System.out.println("Column:myUpdateToRepo -> conflict\blocal: " + updatedAt + "\nrepo: " + column.updatedAt);
+                throw new RepositoryEditionConflict(new RepositoryConflictHandler<>(this, column, repositoryManager));
+            } else {
+                System.out.println("Column:myUpdateToRepo -> no conflict (f:" + force + ")");
                 return repositoryManager.getRepository().putColumn(this);
             }
         }
     }
 
     @Override
-    protected boolean myUpdateFromRepo() throws ExecutionException, InterruptedException {
-        Column col = repositoryManager.getRepository().getColumn(id);
+    protected boolean myUpdateFromRepo() {
+        //TODO
         return false;
     }
 
     @Override
     public Column merge(Column column) {
-        if(id != column.id){
+        if (id != column.id) {
             return null;
-        }else {
+        } else {
             Column col = new Column(null);
 
             if (name.equals(column.name)) {
@@ -109,8 +108,8 @@ public class Column extends RepositoryObject<Column> {
         }
     }
 
-    public void removeDevFromAllTask(Dev dev) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
-        for (Task task: tasks) {
+    public void removeDevFromAllTask(Dev dev) throws ExecutionException, InterruptedException {
+        for (Task task : tasks) {
             task.removeDev(dev);
         }
     }
@@ -121,25 +120,19 @@ public class Column extends RepositoryObject<Column> {
 
     public void addTask(Task task) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
 
-        if(!tasks.contains(task)){
-            if( repositoryManager != null){
+        if (!tasks.contains(task)) {
+            if (repositoryManager != null) {
                 Column column = repositoryManager.getRepository().getColumn(id);
 
-                if( column == null){
-                    throw  new RepositoryObjectDeleted(this);
+                if (column == null) {
+                    throw new RepositoryObjectDeleted(this);
                 }
 
                 tasks.add(task);
                 repositoryManager.getRepository().postTask(task, id);
-            }else{
+            } else {
                 tasks.add(task);
             }
-        }
-    }
-
-    public void addTask(List<Task> tasks) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
-        for (Task task: tasks) {
-            addTask(task);
         }
     }
 
@@ -148,20 +141,14 @@ public class Column extends RepositoryObject<Column> {
         edited = true;
     }
 
-    public Task addNewTask(String name, String description, LocalDate limitDate) throws ExecutionException, InterruptedException {
-        Task task = repositoryManager.getRepository().postTask(name, description, limitDate, id);
-        tasks.add(task);
-        return task;
-    }
-
     public void removeTask(Task task) throws ExecutionException, InterruptedException {
         tasks.remove(task);
-        if( repositoryManager != null){
+        if (repositoryManager != null) {
             repositoryManager.getRepository().deleteTask(task);
         }
     }
 
-    public List<Task> getTasks(){
+    public List<Task> getTasks() {
         return tasks;
     }
 
@@ -186,7 +173,7 @@ public class Column extends RepositoryObject<Column> {
         return repositoryManager;
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
         edited = true;
     }

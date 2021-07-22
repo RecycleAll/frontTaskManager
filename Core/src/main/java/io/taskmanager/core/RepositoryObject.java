@@ -68,9 +68,6 @@ public abstract class RepositoryObject<T> {
         }
     }
 
-    public final boolean hasBeenUpdated(RepositoryObject<T> other){
-        return !updatedAt.isEqual(other.updatedAt);
-    }
     public boolean compare(RepositoryObject<T> other){
         return id == other.id && updatedAt.isEqual(other.updatedAt);
     }
