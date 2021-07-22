@@ -11,13 +11,16 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogPane;
 
 import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
-public class DevEditorController extends DialogPane{
+public class DevEditorController extends DialogPane {
 
     private static final String FXML_FILE = "DevEditorController.fxml";
 
@@ -26,7 +29,7 @@ public class DevEditorController extends DialogPane{
     private final SimpleBooleanProperty isDeletable = new SimpleBooleanProperty(false);
 
     public DevEditorController(Dev dev, boolean deletable, boolean register) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
@@ -34,12 +37,7 @@ public class DevEditorController extends DialogPane{
         isDeletable.set(deletable);
         this.setContent(grid);
     }
-    public DevEditorController(Dev dev, boolean deletable) throws IOException {
-        this(dev, false, false);
-    }
-    public DevEditorController(Dev dev) throws IOException {
-        this(dev, false);
-    }
+
 
     @FXML
     @SuppressWarnings("unused") //used by fxml loader
@@ -52,38 +50,39 @@ public class DevEditorController extends DialogPane{
         Button applyButton = (Button) this.lookupButton(ButtonType.APPLY);
         applyButton.addEventFilter(ActionEvent.ACTION, actionEvent -> {
 
-           if( !grid.validateChange()){
-               actionEvent.consume();
-           }else{
-               Dev dev = grid.getEditedObject();
+            if (!grid.validateChange()) {
+                actionEvent.consume();
+            } else {
+                Dev dev = grid.getEditedObject();
 
-               try {
+                try {
                     dev.updateToRepo();
-               } catch (ExecutionException | InterruptedException e) {
-                   e.printStackTrace();
-               } catch (RepositoryEditionConflict repositoryEditionConflict) {
-                   System.out.println("catch");
-                   try {
-                       RepositoryConflictDialog<Dev> dialog = new RepositoryConflictDialog<Dev>( new DevConflictController( (RepositoryConflictHandler<Dev>) repositoryEditionConflict.getConflictHandler()) );
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                } catch (RepositoryEditionConflict repositoryEditionConflict) {
+                    System.out.println("catch");
+                    try {
+                        @SuppressWarnings("unchecked")
+                        RepositoryConflictDialog<Dev> dialog = new RepositoryConflictDialog<>(new DevConflictController((RepositoryConflictHandler<Dev>) repositoryEditionConflict.getConflictHandler()));
 
-                       Optional<Dev> res = dialog.showAndWait();
-                       if (res.isPresent()) {
-                           dev.setAll(res.get());
-                           dev.updateToRepo(true);
-                       }
-                   } catch (IOException | RepositoryEditionConflict | ExecutionException | InterruptedException | RepositoryObjectDeleted e) {
-                       e.printStackTrace();
-                   }
-               } catch (RepositoryObjectDeleted repositoryObjectDeleted) {
-                   repositoryObjectDeleted.printStackTrace();
-               }
+                        Optional<Dev> res = dialog.showAndWait();
+                        if (res.isPresent()) {
+                            dev.setAll(res.get());
+                            dev.updateToRepo(true);
+                        }
+                    } catch (IOException | RepositoryEditionConflict | ExecutionException | InterruptedException | RepositoryObjectDeleted e) {
+                        e.printStackTrace();
+                    }
+                } catch (RepositoryObjectDeleted repositoryObjectDeleted) {
+                    repositoryObjectDeleted.printStackTrace();
+                }
 
 
-           }
+            }
         });
     }
 
-    public void setDev(Dev dev){
+    public void setDev(Dev dev) {
         grid.setDev(dev);
     }
 

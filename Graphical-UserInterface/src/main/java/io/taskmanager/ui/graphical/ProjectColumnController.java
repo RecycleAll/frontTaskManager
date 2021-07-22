@@ -1,5 +1,8 @@
 package io.taskmanager.ui.graphical;
-import io.taskmanager.core.*;
+
+import io.taskmanager.core.Column;
+import io.taskmanager.core.Project;
+import io.taskmanager.core.Task;
 import io.taskmanager.core.repository.RepositoryManager;
 import io.taskmanager.core.repository.RepositoryObjectDeleted;
 import javafx.event.ActionEvent;
@@ -12,10 +15,11 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
-public class ProjectColumnController extends ScrollPane{
+public class ProjectColumnController extends ScrollPane {
 
     private static final String FXML_FILE = "ProjectColumnController.fxml";
 
@@ -27,10 +31,10 @@ public class ProjectColumnController extends ScrollPane{
     public VBox TaskVBox;
 
     private Column column;
-    private ProjectController projectController;
+    private final ProjectController projectController;
 
-    public ProjectColumnController(RepositoryManager repository, ProjectController projectController, Column column) throws IOException, ExecutionException, InterruptedException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
+    public ProjectColumnController(RepositoryManager repository, ProjectController projectController, Column column) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
@@ -38,32 +42,24 @@ public class ProjectColumnController extends ScrollPane{
         setColumn(column);
         this.projectController = projectController;
     }
-    public ProjectColumnController(RepositoryManager repository, ProjectController projectController) throws IOException, ExecutionException, InterruptedException {
-        this(repository, projectController, null);
-    }
+
 
     public Column getColumn() {
         return column;
     }
 
-    public void setColumn(Column newColumn) throws IOException, ExecutionException, InterruptedException {
-        if( newColumn == null){
-            this.column = new Column(repository);
-        }else {
-            this.column = newColumn;
-        }
+    public void setColumn(Column newColumn) throws IOException {
+        this.column = Objects.requireNonNullElseGet(newColumn, () -> new Column(repository));
+
         ColumnTitleLabel.setText(column.getName());
         //TODO add task preview to TaskVBox
-        for (Task task: column.getTasks()) {
+        for (Task task : column.getTasks()) {
             addTaskToTaskVBox(task);
         }
     }
 
-    public void setProjectController(ProjectController projectController) {
-        this.projectController = projectController;
-    }
 
-    public void removeTask( ColumnTaskController taskController){
+    public void removeTask(ColumnTaskController taskController) {
         TaskVBox.getChildren().remove(taskController);
     }
 
@@ -73,7 +69,7 @@ public class ProjectColumnController extends ScrollPane{
     }
 
     private void addTaskToTaskVBox(Task task) throws IOException {
-        TaskVBox.getChildren().add( new ColumnTaskController(repository, this, task) );
+        TaskVBox.getChildren().add(new ColumnTaskController(repository, this, task));
     }
 
     @FXML
@@ -82,14 +78,14 @@ public class ProjectColumnController extends ScrollPane{
         TaskDialog dialog = new TaskDialog(repository, getProject());
         Optional<Task> res = dialog.showAndWait();
 
-        if(res.isPresent()){
+        if (res.isPresent()) {
             Task task = res.get();
             try {
                 column.addTask(task);
                 addTask(task);
             } catch (RepositoryObjectDeleted repositoryObjectDeleted) {
                 Column column = (Column) repositoryObjectDeleted.getObjects().get(0);
-                Alert alert = new Alert(Alert.AlertType.ERROR, "The Column "+column.getName()+" has been deleted from the repo", ButtonType.OK);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "The Column " + column.getName() + " has been deleted from the repo", ButtonType.OK);
                 alert.showAndWait();
 
                 repository.removeColumn(column);
@@ -103,16 +99,15 @@ public class ProjectColumnController extends ScrollPane{
     public void OnEdit(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
         ColumnEditorDialog dialog = new ColumnEditorDialog(repository, column);
         Optional<Column> res = dialog.showAndWait();
-        System.out.println(" ProjectColumnController:OnEdit -> res:"+res.isPresent()+"  d: "+dialog.isShouldBeDelete());
-        if( res.isPresent()){
-            ColumnTitleLabel.setText( res.get().getName());
-        }
-        else if( dialog.isShouldBeDelete() ){
+        System.out.println(" ProjectColumnController:OnEdit -> res:" + res.isPresent() + "  d: " + dialog.isShouldBeDelete());
+        if (res.isPresent()) {
+            ColumnTitleLabel.setText(res.get().getName());
+        } else if (dialog.isShouldBeDelete()) {
             projectController.removeColumn(this);
         }
     }
 
-    public Project getProject(){
+    public Project getProject() {
         return projectController.getProject();
     }
 

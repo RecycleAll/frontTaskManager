@@ -18,21 +18,21 @@ public class ProjectEditorDialog extends Dialog<Project> {
         this.setDialogPane(controller);
 
         setResultConverter(buttonType -> {
-            if( buttonType == ButtonType.APPLY){
+            if (buttonType == ButtonType.APPLY) {
                 Project res = controller.getProject();
-                if( res == null)
+                if (res == null)
                     shouldBeDelete = true;
                 return res;
-            }else if( buttonType.getButtonData() == ButtonBar.ButtonData.OTHER){
+            } else if (buttonType.getButtonData() == ButtonBar.ButtonData.OTHER) {
                 shouldBeDelete = true;
                 return null;
-            }else{
+            } else {
                 return null;
             }
         });
     }
 
-    public ProjectEditorDialog(RepositoryManager repositoryManager,Project project) throws IOException {
+    public ProjectEditorDialog(RepositoryManager repositoryManager, Project project) throws IOException {
         this(repositoryManager, project, false);
     }
 

@@ -1,7 +1,9 @@
 package io.taskmanager.ui.graphical;
 
-import io.taskmanager.core.*;
-import io.taskmanager.core.repository.RepositoryEditionConflict;
+import io.taskmanager.core.Column;
+import io.taskmanager.core.Dev;
+import io.taskmanager.core.DevStatus;
+import io.taskmanager.core.Project;
 import io.taskmanager.core.repository.RepositoryManager;
 import io.taskmanager.core.repository.RepositoryObjectDeleted;
 import javafx.event.ActionEvent;
@@ -9,7 +11,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,9 +31,12 @@ public class ProjectController extends BorderPane {
     public Label projectTitle;
     @FXML
     public HBox columnHBox;
+
     @FXML
+    @SuppressWarnings("unused") // used by FXML
     public ScrollPane columnScrollPane;
     @FXML
+    @SuppressWarnings("unused") // used by FXML
     public BorderPane borderPane;
 
     private RepositoryManager repositoryManager;
@@ -37,8 +44,8 @@ public class ProjectController extends BorderPane {
     private Project project;
     private final int loggedDevId;
 
-    public ProjectController(RepositoryManager repository, Project project, int loggedDevId) throws IOException, ExecutionException, InterruptedException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
+    public ProjectController(RepositoryManager repository, Project project, int loggedDevId) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
@@ -48,20 +55,16 @@ public class ProjectController extends BorderPane {
 
     }
 
-    private boolean isProjectDevControllerEditable(Dev dev){
-        if( dev.getId() == loggedDevId){
+    private boolean isProjectDevControllerEditable(Dev dev) {
+        if (dev.getId() == loggedDevId) {
             return true;
-        }else if( project.getDevStatus(dev) == DevStatus.OWNER){
-            return  true;
-        }
-
-        return false;
+        } else return project.getDevStatus(dev) == DevStatus.OWNER;
     }
 
-    public void setProject(Project newProject) throws IOException, ExecutionException, InterruptedException {
-        if( newProject == null){
+    public void setProject(Project newProject) throws IOException {
+        if (newProject == null) {
             this.project = new Project(repositoryManager);
-        }else {
+        } else {
             this.project = newProject;
             this.repositoryManager = newProject.getRepository();
         }
@@ -69,18 +72,18 @@ public class ProjectController extends BorderPane {
         updateUI();
     }
 
-    private void updateUI() throws IOException, ExecutionException, InterruptedException {
+    private void updateUI() throws IOException {
         projectTitle.setText(project.getName());
 
         devsVBox.getChildren().remove(1, devsVBox.getChildren().size());
         columnHBox.getChildren().clear();
 
-        for (Dev dev:project.getDevs()) {
-            devsVBox.getChildren().add( new ProjectDevController(this, dev, isProjectDevControllerEditable(dev)) );
+        for (Dev dev : project.getDevs()) {
+            devsVBox.getChildren().add(new ProjectDevController(this, dev, isProjectDevControllerEditable(dev)));
         }
-        System.out.println("UI col: "+ project.getColumns());
-        for (Column col:project.getColumns()) {
-            columnHBox.getChildren().add( new ProjectColumnController(col.getRepository(), this, col));
+        System.out.println("UI col: " + project.getColumns());
+        for (Column col : project.getColumns()) {
+            columnHBox.getChildren().add(new ProjectColumnController(col.getRepository(), this, col));
         }
     }
 
@@ -93,27 +96,21 @@ public class ProjectController extends BorderPane {
         columnHBox.getChildren().remove(projectColumnController);
     }
 
-    private void addColumn(Column column) throws IOException, ExecutionException, InterruptedException {
-        //project.addColumn(column);
-        columnHBox.getChildren().add( new ProjectColumnController(column.getRepository(), this, column));
+    private void addColumn(Column column) throws IOException {
+        columnHBox.getChildren().add(new ProjectColumnController(column.getRepository(), this, column));
     }
 
-    public void removeDev( ProjectDevController dev) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
+    public void removeDev(ProjectDevController dev) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
         project.removeDev(dev.getDev());
         devsVBox.getChildren().remove(dev);
     }
 
-    private void addDev(Dev dev) throws IOException, ExecutionException, InterruptedException {
-        project.addDev(dev);
-        devsVBox.getChildren().add( new ProjectDevController(this, dev, isProjectDevControllerEditable(dev) ) );
-    }
-
     @FXML
     @SuppressWarnings("unused") //used by fxml
-    public void OnAddColumn(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException, RepositoryEditionConflict {
+    public void OnAddColumn(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
         ColumnEditorDialog dialog = new ColumnEditorDialog(repositoryManager);
         Optional<Column> res = dialog.showAndWait();
-        if(res.isPresent()){
+        if (res.isPresent()) {
             Column col = res.get();
             col.setRepositoryManager(repositoryManager);
             project.addColumn(col);
@@ -129,7 +126,7 @@ public class ProjectController extends BorderPane {
         DevSelectorDialog dialog = new DevSelectorDialog(repositoryManager.getAllDev(), project.getDevs());
 
         Optional<List<Dev>> res = dialog.showAndWait();
-        if(res.isPresent()){
+        if (res.isPresent()) {
             project.updateDevs(res.get());
             updateUI();
         }
@@ -137,11 +134,11 @@ public class ProjectController extends BorderPane {
 
     @FXML
     @SuppressWarnings("unused") //used by fxml
-    public void onEditProject(ActionEvent actionEvent) throws IOException{
+    public void onEditProject(ActionEvent actionEvent) throws IOException {
 
         ProjectEditorDialog projectEditorDialog = new ProjectEditorDialog(repositoryManager, project);
         Optional<Project> res = projectEditorDialog.showAndWait();
-        if(res.isPresent()){
+        if (res.isPresent()) {
             this.projectTitle.setText(project.getName());
         }
     }

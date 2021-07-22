@@ -1,7 +1,6 @@
 package io.taskmanager.ui.graphical;
 
 import io.taskmanager.core.Project;
-import io.taskmanager.core.Task;
 import io.taskmanager.core.repository.RepositoryConflictHandler;
 import io.taskmanager.core.repository.RepositoryEditionConflict;
 import io.taskmanager.core.repository.RepositoryManager;
@@ -9,7 +8,6 @@ import io.taskmanager.core.repository.RepositoryObjectDeleted;
 import io.taskmanager.ui.graphical.conflict.IObjectEditor;
 import io.taskmanager.ui.graphical.conflict.ProjectConflictController;
 import io.taskmanager.ui.graphical.conflict.RepositoryConflictDialog;
-import io.taskmanager.ui.graphical.conflict.TaskConflictController;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
@@ -29,13 +27,13 @@ public class ProjectEditorController extends DialogPane implements IObjectEditor
     @FXML
     public TextField gitHubUrlFiled;
 
-    private RepositoryManager repositoryManager;
+    private final RepositoryManager repositoryManager;
 
     private Project project;
     private final SimpleBooleanProperty isDeletable = new SimpleBooleanProperty(false);
 
     public ProjectEditorController(RepositoryManager repositoryManager, Project project, boolean deletable, boolean editable) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
@@ -50,7 +48,7 @@ public class ProjectEditorController extends DialogPane implements IObjectEditor
         this(repositoryManager, project, deletable, true);
     }
 
-    public ProjectEditorController(RepositoryManager repositoryManager,Project project) throws IOException {
+    public ProjectEditorController(RepositoryManager repositoryManager, Project project) throws IOException {
         this(repositoryManager, project, false, true);
     }
 
@@ -66,14 +64,17 @@ public class ProjectEditorController extends DialogPane implements IObjectEditor
         Button applyButton = (Button) this.lookupButton(ButtonType.APPLY);
         applyButton.addEventFilter(ActionEvent.ACTION, actionEvent -> {
 
-            if( applyChange() ){
+            if (applyChange()) {
                 try {
                     project.updateToRepo();
                 } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
-                } catch( RepositoryEditionConflict repositoryEditionConflict) {
+                } catch (RepositoryEditionConflict repositoryEditionConflict) {
                     try {
-                        RepositoryConflictDialog<Project> dialog = new RepositoryConflictDialog<Project>(new ProjectConflictController((RepositoryConflictHandler<Project>) repositoryEditionConflict.getConflictHandler()));
+
+                        @SuppressWarnings("unchecked")
+                        RepositoryConflictDialog<Project> dialog = new RepositoryConflictDialog<>(new ProjectConflictController((RepositoryConflictHandler<Project>) repositoryEditionConflict.getConflictHandler()));
+
                         Optional<Project> res = dialog.showAndWait();
                         if (res.isPresent()) {
                             project.setAll(res.get());
@@ -86,9 +87,9 @@ public class ProjectEditorController extends DialogPane implements IObjectEditor
                     } catch (ExecutionException | InterruptedException | RepositoryEditionConflict | RepositoryObjectDeleted | IOException e) {
                         e.printStackTrace();
                     }
-                }catch(RepositoryObjectDeleted repositoryObjectDeleted){
+                } catch (RepositoryObjectDeleted repositoryObjectDeleted) {
                     Project project = (Project) repositoryObjectDeleted.getObjects().get(0);
-                    Alert alert = new Alert(Alert.AlertType.ERROR, "The Project "+project.getName()+" has been deleted from the repo", ButtonType.OK);
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "The Project " + project.getName() + " has been deleted from the repo", ButtonType.OK);
                     alert.showAndWait();
 
                     try {
@@ -104,10 +105,10 @@ public class ProjectEditorController extends DialogPane implements IObjectEditor
     }
 
     public void setProject(Project project) {
-        if( project == null){
+        if (project == null) {
             this.project = new Project(null);
             isDeletable.set(false);
-        }else{
+        } else {
             this.project = project;
             nameField.setText(project.getName());
             gitHubUrlFiled.setText(project.getGitHubUrl());
@@ -120,7 +121,7 @@ public class ProjectEditorController extends DialogPane implements IObjectEditor
 
     @Override
     public boolean validateChange() {
-        if( nameField.getText().isEmpty()){
+        if (nameField.getText().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Project name can't be empty", ButtonType.OK);
             alert.showAndWait();
             return false;
@@ -130,7 +131,7 @@ public class ProjectEditorController extends DialogPane implements IObjectEditor
 
     @Override
     public boolean applyChange() {
-        if(!validateChange()){
+        if (!validateChange()) {
             return false;
         }
 

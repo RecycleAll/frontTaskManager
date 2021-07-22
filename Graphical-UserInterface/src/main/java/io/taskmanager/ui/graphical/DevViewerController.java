@@ -1,6 +1,8 @@
 package io.taskmanager.ui.graphical;
 
-import io.taskmanager.core.*;
+import io.taskmanager.core.Dev;
+import io.taskmanager.core.DevStatus;
+import io.taskmanager.core.Project;
 import io.taskmanager.core.repository.RepositoryManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,7 +35,7 @@ public class DevViewerController extends TabPane {
     private Dev dev;
 
     public DevViewerController(RepositoryManager repo, Dev dev) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
@@ -41,7 +43,7 @@ public class DevViewerController extends TabPane {
         setDev(dev);
 
         this.getSelectionModel().selectedItemProperty().addListener((observableValue, tab, t1) -> {
-            if( t1 == overviewTab){
+            if (t1 == overviewTab) {
                 try {
                     updateUI();
                 } catch (IOException e) {
@@ -64,20 +66,20 @@ public class DevViewerController extends TabPane {
 
     private void addProjectViewer(Project project) throws IOException, ExecutionException, InterruptedException {
         Optional<Tab> optionalTab = this.getTabs().stream().filter(tab -> {
-            if(tab.getContent() instanceof ProjectController myTab) {
+            if (tab.getContent() instanceof ProjectController myTab) {
                 return project == myTab.getProject();
-            }else{
+            } else {
                 return false;
             }
         }).findFirst();
 
-        if( optionalTab.isPresent()){
+        if (optionalTab.isPresent()) {
             this.getSelectionModel().select(optionalTab.get());
-        }else{
-            ProjectController projectController =  new ProjectController(repositoryManager, project, dev.getId());
+        } else {
+            ProjectController projectController = new ProjectController(repositoryManager, project, dev.getId());
             Tab tab = new Tab(projectController.getProject().getName());
-            tab.setContent( projectController);
-            this.getTabs().add( tab );
+            tab.setContent(projectController);
+            this.getTabs().add(tab);
             this.getSelectionModel().select(tab);
             this.getScene().getWindow().sizeToScene();
         }
@@ -87,11 +89,11 @@ public class DevViewerController extends TabPane {
     private void updateUI() throws IOException {
         projectVBox.getChildren().clear();
 
-        if( dev == null){
+        if (dev == null) {
             firstNameLabel.setText("No Dev");
             lastNameLabel.setText("");
 
-        }else {
+        } else {
             firstNameLabel.setText(dev.getFirstname());
             lastNameLabel.setText(dev.getLastname().toUpperCase(Locale.ROOT));
 
@@ -113,7 +115,7 @@ public class DevViewerController extends TabPane {
         projectVBox.getChildren().add(devProjectController);
     }
 
-    public void removeProject(DevProjectController controller){
+    public void removeProject(DevProjectController controller) {
         projectVBox.getChildren().remove(controller);
     }
 
@@ -122,19 +124,21 @@ public class DevViewerController extends TabPane {
     }
 
     @FXML
+    @SuppressWarnings("unused") // used by FXML
     public void OnEditDev(ActionEvent actionEvent) throws IOException {
         DevEditorDialog dialog = new DevEditorDialog(dev, false);
         Optional<Dev> dev = dialog.showAndWait();
-        if(dev.isPresent()){
+        if (dev.isPresent()) {
             updateUI();
         }
     }
 
     @FXML
+    @SuppressWarnings("unused") // used by FXML
     public void onAddProjectButton(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
-        ProjectEditorDialog dialog  = new ProjectEditorDialog(repositoryManager);
+        ProjectEditorDialog dialog = new ProjectEditorDialog(repositoryManager);
         Optional<Project> res = dialog.showAndWait();
-        if( res.isPresent()){
+        if (res.isPresent()) {
             Project project = res.get();
             project.addDev(dev, DevStatus.OWNER);
 

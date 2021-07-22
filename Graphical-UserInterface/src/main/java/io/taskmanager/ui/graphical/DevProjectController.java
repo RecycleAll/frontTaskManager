@@ -28,11 +28,11 @@ public class DevProjectController extends AnchorPane {
 
     private final Dev loggedDev;
 
-    private RepositoryManager repositoryManager;
-    private DevViewerController viewerController;
+    private final RepositoryManager repositoryManager;
+    private final DevViewerController viewerController;
 
     public DevProjectController(DevViewerController viewerController, @NotNull Project project, Dev loggedDev) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
@@ -47,7 +47,7 @@ public class DevProjectController extends AnchorPane {
         updateUI();
     }
 
-    private void updateUI(){
+    private void updateUI() {
         projectNameLabel.setText(project.getName());
     }
 
@@ -56,22 +56,24 @@ public class DevProjectController extends AnchorPane {
     }
 
     @FXML
-    public void OnMouseClicked(MouseEvent mouseEvent){
+    @SuppressWarnings("unused") // used by FXML
+    public void OnMouseClicked(MouseEvent mouseEvent) {
         System.out.println("test");
     }
 
     @FXML
+    @SuppressWarnings("unused")
     public void OnEdit(ActionEvent actionEvent) throws IOException, ExecutionException, RepositoryObjectDeleted, InterruptedException {
         ProjectEditorDialog dialog = new ProjectEditorDialog(repositoryManager, project, project.getDevStatus(loggedDev) == DevStatus.OWNER);
         Optional<Project> res = dialog.showAndWait();
-        if(res.isPresent()){
-            if(dialog.isShouldBeDelete()){
+        if (res.isPresent()) {
+            if (dialog.isShouldBeDelete()) {
                 repositoryManager.removeProject(project);
                 viewerController.removeProject(this);
-            }else {
+            } else {
                 updateUI();
             }
-        }else if(dialog.isShouldBeDelete()){
+        } else if (dialog.isShouldBeDelete()) {
             repositoryManager.removeProject(project);
             viewerController.removeProject(this);
         }

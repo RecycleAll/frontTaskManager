@@ -4,6 +4,7 @@ import io.taskmanager.core.Dev;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+
 import java.io.IOException;
 
 public class DevEditorDialog extends Dialog<Dev> {
@@ -16,23 +17,23 @@ public class DevEditorDialog extends Dialog<Dev> {
         this.setDialogPane(controller);
 
         setResultConverter(buttonType -> {
-            if( buttonType == ButtonType.APPLY){
+            if (buttonType == ButtonType.APPLY) {
                 return controller.getDev();
-            }else if( buttonType.getButtonData() == ButtonBar.ButtonData.OTHER){
+            } else if (buttonType.getButtonData() == ButtonBar.ButtonData.OTHER) {
                 shouldBeDelete = true;
                 return null;
-            }else{
+            } else {
                 return null;
             }
         });
     }
 
     public DevEditorDialog(Dev dev, boolean deletable) throws IOException {
-        this(dev, false, false);
+        this(dev, deletable, false);
     }
 
     public DevEditorDialog(Dev dev) throws IOException {
-       this(dev, false);
+        this(dev, false);
     }
 
     public boolean isShouldBeDelete() {

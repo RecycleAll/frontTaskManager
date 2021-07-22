@@ -23,12 +23,12 @@ public class LoginController extends BorderPane {
     @FXML
     public TextField emailField;
 
-    private App app;
+    private final App app;
     private Dev dev;
-    private RepositoryManager repositoryManager;
+    private final RepositoryManager repositoryManager;
 
     public LoginController(RepositoryManager repositoryManager, App app) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
@@ -36,7 +36,7 @@ public class LoginController extends BorderPane {
         this.app = app;
     }
 
-    public void reset(){
+    public void reset() {
         passwordField.setText("");
         emailField.setText("");
         dev = null;
@@ -48,13 +48,13 @@ public class LoginController extends BorderPane {
         System.out.println(emailField.getText());
         System.out.println(passwordField.getText());
         int devID = repositoryManager.getRepository().loginDev(emailField.getText(), passwordField.getText());
-        if( devID >= 1) {
+        if (devID >= 1) {
             dev = repositoryManager.getDev(devID, true);
             System.out.println("longed dev: " + dev);
             if (dev != null) {
                 app.setDevViewerScene(dev);
             }
-        }else{
+        } else {
             //TODO
         }
     }
@@ -64,11 +64,11 @@ public class LoginController extends BorderPane {
     public void onRegister(ActionEvent actionEvent) throws Exception {
         DevEditorDialog dialog = new DevEditorDialog(null, false, true);
         Optional<Dev> res = dialog.showAndWait();
-        if(res.isPresent()){
-            if( repositoryManager.getRepository().registerDev(res.get()) ){
+        if (res.isPresent()) {
+            if (repositoryManager.getRepository().registerDev(res.get())) {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You have been correctly registered! Please login", ButtonType.OK);
                 alert.showAndWait();
-            }else{
+            } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to register! try again", ButtonType.OK);
                 alert.showAndWait();
             }

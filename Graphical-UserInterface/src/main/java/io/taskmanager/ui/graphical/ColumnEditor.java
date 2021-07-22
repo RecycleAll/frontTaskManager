@@ -32,8 +32,8 @@ public class ColumnEditor extends DialogPane implements IObjectEditor<Column> {
 
     private final SimpleBooleanProperty isNewColumn = new SimpleBooleanProperty(false);
 
-    public ColumnEditor(RepositoryManager repository, Column column, boolean editable) throws IOException{
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
+    public ColumnEditor(RepositoryManager repository, Column column, boolean editable) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
@@ -42,7 +42,7 @@ public class ColumnEditor extends DialogPane implements IObjectEditor<Column> {
         nameField.setEditable(editable);
     }
 
-    public ColumnEditor(RepositoryManager repository, Column column) throws IOException{
+    public ColumnEditor(RepositoryManager repository, Column column) throws IOException {
         this(repository, column, true);
     }
 
@@ -56,7 +56,7 @@ public class ColumnEditor extends DialogPane implements IObjectEditor<Column> {
         Button applyButton = (Button) this.lookupButton(ButtonType.APPLY);
         applyButton.addEventFilter(ActionEvent.ACTION, actionEvent -> {
 
-            if(applyChange()){
+            if (applyChange()) {
 
                 try {
                     column.updateToRepo();
@@ -66,14 +66,15 @@ public class ColumnEditor extends DialogPane implements IObjectEditor<Column> {
 
                     try {
 
+                        @SuppressWarnings("unchecked")
                         RepositoryConflictHandler<Column> handler = (RepositoryConflictHandler<Column>) repositoryEditionConflict.getConflictHandler();
 
-                        RepositoryConflictDialog<Column> conflictDialog = new RepositoryConflictDialog<Column>( new ColumnConflictController(handler));
-                        Optional<Column> res =conflictDialog.showAndWait();
+                        RepositoryConflictDialog<Column> conflictDialog = new RepositoryConflictDialog<>(new ColumnConflictController(handler));
+                        Optional<Column> res = conflictDialog.showAndWait();
                         if (res.isPresent()) {
                             column.setAll(res.get());
                             System.out.println("///////////////////////////////////////////////");
-                            System.out.println("column:name -> "+column.getName());
+                            System.out.println("column:name -> " + column.getName());
                             column.updateToRepo(true);
                             System.out.println("///////////////////////////////////////////////");
                         }
@@ -84,7 +85,7 @@ public class ColumnEditor extends DialogPane implements IObjectEditor<Column> {
                 } catch (RepositoryObjectDeleted repositoryObjectDeleted) {
 
                     Column column = (Column) repositoryObjectDeleted.getObjects().get(0);
-                    Alert alert = new Alert(Alert.AlertType.ERROR, "The Column "+column.getName()+" has been deleted from the repo", ButtonType.OK);
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "The Column " + column.getName() + " has been deleted from the repo", ButtonType.OK);
                     alert.showAndWait();
 
                     try {
@@ -100,14 +101,14 @@ public class ColumnEditor extends DialogPane implements IObjectEditor<Column> {
         });
     }
 
-    public void setColumn(Column column)  {
-        if( column == null){
+    public void setColumn(Column column) {
+        if (column == null) {
             this.column = new Column(null);
             isNewColumn.set(true);
-        }else{
+        } else {
             this.column = column;
         }
-        nameField.setText( this.column.getName());
+        nameField.setText(this.column.getName());
     }
 
     public Column getColumn() {
@@ -116,21 +117,21 @@ public class ColumnEditor extends DialogPane implements IObjectEditor<Column> {
 
     @Override
     public boolean validateChange() {
-        if( nameField.getText().isEmpty()){
+        if (nameField.getText().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "The column name can't be empty", ButtonType.OK);
             alert.showAndWait();
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
     @Override
-    public boolean applyChange(){
-        if(validateChange()) {
+    public boolean applyChange() {
+        if (validateChange()) {
             column.setName(nameField.getText());
             return true;
-        }else {
+        } else {
             return false;
         }
     }

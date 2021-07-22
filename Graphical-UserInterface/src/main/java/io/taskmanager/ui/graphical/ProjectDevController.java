@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
-public class ProjectDevController extends AnchorPane{
+public class ProjectDevController extends AnchorPane {
 
     private static final String FXML_FILE = "ProjectDevViewer.fxml";
 
@@ -28,15 +28,14 @@ public class ProjectDevController extends AnchorPane{
 
     private Dev dev;
     private ProjectController projectController;
-    private SimpleBooleanProperty editable;
 
     public ProjectDevController(@NotNull ProjectController projectController, @NotNull Dev dev, boolean editable) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
-        this.editable = new SimpleBooleanProperty(editable);
-        editButton.visibleProperty().bind(this.editable);
+        SimpleBooleanProperty editable1 = new SimpleBooleanProperty(editable);
+        editButton.visibleProperty().bind(editable1);
         setDev(dev);
         setProject(projectController);
     }
@@ -50,18 +49,19 @@ public class ProjectDevController extends AnchorPane{
         updateUI();
     }
 
-    public void updateUI(){
-        firstNameLabel.setText( dev.getFirstname());
-        lastNameLabel.setText( dev.getLastname());
+    public void updateUI() {
+        firstNameLabel.setText(dev.getFirstname());
+        lastNameLabel.setText(dev.getLastname());
     }
 
+    @FXML
+    @SuppressWarnings("unused") // used by FXML
     public void OnView(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException, RepositoryObjectDeleted {
         DevEditorDialog devEditorDialog = new DevEditorDialog(dev);
         Optional<Dev> res = devEditorDialog.showAndWait();
-        if(res.isPresent()){
+        if (res.isPresent()) {
             updateUI();
-        }
-        else if( devEditorDialog.isShouldBeDelete()){
+        } else if (devEditorDialog.isShouldBeDelete()) {
             projectController.removeDev(this);
         }
     }

@@ -1,7 +1,7 @@
 package io.taskmanager.ui.graphical.conflict;
 
-import io.taskmanager.core.repository.RepositoryConflictHandler;
 import io.taskmanager.core.RepositoryObject;
+import io.taskmanager.core.repository.RepositoryConflictHandler;
 import io.taskmanager.ui.graphical.App;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,7 +13,7 @@ import javafx.scene.layout.Pane;
 
 import java.io.IOException;
 
-public class RepositoryConflictController <T extends RepositoryObject<?>> extends DialogPane{
+public class RepositoryConflictController<T extends RepositoryObject<?>> extends DialogPane {
 
     private static final String FXML_FILE = "RepoConflictController.fxml";
 
@@ -25,7 +25,7 @@ public class RepositoryConflictController <T extends RepositoryObject<?>> extend
     IObjectEditor<T> objectEditor;
 
     public RepositoryConflictController(RepositoryConflictHandler<T> conflictHandler) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
@@ -33,18 +33,19 @@ public class RepositoryConflictController <T extends RepositoryObject<?>> extend
     }
 
     @FXML
+    @SuppressWarnings("unused") // used by FXML
     public void initialize() {
         Button applyButton = (Button) this.lookupButton(ButtonType.APPLY);
         applyButton.addEventFilter(ActionEvent.ACTION, actionEvent -> {
 
-            if( !objectEditor.validateChange()){
+            if (!objectEditor.validateChange()) {
                 actionEvent.consume();
             }
 
         });
     }
 
-    public T getMerged(){
+    public T getMerged() {
         return objectEditor.getEditedObject();
     }
 
