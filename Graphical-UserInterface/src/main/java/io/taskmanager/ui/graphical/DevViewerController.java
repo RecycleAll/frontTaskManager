@@ -28,7 +28,7 @@ public class DevViewerController extends TabPane {
     @FXML
     public Tab overviewTab;
 
-    private final RepositoryManager repo;
+    private final RepositoryManager repositoryManager;
 
     private Dev dev;
 
@@ -37,7 +37,7 @@ public class DevViewerController extends TabPane {
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
-        this.repo = repo;
+        this.repositoryManager = repo;
         setDev(dev);
 
         this.getSelectionModel().selectedItemProperty().addListener((observableValue, tab, t1) -> {
@@ -74,7 +74,7 @@ public class DevViewerController extends TabPane {
         if( optionalTab.isPresent()){
             this.getSelectionModel().select(optionalTab.get());
         }else{
-            ProjectController projectController =  new ProjectController(repo, project, dev.getId());
+            ProjectController projectController =  new ProjectController(repositoryManager, project, dev.getId());
             Tab tab = new Tab(projectController.getProject().getName());
             tab.setContent( projectController);
             this.getTabs().add( tab );
@@ -132,10 +132,17 @@ public class DevViewerController extends TabPane {
 
     @FXML
     public void onAddProjectButton(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
-        Project project = new Project(repo, -1, "Default project name", "");
-        this.dev.addProject(project);
-        project.setDevStatus(dev, DevStatus.OWNER);
-        addProject(project);
+        ProjectEditorDialog dialog  = new ProjectEditorDialog();
+        Optional<Project> res = dialog.showAndWait();
+        if( res.isPresent()){
+            Project project = res.get();
+            project.addDev(dev, DevStatus.OWNER);
+
+            project.setRepositoryManager(repositoryManager);
+            project.postToRepo();
+
+            addProject(project);
+        }
     }
 
     public Dev getDev() {

@@ -47,7 +47,21 @@ public class Project extends RepositoryObject<Project> {
 
     @Override
     protected boolean myPost() throws ExecutionException, InterruptedException {
-        return false;
+
+        if(devs.isEmpty()){
+            return false;
+        }
+
+        Dev owner = null;
+
+        for (Dev dev: devs.keySet()) {
+            dev.postToRepo();
+            if(owner == null && devs.get(dev) == DevStatus.OWNER){
+                owner = dev;
+            }
+        }
+
+        return repositoryManager.getRepository().postProject(owner, this);
     }
 
     @Override

@@ -31,4 +31,8 @@ public class ProjectEditorDialog extends Dialog<Project> {
     public ProjectEditorDialog(Project project) throws IOException {
         this(project, false);
     }
+
+    public ProjectEditorDialog() throws IOException {
+        this(null);
+    }
 }

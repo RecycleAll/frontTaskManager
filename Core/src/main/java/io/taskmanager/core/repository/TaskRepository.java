@@ -32,7 +32,7 @@ public interface TaskRepository {
     List<Column> getColumns(Project project) throws ExecutionException, InterruptedException;
     List<Column> getColumns(int projectID) throws ExecutionException, InterruptedException;
     boolean updateProject(Project project) throws ExecutionException, InterruptedException;
-    void postProject(Dev dev, Project project) throws ExecutionException, InterruptedException;
+    boolean postProject(Dev dev, Project project) throws ExecutionException, InterruptedException;
 
     boolean deleteTask(Task task) throws ExecutionException, InterruptedException;
     boolean deleteTask(int taskId) throws ExecutionException, InterruptedException;

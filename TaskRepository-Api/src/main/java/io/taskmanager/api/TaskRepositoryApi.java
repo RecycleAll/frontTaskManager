@@ -611,17 +611,17 @@ public class TaskRepositoryApi implements TaskRepository {
     }
 
     @Override
-    public void postProject(Dev dev, Project project) throws ExecutionException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(apiUrl + "/project/"))
-                .timeout(Duration.ofSeconds(10))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString("{ \"name\":\""+project.getName()+"\",\"devId\":"+dev.getId() +"}"))
-                .build();
-        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request,
-                HttpResponse.BodyHandlers.ofString());
+    public boolean postProject(Dev dev, Project project) throws ExecutionException, InterruptedException {
+        String json = "{ \"name\":\""+project.getName()+
+                        "\",\"devId\":"+dev.getId() +"}";
 
-        System.out.print(response.get().body());
+        ProjectModel model = postObject("/project/", json, ProjectModel.class);
+        if( model != null) {
+            project.setId(model.getId());
+            project.setUpdatedAt(model.getUpdatedAt());
+            return true;
+        }
+        return false;
     }
 
     @Override

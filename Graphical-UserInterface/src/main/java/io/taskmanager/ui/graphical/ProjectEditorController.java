@@ -91,9 +91,14 @@ public class ProjectEditorController extends DialogPane implements IObjectEditor
     }
 
     public void setProject(Project project) {
-        this.project = project;
-        nameField.setText(project.getName());
-        gitHubUrlFiled.setText(project.getGitHubUrl());
+        if( project == null){
+            this.project = new Project(null);
+            isDeletable.set(false);
+        }else{
+            this.project = project;
+            nameField.setText(project.getName());
+            gitHubUrlFiled.setText(project.getGitHubUrl());
+        }
     }
 
     public Project getProject() {
