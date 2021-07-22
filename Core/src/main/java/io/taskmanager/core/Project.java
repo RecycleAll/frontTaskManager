@@ -201,6 +201,7 @@ public class Project extends RepositoryObject<Project> {
         if (!devs.containsKey(dev)) {
             devs.put(dev, DevStatus.DEV);
             dev.addProject(this);
+            postToRepo();
             if (repositoryManager != null) {
                 repositoryManager.getRepository().postParticipate(this, dev);
             }
@@ -271,6 +272,5 @@ public class Project extends RepositoryObject<Project> {
     public RepositoryManager getRepository() {
         return repositoryManager;
     }
-
 }
 
