@@ -36,6 +36,7 @@ public class CommandManager {
         try {
             Dev dev = askToLogin();
             System.out.print(dev);
+
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -79,19 +80,39 @@ public class CommandManager {
     }
 
     private void createDev() {
+        try {
+            Dev dev = askToLogin();
 
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void createProject() {
+        try {
+            Dev dev = askToLogin();
 
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void createColumn() {
+        try {
+            Dev dev = askToLogin();
 
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void createTask() {
+        try {
+            Dev dev = askToLogin();
 
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void update() {
@@ -104,19 +125,39 @@ public class CommandManager {
     }
 
     private void updateDev() {
+        try {
+            Dev dev = askToLogin();
 
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void updateProject() {
+        try {
+            Dev dev = askToLogin();
 
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void updateColumn() {
+        try {
+            Dev dev = askToLogin();
 
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void updateTask() {
+        try {
+            Dev dev = askToLogin();
 
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private Dev askToLogin() throws ExecutionException, InterruptedException {
