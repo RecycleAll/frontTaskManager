@@ -2,7 +2,7 @@ package io.taskmanager.api.model;
 
 import io.taskmanager.core.Project;
 
-public class ProjectModel extends ObjectBaseModel<Project>{
+public class ProjectModel extends ObjectBaseModel<Project> {
 
     private String name;
 
@@ -16,8 +16,8 @@ public class ProjectModel extends ObjectBaseModel<Project>{
 
     @Override
     public Project convert() {
-        Project project  = new Project(null, id, name, "");
-        project.setUpdatedAt( updatedAt);
+        Project project = new Project(null, id, name, "");
+        project.setUpdatedAt(updatedAt);
         return project;
     }
 }

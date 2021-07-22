@@ -4,7 +4,7 @@ import io.taskmanager.core.Dev;
 
 import java.time.LocalDateTime;
 
-public class DevModel extends ObjectBaseModel<Dev>{
+public class DevModel extends ObjectBaseModel<Dev> {
 
     private String firstname;
     private String lastname;

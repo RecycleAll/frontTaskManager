@@ -22,7 +22,7 @@ public class PluginLoader {
         } catch (MalformedURLException | ClassNotFoundException | InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
             e.printStackTrace();
         }
-        if (plugin != null){
+        if (plugin != null) {
             return Optional.of(plugin);
         }
         return Optional.empty();

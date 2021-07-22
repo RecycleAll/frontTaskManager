@@ -1,6 +1,5 @@
 package io.taskmanager.api.model;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public abstract class ObjectBaseModel<T> extends BaseModel {

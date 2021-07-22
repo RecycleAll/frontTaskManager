@@ -4,7 +4,7 @@ import io.taskmanager.core.Task;
 
 import java.time.LocalDate;
 
-public class TaskModel extends ObjectBaseModel<Task>{
+public class TaskModel extends ObjectBaseModel<Task> {
 
     private final int column_id;
     private final String name;

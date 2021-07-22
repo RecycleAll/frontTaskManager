@@ -1,6 +1,6 @@
 package io.taskmanager.api.model;
 
-public class DevTaskModel extends BaseModel{
+public class DevTaskModel extends BaseModel {
 
     private int dev_id;
     private int task_id;

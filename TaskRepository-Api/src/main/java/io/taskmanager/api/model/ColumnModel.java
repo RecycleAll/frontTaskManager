@@ -4,7 +4,7 @@ import io.taskmanager.core.Column;
 
 import java.time.LocalDateTime;
 
-public class ColumnModel extends ObjectBaseModel<Column>{
+public class ColumnModel extends ObjectBaseModel<Column> {
 
     private final String name;
     private final int project_id;
@@ -14,6 +14,7 @@ public class ColumnModel extends ObjectBaseModel<Column>{
         this.name = name;
         this.project_id = project_id;
     }
+
     public String getName() {
         return name;
     }
@@ -24,7 +25,7 @@ public class ColumnModel extends ObjectBaseModel<Column>{
 
     @Override
     public Column convert() {
-        Column col =new Column( id, name, project_id);
+        Column col = new Column(id, name, project_id);
         col.setUpdatedAt(updatedAt);
         return col;
     }
