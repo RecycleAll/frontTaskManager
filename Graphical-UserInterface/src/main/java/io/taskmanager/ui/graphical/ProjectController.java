@@ -139,7 +139,7 @@ public class ProjectController extends BorderPane {
     @SuppressWarnings("unused") //used by fxml
     public void onEditProject(ActionEvent actionEvent) throws IOException{
 
-        ProjectEditorDialog projectEditorDialog = new ProjectEditorDialog(project);
+        ProjectEditorDialog projectEditorDialog = new ProjectEditorDialog(repositoryManager, project);
         Optional<Project> res = projectEditorDialog.showAndWait();
         if(res.isPresent()){
             this.projectTitle.setText(project.getName());

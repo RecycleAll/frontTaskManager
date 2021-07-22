@@ -96,21 +96,13 @@ public class DevViewerController extends TabPane {
             lastNameLabel.setText(dev.getLastname().toUpperCase(Locale.ROOT));
 
             for (Project project : dev.getProjects()) {
-                DevProjectController devProjectController = new DevProjectController(project, dev);
-                devProjectController.setOnMouseClicked(mouseEvent -> {
-                    try {
-                        addProjectViewer(project);
-                    } catch (IOException | ExecutionException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                });
-                projectVBox.getChildren().add(devProjectController);
+                addProject(project);
             }
         }
     }
 
     private void addProject(Project project) throws IOException {
-        DevProjectController devProjectController = new DevProjectController(project, dev);
+        DevProjectController devProjectController = new DevProjectController(this, project, dev);
         devProjectController.setOnMouseClicked(mouseEvent -> {
             try {
                 addProjectViewer(project);
@@ -119,6 +111,14 @@ public class DevViewerController extends TabPane {
             }
         });
         projectVBox.getChildren().add(devProjectController);
+    }
+
+    public void removeProject(DevProjectController controller){
+        projectVBox.getChildren().remove(controller);
+    }
+
+    public RepositoryManager getRepositoryManager() {
+        return repositoryManager;
     }
 
     @FXML
@@ -132,7 +132,7 @@ public class DevViewerController extends TabPane {
 
     @FXML
     public void onAddProjectButton(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
-        ProjectEditorDialog dialog  = new ProjectEditorDialog();
+        ProjectEditorDialog dialog  = new ProjectEditorDialog(repositoryManager);
         Optional<Project> res = dialog.showAndWait();
         if( res.isPresent()){
             Project project = res.get();

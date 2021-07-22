@@ -41,9 +41,6 @@ public class RepositoryManager {
         Column col = columnsManager.getObject(id);
         if(col == null){
             col = repository.getColumn(id);
-
-
-
         }
         return col;
     }
@@ -51,6 +48,14 @@ public class RepositoryManager {
     public void removeColumn(Column column) throws ExecutionException, InterruptedException {
         for (Project project: projectsManager.getList()) {
             project.removeColumn(column);
+        }
+    }
+
+    public void removeProject(Project project) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
+        if( projectsManager.remove(project)){
+            for (Dev dev :project.getDevs()) {
+                dev.removeProject(project);
+            }
         }
     }
 

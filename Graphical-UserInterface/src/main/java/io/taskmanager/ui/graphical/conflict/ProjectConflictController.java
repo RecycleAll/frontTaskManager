@@ -13,18 +13,18 @@ public class ProjectConflictController extends RepositoryConflictController<Proj
 
         Project localProject = conflictHandler.getLocal();
         Project repoProject = conflictHandler.getRepo();
-        RepositoryManager repository = conflictHandler.getRepository();
+        RepositoryManager repositoryManager = conflictHandler.getRepository();
 
-        ProjectEditorController controller = new ProjectEditorController(localProject,false, false);
+        ProjectEditorController controller = new ProjectEditorController(repositoryManager, localProject,false, false);
         controller.getButtonTypes().clear();
         localPane.getChildren().add( controller);
 
-        controller = new ProjectEditorController(repoProject, false,false);
+        controller = new ProjectEditorController(repositoryManager, repoProject, false,false);
         controller.getButtonTypes().clear();
         repoPane.getChildren().add( controller);
 
         mergedObject = localProject.merge(repoProject);
-        ProjectEditorController mergedEditor = new ProjectEditorController(mergedObject);
+        ProjectEditorController mergedEditor = new ProjectEditorController(repositoryManager, mergedObject);
         mergedEditor.getButtonTypes().clear();
         objectEditor = mergedEditor;
 

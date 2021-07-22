@@ -4,6 +4,7 @@ import io.taskmanager.core.Project;
 import io.taskmanager.core.Task;
 import io.taskmanager.core.repository.RepositoryConflictHandler;
 import io.taskmanager.core.repository.RepositoryEditionConflict;
+import io.taskmanager.core.repository.RepositoryManager;
 import io.taskmanager.core.repository.RepositoryObjectDeleted;
 import io.taskmanager.ui.graphical.conflict.IObjectEditor;
 import io.taskmanager.ui.graphical.conflict.ProjectConflictController;
@@ -28,26 +29,29 @@ public class ProjectEditorController extends DialogPane implements IObjectEditor
     @FXML
     public TextField gitHubUrlFiled;
 
+    private RepositoryManager repositoryManager;
+
     private Project project;
     private final SimpleBooleanProperty isDeletable = new SimpleBooleanProperty(false);
 
-    public ProjectEditorController(Project project, boolean deletable, boolean editable) throws IOException {
+    public ProjectEditorController(RepositoryManager repositoryManager, Project project, boolean deletable, boolean editable) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
         setProject(project);
+        this.repositoryManager = repositoryManager;
         isDeletable.set(deletable);
         nameField.setEditable(editable);
         gitHubUrlFiled.setEditable(editable);
     }
 
-    public ProjectEditorController(Project project, boolean deletable) throws IOException {
-        this(project, deletable, true);
+    public ProjectEditorController(RepositoryManager repositoryManager, Project project, boolean deletable) throws IOException {
+        this(repositoryManager, project, deletable, true);
     }
 
-    public ProjectEditorController(Project project) throws IOException {
-        this(project, false, true);
+    public ProjectEditorController(RepositoryManager repositoryManager,Project project) throws IOException {
+        this(repositoryManager, project, false, true);
     }
 
     @FXML
@@ -83,7 +87,16 @@ public class ProjectEditorController extends DialogPane implements IObjectEditor
                         e.printStackTrace();
                     }
                 }catch(RepositoryObjectDeleted repositoryObjectDeleted){
-                    repositoryObjectDeleted.printStackTrace();
+                    Project project = (Project) repositoryObjectDeleted.getObjects().get(0);
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "The Project "+project.getName()+" has been deleted from the repo", ButtonType.OK);
+                    alert.showAndWait();
+
+                    try {
+                        repositoryManager.removeProject(this.project);
+                        this.project = null;
+                    } catch (ExecutionException | InterruptedException | RepositoryObjectDeleted objectDeleted) {
+                        objectDeleted.printStackTrace();
+                    }
                 }
             }
 

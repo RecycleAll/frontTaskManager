@@ -70,12 +70,15 @@ public class Project extends RepositoryObject<Project> {
     }
 
     @Override
-    protected boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict {
+    protected boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict, RepositoryObjectDeleted {
         if(!edited){
             System.out.println("Project:myUpdateToRepo -> not edited");
             return true;
         }else{
             Project project = repositoryManager.getRepository().getProject(id);
+            if( project == null){
+                throw new RepositoryObjectDeleted(this);
+            }
             System.out.println("Project: myUpdateToRepo ->\nlocal: "+updatedAt+"\nrepo: "+project.updatedAt);
             if(!force && isConflict(project)){
                 System.out.println("Project:myUpdateToRepo ->conflict");

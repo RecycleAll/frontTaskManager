@@ -289,7 +289,9 @@ public class TaskRepositoryApi implements TaskRepository {
     @Override
     public Project getProject(int projectID) throws ExecutionException, InterruptedException {
         ProjectModel projectModel = getObject2("/project/one/" + projectID, ProjectModel.class);
-        return projectModel.convert();
+        if( projectModel != null)
+            return projectModel.convert();
+        return null;
     }
 
     @Override

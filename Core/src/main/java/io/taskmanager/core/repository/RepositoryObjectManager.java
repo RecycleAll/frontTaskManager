@@ -38,6 +38,10 @@ public class RepositoryObjectManager <T extends RepositoryObject>{
         }
     }
 
+    public final boolean remove(T obj){
+        return list.remove(obj);
+    }
+
     public final List<T> getList() {
         return Collections.unmodifiableList(list);
     }
