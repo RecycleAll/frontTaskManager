@@ -20,6 +20,9 @@ public class TaskDialog extends Dialog<Task> {
 
         setResultConverter(buttonType -> {
             if( buttonType == ButtonType.APPLY){
+                Task res = controller.getTask();
+                if( res == null)
+                    shouldBeDelete = true;
                 return controller.getTask();
             }else if( buttonType.getButtonData() == ButtonBar.ButtonData.OTHER){
                 shouldBeDelete = true;

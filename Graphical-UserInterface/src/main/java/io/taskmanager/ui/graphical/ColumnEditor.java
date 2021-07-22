@@ -55,7 +55,9 @@ public class ColumnEditor extends DialogPane implements IObjectEditor<Column> {
 
         Button applyButton = (Button) this.lookupButton(ButtonType.APPLY);
         applyButton.addEventFilter(ActionEvent.ACTION, actionEvent -> {
+
             if(applyChange()){
+
                 try {
                     column.updateToRepo();
                 } catch (ExecutionException | InterruptedException e) {
@@ -77,16 +79,18 @@ public class ColumnEditor extends DialogPane implements IObjectEditor<Column> {
                     }
 
                 } catch (RepositoryObjectDeleted repositoryObjectDeleted) {
+
                     Column column = (Column) repositoryObjectDeleted.getObjects().get(0);
                     Alert alert = new Alert(Alert.AlertType.ERROR, "The Column "+column.getName()+" has been deleted from the repo", ButtonType.OK);
                     alert.showAndWait();
 
                     try {
-                        repository.removeColumn(column);
+                        repository.removeColumn(this.column);
                         this.column = null;
                     } catch (ExecutionException | InterruptedException objectDeleted) {
                         objectDeleted.printStackTrace();
                     }
+
                 }
 
             }

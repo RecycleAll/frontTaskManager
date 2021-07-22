@@ -13,6 +13,10 @@ public class RepositoryObjectDeleted extends Exception{
         objects = null;
     }
 
+    public RepositoryObjectDeleted() {
+        objects = new ArrayList<>();
+    }
+
     public RepositoryObjectDeleted(List<RepositoryObject<?>> objects) {
         this.objects = objects;
     }

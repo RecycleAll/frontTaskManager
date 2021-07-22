@@ -200,6 +200,13 @@ public class Project extends RepositoryObject<Project> {
         }
     }
 
+
+    public void removeTask(Task task) throws ExecutionException, InterruptedException {
+        for (Column col: columns) {
+            col.removeTask(task);
+        }
+    }
+
     public void updateDevs(List<Dev> newDevs) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
         List<Dev> tmp = new ArrayList<>();
         for (Dev dev: newDevs) {

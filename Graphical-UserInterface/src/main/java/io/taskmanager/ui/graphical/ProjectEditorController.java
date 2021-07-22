@@ -65,7 +65,7 @@ public class ProjectEditorController extends DialogPane implements IObjectEditor
             if( applyChange() ){
                 try {
                     project.updateToRepo();
-                } catch (ExecutionException | InterruptedException | RepositoryObjectDeleted e) {
+                } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 } catch( RepositoryEditionConflict repositoryEditionConflict) {
                     try {
@@ -82,6 +82,8 @@ public class ProjectEditorController extends DialogPane implements IObjectEditor
                     } catch (ExecutionException | InterruptedException | RepositoryEditionConflict | RepositoryObjectDeleted | IOException e) {
                         e.printStackTrace();
                     }
+                }catch(RepositoryObjectDeleted repositoryObjectDeleted){
+                    repositoryObjectDeleted.printStackTrace();
                 }
             }
 

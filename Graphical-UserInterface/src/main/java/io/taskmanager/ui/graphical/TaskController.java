@@ -108,7 +108,16 @@ public class TaskController extends DialogPane implements IObjectEditor<Task> {
                         e.printStackTrace();
                     }
                 } catch (RepositoryObjectDeleted repositoryObjectDeleted) {
-                    repositoryObjectDeleted.printStackTrace();
+                    Task task = (Task) repositoryObjectDeleted.getObjects().get(0);
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "The TAsk "+task.getName()+" has been deleted from the repo", ButtonType.OK);
+                    alert.showAndWait();
+
+                    try {
+                        repository.removeTask(this.task);
+                        this.task = null;
+                    } catch (ExecutionException | InterruptedException objectDeleted) {
+                        objectDeleted.printStackTrace();
+                    }
                 }
             }
 

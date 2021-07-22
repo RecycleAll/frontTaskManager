@@ -54,14 +54,18 @@ public class RepositoryManager {
         }
     }
 
-    public Task getTask(int id) throws ExecutionException, InterruptedException{
+    public Task getTask(int id) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
         Task obj = tasksManager.getObject(id);
         if(obj == null){
             obj = repository.getTask(id);
-
-
         }
         return obj;
+    }
+
+    public void removeTask(Task task) throws ExecutionException, InterruptedException {
+        for (Project project: projectsManager.getList()) {
+            project.removeTask(task);
+        }
     }
 
     public Dev getDev(int id, boolean loadProject) throws Exception {

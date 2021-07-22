@@ -44,7 +44,7 @@ public interface TaskRepository {
     List<Task> getTasks(Project project) throws ExecutionException, InterruptedException;
     List<Task> getColumnTasks(int columnId) throws ExecutionException, InterruptedException;
     Task getTask(Column column) throws ExecutionException, InterruptedException;
-    Task getTask(int id) throws ExecutionException, InterruptedException;
+    Task getTask(int id) throws ExecutionException, InterruptedException, RepositoryObjectDeleted;
 
 
     Map<Integer,DevStatus> getProjectDevs(int projectID) throws ExecutionException, InterruptedException;

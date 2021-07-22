@@ -75,12 +75,18 @@ public class Task extends RepositoryObject<Task> {
     }
 
     @Override
-    protected boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict {
+    protected boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict, RepositoryObjectDeleted {
         if(!edited){
             System.out.println("Task:myUpdateToRepo -> not edited");
             return true;
         }else{
-            Task task = repositoryManager.getRepository().getTask(id);
+            Task task;
+            try {
+                task = repositoryManager.getRepository().getTask(id);
+            } catch (RepositoryObjectDeleted repositoryObjectDeleted) {
+                repositoryObjectDeleted.addObject(this);
+                throw repositoryObjectDeleted;
+            }
             System.out.println("Task: myUpdateToRepo ->\nlocal: "+updatedAt+"\nrepo: "+task.updatedAt);
             if(!force && isConflict(task)){
                 System.out.println("Task:myUpdateToRepo ->conflict");
