@@ -1,10 +1,7 @@
 package io.taskmanager.console;
 
 
-import io.taskmanager.core.Column;
-import io.taskmanager.core.Dev;
-import io.taskmanager.core.Project;
-import io.taskmanager.core.Task;
+import io.taskmanager.core.*;
 import io.taskmanager.core.repository.RepositoryManager;
 
 import java.io.Console;
@@ -53,7 +50,9 @@ public class CommandManager {
             List<String> projects = dev.getProjects().stream()
                     .map(Project::getName)
                     .collect(Collectors.toList());
-            System.out.print(projects);
+            projects.forEach(pro -> {
+                System.out.println("Project Name : " + pro);
+            });
             //TODO
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,7 +69,6 @@ public class CommandManager {
                     .getColumns().stream()
                     .map(Column::getName)
                     .collect(Collectors.toList());
-            System.out.print(columns);
             columns.forEach(column -> {
                 System.out.println("Column Name : " + column);
             });
@@ -125,7 +123,8 @@ public class CommandManager {
         try {
             Dev dev = askToLogin();
             Project project = askProjectInformation();
-            dev.addProject(project);
+            project.addDev(dev, DevStatus.OWNER);
+            project.postToRepo();
             //TODO
         } catch (Exception e) {
             e.printStackTrace();
