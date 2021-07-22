@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -25,12 +26,16 @@ public class DevEditorGrid extends GridPane implements IObjectEditor<Dev> {
     public TextField emailField;
     @FXML
     public TextField githubField;
+    @FXML
+    public Button changePasswordButton;
+
+    public TextField passwordField;
 
     private final SimpleBooleanProperty isEditable;
 
     private Dev dev;
 
-    public DevEditorGrid(Dev dev, boolean editable) throws IOException {
+    public DevEditorGrid(Dev dev, boolean editable, boolean register) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
@@ -40,15 +45,26 @@ public class DevEditorGrid extends GridPane implements IObjectEditor<Dev> {
         lastNameField.editableProperty().bind(isEditable);
         emailField.editableProperty().bind(isEditable);
         githubField.editableProperty().bind(isEditable);
+
+        if(register){
+            this.getChildren().remove( changePasswordButton);
+            passwordField = new TextField();
+            this.add(passwordField, 1, 4);
+        }
+
         setDev(dev);
     }
 
+    public DevEditorGrid(Dev dev, boolean editable) throws IOException {
+        this(dev, editable, false);
+    }
+
     public DevEditorGrid(Dev dev) throws IOException {
-        this(dev, true);
+        this(dev, true, false);
     }
 
     public DevEditorGrid() throws IOException {
-        this(null, true);
+        this(null, true, false);
     }
 
     public void setDev(Dev newDev){
@@ -90,9 +106,14 @@ public class DevEditorGrid extends GridPane implements IObjectEditor<Dev> {
         {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Your github id can't be empty", ButtonType.OK);
             alert.showAndWait();
+        }else if(passwordField != null && passwordField.getText().isEmpty())
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Your password can't be empty", ButtonType.OK);
+            alert.showAndWait();
         }
         else
         {
+
             try {
                 dev.setGithub_id( Integer.parseInt( githubField.getText()));
             } catch (NumberFormatException e) {
@@ -104,7 +125,10 @@ public class DevEditorGrid extends GridPane implements IObjectEditor<Dev> {
             dev.setFirstname( firstNameField.getText());
             dev.setLastname( lastNameField.getText());
             dev.setEmail( emailField.getText());
-
+            if(passwordField != null )
+            {
+                dev.setPassword(passwordField.getText());
+            }
             return true;
         }
 

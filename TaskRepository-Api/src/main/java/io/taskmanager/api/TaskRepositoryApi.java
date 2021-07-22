@@ -628,19 +628,30 @@ public class TaskRepositoryApi implements TaskRepository {
 
     @Override
     public void registerDev(String firstname, String lastname, String email, String password, String githubId) throws ExecutionException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(apiUrl + "/auth/register"))
-                .timeout(Duration.ofSeconds(10))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString("{ \"firstname\":\""+firstname+"\"," +
-                        "\"lastname\":\""+lastname+"\"," +
-                        "\"email\":\""+email+"\"," +
-                        "\"password\":\""+password+"\"," +
-                        "\"githubId\":\""+githubId+"\"}"))
-                .build();
-        CompletableFuture<HttpResponse<String>> response = httpClient.sendAsync(request,
-                HttpResponse.BodyHandlers.ofString());
-        System.out.print(response.get().body());
+        String json = "{ \"firstname\":\""+firstname+"\"," +
+                "\"lastname\":\""+lastname+"\"," +
+                "\"email\":\""+email+"\"," +
+                "\"password\":\""+password+"\"," +
+                "\"githubId\":\""+githubId+"\"}";
+
+        DevModel model = postObject("/auth/register", json, DevModel.class);
+    }
+
+    @Override
+    public boolean registerDev(Dev dev) throws ExecutionException, InterruptedException {
+        String json = "{ \"firstname\":\""+dev.getFirstname()+"\"," +
+                "\"lastname\":\""+dev.getLastname()+"\"," +
+                "\"email\":\""+dev.getEmail()+"\"," +
+                "\"password\":\""+dev.getPassword()+"\"," +
+                "\"githubId\":\""+dev.getGithub_id()+"\"}";
+
+        DevModel model = postObject("/auth/register", json, DevModel.class);
+        if( model != null) {
+            dev.setId(model.getId());
+            dev.setUpdatedAt(model.getUpdatedAt());
+            return true;
+        }
+        return false;
     }
 
     @Override

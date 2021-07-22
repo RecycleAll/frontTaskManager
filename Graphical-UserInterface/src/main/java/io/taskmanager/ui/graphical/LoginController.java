@@ -5,11 +5,14 @@ import io.taskmanager.core.repository.RepositoryManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class LoginController extends BorderPane {
 
@@ -53,6 +56,23 @@ public class LoginController extends BorderPane {
             }
         }else{
             //TODO
+        }
+    }
+
+
+    @FXML
+    @SuppressWarnings("unused") //used by fxml loader
+    public void onRegister(ActionEvent actionEvent) throws Exception {
+        DevEditorDialog dialog = new DevEditorDialog(null, false, true);
+        Optional<Dev> res = dialog.showAndWait();
+        if(res.isPresent()){
+            if( repositoryManager.getRepository().registerDev(res.get()) ){
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You have been correctly registered! Please login", ButtonType.OK);
+                alert.showAndWait();
+            }else{
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to register! try again", ButtonType.OK);
+                alert.showAndWait();
+            }
         }
     }
 }

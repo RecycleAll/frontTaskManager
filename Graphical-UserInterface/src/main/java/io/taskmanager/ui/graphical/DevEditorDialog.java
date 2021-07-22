@@ -10,9 +10,9 @@ public class DevEditorDialog extends Dialog<Dev> {
 
     private boolean shouldBeDelete;
 
-    public DevEditorDialog(Dev dev, boolean deletable) throws IOException {
+    public DevEditorDialog(Dev dev, boolean deletable, boolean register) throws IOException {
         shouldBeDelete = false;
-        DevEditorController controller = new DevEditorController(dev, deletable);
+        DevEditorController controller = new DevEditorController(dev, deletable, register);
         this.setDialogPane(controller);
 
         setResultConverter(buttonType -> {
@@ -25,6 +25,10 @@ public class DevEditorDialog extends Dialog<Dev> {
                 return null;
             }
         });
+    }
+
+    public DevEditorDialog(Dev dev, boolean deletable) throws IOException {
+        this(dev, false, false);
     }
 
     public DevEditorDialog(Dev dev) throws IOException {

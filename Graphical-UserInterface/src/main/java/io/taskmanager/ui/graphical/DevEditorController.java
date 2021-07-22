@@ -25,16 +25,18 @@ public class DevEditorController extends DialogPane{
 
     private final SimpleBooleanProperty isDeletable = new SimpleBooleanProperty(false);
 
-    public DevEditorController(Dev dev, boolean deletable) throws IOException {
+    public DevEditorController(Dev dev, boolean deletable, boolean register) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
-        grid = new DevEditorGrid(dev);
+        grid = new DevEditorGrid(dev, true, register);
         isDeletable.set(deletable);
         this.setContent(grid);
     }
-
+    public DevEditorController(Dev dev, boolean deletable) throws IOException {
+        this(dev, false, false);
+    }
     public DevEditorController(Dev dev) throws IOException {
         this(dev, false);
     }

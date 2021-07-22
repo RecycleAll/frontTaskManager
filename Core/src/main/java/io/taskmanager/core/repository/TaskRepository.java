@@ -11,6 +11,7 @@ public interface TaskRepository {
 
     int loginDev(String login, String password) throws ExecutionException, InterruptedException;
     void registerDev(String firstname, String lastname, String email, String password, String githubId) throws ExecutionException, InterruptedException;
+    boolean registerDev(Dev dev) throws ExecutionException, InterruptedException;
     boolean updateDev(Dev dev)throws ExecutionException, InterruptedException;
     /**
      * @param devID the dev id
