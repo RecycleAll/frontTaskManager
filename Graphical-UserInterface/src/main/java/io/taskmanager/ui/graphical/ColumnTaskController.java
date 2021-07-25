@@ -1,12 +1,14 @@
 package io.taskmanager.ui.graphical;
 
-import io.taskmanager.test.Dev;
-import io.taskmanager.test.Task;
+import io.taskmanager.core.Dev;
+import io.taskmanager.core.Task;
+import io.taskmanager.core.repository.RepositoryManager;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 
@@ -17,26 +19,24 @@ public class ColumnTaskController extends BorderPane {
 
     private static final String FXML_FILE = "ColumnTaskController.fxml";
 
+    private final RepositoryManager repository;
+
     @FXML
     public FlowPane DevsFlowPane;
-
     @FXML
     public Label taskTitleLabel;
 
     private Task task;
     private final ProjectColumnController projectColumnController;
 
-    public ColumnTaskController(ProjectColumnController projectColumnController, Task task) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
+    public ColumnTaskController(RepositoryManager repository, ProjectColumnController projectColumnController, Task task) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
+        this.repository = repository;
         setTask(task);
         this.projectColumnController = projectColumnController;
-    }
-
-    public ColumnTaskController(ProjectColumnController projectColumnController) throws IOException {
-        this(projectColumnController, null);
     }
 
     public void setTask(Task task) {
@@ -44,15 +44,14 @@ public class ColumnTaskController extends BorderPane {
         updateUI();
     }
 
-    private void updateUI(){
+    private void updateUI() {
         taskTitleLabel.setText(task.getName());
         DevsFlowPane.getChildren().clear();
 
-        for (Dev dev :task.getDevs() ) {
+        for (Dev dev : task.getDevs()) {
             DevsFlowPane.getChildren().add(new DevButton(dev));
         }
     }
-
 
 
     public Task getTask() {
@@ -62,13 +61,17 @@ public class ColumnTaskController extends BorderPane {
     @FXML
     @SuppressWarnings("unused") //used by fxml
     public void OnView(ActionEvent actionEvent) throws IOException {
-        TaskDialog dialog = new TaskDialog(projectColumnController.getProject(), task);
+        TaskDialog dialog = new TaskDialog(repository, projectColumnController.getProject(), task);
         Optional<Task> res = dialog.showAndWait();
-
-        if( res.isPresent()){
-            updateUI();
-        }
-        else if(dialog.isShouldBeDelete()){
+        System.out.println("ColumnTaskController:OnView:res -> " + res.isPresent());
+        if (res.isPresent()) {
+            System.out.println("res:name -> " + res.get().getName());
+            if (dialog.isShouldBeDelete()) {
+                projectColumnController.removeTask(this);
+            } else {
+                updateUI();
+            }
+        } else if (dialog.isShouldBeDelete()) {
             projectColumnController.removeTask(this);
         }
     }

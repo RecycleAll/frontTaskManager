@@ -1,21 +1,29 @@
 package io.taskmanager.ui.graphical;
-import io.taskmanager.test.Column;
-import io.taskmanager.test.Project;
-import io.taskmanager.test.Task;
+
+import io.taskmanager.core.Column;
+import io.taskmanager.core.Project;
+import io.taskmanager.core.Task;
+import io.taskmanager.core.repository.RepositoryManager;
+import io.taskmanager.core.repository.RepositoryObjectDeleted;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
-public class ProjectColumnController extends ScrollPane{
+public class ProjectColumnController extends ScrollPane {
 
     private static final String FXML_FILE = "ProjectColumnController.fxml";
+
+    private final RepositoryManager repository;
 
     @FXML
     public Label ColumnTitleLabel;
@@ -23,80 +31,83 @@ public class ProjectColumnController extends ScrollPane{
     public VBox TaskVBox;
 
     private Column column;
-    private ProjectController projectController;
+    private final ProjectController projectController;
 
-    public ProjectColumnController( ProjectController projectController, Column column) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( FXML_FILE));
+    public ProjectColumnController(RepositoryManager repository, ProjectController projectController, Column column) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(FXML_FILE));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         fxmlLoader.load();
+        this.repository = repository;
         setColumn(column);
         this.projectController = projectController;
     }
-    public ProjectColumnController( ProjectController projectController) throws IOException {
-        this(projectController, null);
-    }
+
 
     public Column getColumn() {
         return column;
     }
 
     public void setColumn(Column newColumn) throws IOException {
-        if( newColumn == null){
-            this.column = new Column();
-        }else {
-            this.column = newColumn;
-        }
+        this.column = Objects.requireNonNullElseGet(newColumn, () -> new Column(repository));
+
         ColumnTitleLabel.setText(column.getName());
         //TODO add task preview to TaskVBox
-        for (Task task: column.getTasks()) {
+        for (Task task : column.getTasks()) {
             addTaskToTaskVBox(task);
         }
     }
 
-    public void setProjectController(ProjectController projectController) {
-        this.projectController = projectController;
-    }
 
-    public void removeTask( ColumnTaskController taskController){
-        column.removeTask(taskController.getTask());
+    public void removeTask(ColumnTaskController taskController) {
         TaskVBox.getChildren().remove(taskController);
     }
 
     private void addTask(Task task) throws IOException {
-        column.addTask(task);
         addTaskToTaskVBox(task);
         this.getScene().getWindow().sizeToScene();
     }
 
     private void addTaskToTaskVBox(Task task) throws IOException {
-        TaskVBox.getChildren().add( new ColumnTaskController(this, task) );
+        TaskVBox.getChildren().add(new ColumnTaskController(repository, this, task));
     }
 
     @FXML
     @SuppressWarnings("unused") //used by fxml
-    public void OnAddTask(ActionEvent actionEvent) throws IOException {
-        TaskDialog dialog = new TaskDialog(getProject());
+    public void OnAddTask(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
+        TaskDialog dialog = new TaskDialog(repository, getProject());
         Optional<Task> res = dialog.showAndWait();
-        if(res.isPresent()){
-            addTask(res.get());
+
+        if (res.isPresent()) {
+            Task task = res.get();
+            try {
+                column.addTask(task);
+                addTask(task);
+            } catch (RepositoryObjectDeleted repositoryObjectDeleted) {
+                Column column = (Column) repositoryObjectDeleted.getObjects().get(0);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "The Column " + column.getName() + " has been deleted from the repo", ButtonType.OK);
+                alert.showAndWait();
+
+                repository.removeColumn(column);
+                projectController.removeColumn(this);
+            }
         }
     }
 
     @FXML
     @SuppressWarnings("unused") //used by fxml
-    public void OnEdit(ActionEvent actionEvent) throws IOException {
-        ColumnEditorDialog dialog = new ColumnEditorDialog(column);
+    public void OnEdit(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
+        ColumnEditorDialog dialog = new ColumnEditorDialog(repository, column);
         Optional<Column> res = dialog.showAndWait();
-        if( res.isPresent()){
-            ColumnTitleLabel.setText( res.get().getName());
-        }
-        else if( dialog.isShouldBeDelete() ){
+        System.out.println(" ProjectColumnController:OnEdit -> res:" + res.isPresent() + "  d: " + dialog.isShouldBeDelete());
+        if (res.isPresent()) {
+            ColumnTitleLabel.setText(res.get().getName());
+        } else if (dialog.isShouldBeDelete()) {
             projectController.removeColumn(this);
         }
     }
 
-    public Project getProject(){
+    public Project getProject() {
         return projectController.getProject();
     }
 
