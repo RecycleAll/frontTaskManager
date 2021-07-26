@@ -98,6 +98,7 @@ public class DevViewerController extends TabPane {
             lastNameLabel.setText(dev.getLastname().toUpperCase(Locale.ROOT));
 
             for (Project project : dev.getProjects()) {
+                System.out.println("p: " + project.getName());
                 addProject(project);
             }
         }

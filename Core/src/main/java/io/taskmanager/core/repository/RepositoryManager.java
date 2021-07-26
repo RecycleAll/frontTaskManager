@@ -55,6 +55,7 @@ public class RepositoryManager {
             for (Dev dev : project.getDevs()) {
                 dev.removeProject(project);
             }
+            project.deleteFromRepo();
         }
     }
 

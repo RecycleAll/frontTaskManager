@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutionException;
 public interface TaskRepository {
 
     int loginDev(String login, String password) throws ExecutionException, InterruptedException;
+    boolean logout() throws ExecutionException, InterruptedException;
     boolean registerDev(Dev dev) throws ExecutionException, InterruptedException;
     boolean updateDev(Dev dev)throws ExecutionException, InterruptedException;
     /**
@@ -20,6 +21,7 @@ public interface TaskRepository {
 
     Project getProject(Project project) throws ExecutionException, InterruptedException;
     Project getProject(int projectID)  throws ExecutionException, InterruptedException;
+    boolean deleteProject(Project project)  throws ExecutionException, InterruptedException;
 
     List<Column> getColumns(int projectID) throws ExecutionException, InterruptedException;
     boolean updateProject(Project project) throws ExecutionException, InterruptedException;

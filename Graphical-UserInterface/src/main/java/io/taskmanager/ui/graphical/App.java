@@ -31,12 +31,15 @@ public class App extends Application {
 
     private final MainController mainController;
 
+    private final RepositoryManager repository;
+
     public static void launchApp(RepositoryManager repository) throws Exception {
         Platform.startup(() -> {
         });
 
         if (AppInstance == null) {
             AppInstance = new App(repository);
+
             Platform.runLater(() -> {
                 Stage stage = new Stage();
 
@@ -61,6 +64,7 @@ public class App extends Application {
 
     public App(RepositoryManager repository) throws Exception {
         super();
+        this.repository = repository;
         devViewerController = new DevViewerController(repository);
 
 
@@ -105,6 +109,12 @@ public class App extends Application {
 
     }
 
+    @Override
+    public void stop() {
+        System.out.println("Stage is closing");
+        // Save file
+    }
+
     @SuppressWarnings("unused") //used by the plugin
     public MenuBar getMenuBar() {
         return mainController.menuBar;
@@ -118,6 +128,11 @@ public class App extends Application {
     }
 
     public void setLoginScene() {
+        try {
+            this.repository.getRepository().logout();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
         loginController.reset();
         mainController.contentPane.getChildren().clear();
         mainController.contentPane.setCenter(loginController);
@@ -133,6 +148,14 @@ public class App extends Application {
     public void start(Stage stage) throws ExecutionException, InterruptedException {
         this.stage = stage;
         this.stage.setScene(new Scene(mainController));
+        this.stage.setOnCloseRequest(windowEvent -> {
+            try {
+                this.repository.getRepository().logout();
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
         setLoginScene();
 
         stage.show();
