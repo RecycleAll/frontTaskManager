@@ -52,7 +52,6 @@ public class ProjectColumnController extends ScrollPane {
         this.column = Objects.requireNonNullElseGet(newColumn, () -> new Column(repository));
 
         ColumnTitleLabel.setText(column.getName());
-        //TODO add task preview to TaskVBox
         for (Task task : column.getTasks()) {
             addTaskToTaskVBox(task);
         }
@@ -99,7 +98,7 @@ public class ProjectColumnController extends ScrollPane {
     public void OnEdit(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException {
         ColumnEditorDialog dialog = new ColumnEditorDialog(repository, column);
         Optional<Column> res = dialog.showAndWait();
-        System.out.println(" ProjectColumnController:OnEdit -> res:" + res.isPresent() + "  d: " + dialog.isShouldBeDelete());
+        //System.err.println(" ProjectColumnController:OnEdit -> res:" + res.isPresent() + "  d: " + dialog.isShouldBeDelete());
         if (res.isPresent()) {
             ColumnTitleLabel.setText(res.get().getName());
         } else if (dialog.isShouldBeDelete()) {

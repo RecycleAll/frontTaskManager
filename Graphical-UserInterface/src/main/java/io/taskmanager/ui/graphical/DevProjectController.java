@@ -58,7 +58,7 @@ public class DevProjectController extends AnchorPane {
     @FXML
     @SuppressWarnings("unused") // used by FXML
     public void OnMouseClicked(MouseEvent mouseEvent) {
-        System.out.println("test");
+        //System.err.println("test");
     }
 
     @FXML

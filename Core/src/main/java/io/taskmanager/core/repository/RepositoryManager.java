@@ -84,8 +84,6 @@ public class RepositoryManager {
                         Project project = getProject(entry.getKey());
                         dev.addProject(project);
                     }
-                } else {
-                    // TODO
                 }
             }
             dev.setRepositoryManager(this);
@@ -134,7 +132,7 @@ public class RepositoryManager {
 
                 for (Task task : columnTasks) {
                     List<Integer> devsID = repository.getTaskDevsID(task.getId());
-                    System.out.println(devsID.toString());
+                    //System.err.println(devsID.toString());
                     for (Integer id : devsID) {
                         task.addDev(getDev(id, false));
                     }
@@ -142,7 +140,7 @@ public class RepositoryManager {
                 }
                 col.setRepositoryManager(this);
             }
-            System.out.println("loaded project: " + project + "  devs:" + devs.size() + "  col: " + cols.size());
+            //System.err.println("loaded project: " + project + "  devs:" + devs.size() + "  col: " + cols.size());
 
             project.setRepositoryManager(this);
             for (Dev dev : project.getDevs()) {

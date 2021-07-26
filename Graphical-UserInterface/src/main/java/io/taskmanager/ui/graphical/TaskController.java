@@ -99,11 +99,11 @@ public class TaskController extends DialogPane implements IObjectEditor<Task> {
                         Optional<Task> res = dialog.showAndWait();
                         if (res.isPresent()) {
                             task.setAll(res.get());
-                            System.out.println("///////////////////////////////////////////////");
-                            System.out.println("task:name -> " + task.getName());
+                            //System.err.println("///////////////////////////////////////////////");
+                            //System.err.println("task:name -> " + task.getName());
                             task.updateToRepo(true);
-                            System.out.println("task:name -> " + task.getName());
-                            System.out.println("///////////////////////////////////////////////");
+                            //System.err.println("task:name -> " + task.getName());
+                            //System.err.println("///////////////////////////////////////////////");
                         }
                     } catch (IOException | RepositoryEditionConflict | ExecutionException | InterruptedException | RepositoryObjectDeleted e) {
                         e.printStackTrace();
@@ -223,9 +223,9 @@ public class TaskController extends DialogPane implements IObjectEditor<Task> {
 
     @Override
     public Task getEditedObject() {
-        System.out.println("taskController:getEditedObject -> " + task.getName());
+        //System.err.println("taskController:getEditedObject -> " + task.getName());
         applyChange();
-        System.out.println("taskController:getEditedObject -> " + task.getName());
+        //System.err.println("taskController:getEditedObject -> " + task.getName());
         return task;
     }
 
@@ -237,7 +237,6 @@ public class TaskController extends DialogPane implements IObjectEditor<Task> {
             this.dev = dev;
 
             this.setOnAction(actionEvent -> {
-                //TODO open dev viewer
             });
         }
     }

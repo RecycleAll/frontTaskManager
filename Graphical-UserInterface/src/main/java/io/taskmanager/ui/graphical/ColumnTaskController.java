@@ -63,9 +63,9 @@ public class ColumnTaskController extends BorderPane {
     public void OnView(ActionEvent actionEvent) throws IOException {
         TaskDialog dialog = new TaskDialog(repository, projectColumnController.getProject(), task);
         Optional<Task> res = dialog.showAndWait();
-        System.out.println("ColumnTaskController:OnView:res -> " + res.isPresent());
+        //System.err.println("ColumnTaskController:OnView:res -> " + res.isPresent());
         if (res.isPresent()) {
-            System.out.println("res:name -> " + res.get().getName());
+            //System.err.println("res:name -> " + res.get().getName());
             if (dialog.isShouldBeDelete()) {
                 projectColumnController.removeTask(this);
             } else {
@@ -88,7 +88,7 @@ public class ColumnTaskController extends BorderPane {
 
         @Override
         public void handle(ActionEvent actionEvent) {
-            System.out.println("clicked on " + dev.getFirstname());
+            //System.err.println("clicked on " + dev.getFirstname());
         }
     }
 }

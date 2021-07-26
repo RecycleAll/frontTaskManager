@@ -61,9 +61,9 @@ public class TaskRepositoryApi implements TaskRepository {
                 .GET()
                 .build();
         CompletableFuture<HttpResponse<String>> responseCompletableFuture = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println("GET JSON: req: " + requestStr);
+        //System.err.println("GET JSON: req: " + requestStr);
         HttpResponse<String> response = responseCompletableFuture.get();
-        System.out.println("res: " + response.statusCode());
+        //System.err.println("res: " + response.statusCode());
 
         if (response.statusCode() == 200) {
             return response.body();
@@ -80,9 +80,9 @@ public class TaskRepositoryApi implements TaskRepository {
                 .build();
 
         CompletableFuture<HttpResponse<String>> responseCompletableFuture = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println("POST JSON: url: " + url + " \n req: " + jsonStr);
+        //System.err.println("POST JSON: url: " + url + " \n req: " + jsonStr);
         HttpResponse<String> response = responseCompletableFuture.get();
-        System.out.println("res: " + response.statusCode());
+        //System.err.println("res: " + response.statusCode());
         if (response.statusCode() == 201) {
             return response.body();
         }
@@ -98,9 +98,9 @@ public class TaskRepositoryApi implements TaskRepository {
                 .build();
 
         CompletableFuture<HttpResponse<String>> responseCompletableFuture = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println("PUT JSON: url: " + url + " \n req: " + jsonStr);
+        //System.err.println("PUT JSON: url: " + url + " \n req: " + jsonStr);
         HttpResponse<String> response = responseCompletableFuture.get();
-        System.out.println("res: " + response.statusCode());
+        //System.err.println("res: " + response.statusCode());
 
         if (response.statusCode() == 200) {
             BaseModel model = g.fromJson(response.body(), (Type) clazz);
@@ -119,9 +119,9 @@ public class TaskRepositoryApi implements TaskRepository {
                 .build();
         CompletableFuture<HttpResponse<String>> responseCompletableFuture = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
 
-        System.out.println("DELETE JSON: url: " + url);
+        //System.err.println("DELETE JSON: url: " + url);
         HttpResponse<String> response = responseCompletableFuture.get();
-        System.out.println("res: " + response.statusCode());
+        //System.err.println("res: " + response.statusCode());
 
         return response.statusCode() == 200;
     }
@@ -280,7 +280,7 @@ public class TaskRepositoryApi implements TaskRepository {
     @Override
     public List<Column> getColumns(int projectID) throws ExecutionException, InterruptedException {
         ColumnModel[] cols = getObject2("/column/all/" + projectID, ColumnModel[].class);
-        System.out.println("getColumns: " + cols.length);
+        //System.err.println("getColumns: " + cols.length);
         return Arrays.stream(cols).map(ColumnModel::convert).collect(Collectors.toList());
     }
 
@@ -458,7 +458,6 @@ public class TaskRepositoryApi implements TaskRepository {
                 "\"firstname\":\"" + dev.getFirstname() + "\"," +
                 "\"lastname\":\"" + dev.getLastname() + "\"," +
                 "\"email\":\"" + dev.getEmail() + "\"," +
-                //TODO: "\"password\":\""+dev.getPassword()+"\"," +
                 "\"githubId\":\"" + dev.getGithub_id() + "\"}";
 
         LocalDateTime time = putObject("/auth/", json,

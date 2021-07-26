@@ -60,7 +60,7 @@ public class DevEditorController extends DialogPane {
                 } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 } catch (RepositoryEditionConflict repositoryEditionConflict) {
-                    System.out.println("catch");
+                    //System.err.println("catch");
                     try {
                         @SuppressWarnings("unchecked")
                         RepositoryConflictDialog<Dev> dialog = new RepositoryConflictDialog<>(new DevConflictController((RepositoryConflictHandler<Dev>) repositoryEditionConflict.getConflictHandler()));
