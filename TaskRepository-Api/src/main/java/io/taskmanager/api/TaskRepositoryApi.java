@@ -33,6 +33,8 @@ public class TaskRepositoryApi implements TaskRepository {
     private final Gson g;
     private final String apiUrl;
 
+    private String token;
+
     public TaskRepositoryApi(String apiUrl) {
         httpClient = HttpClient.newHttpClient();
 
@@ -135,7 +137,7 @@ public class TaskRepositoryApi implements TaskRepository {
         }
     }
 
-    private <T> T getObject2(String url, Class<?> c) throws ExecutionException, InterruptedException {
+    private <T> T getObject(String url, Class<?> c) throws ExecutionException, InterruptedException {
         String json = getJson(url);
         return g.fromJson(json, (Type) c);
     }
@@ -150,10 +152,33 @@ public class TaskRepositoryApi implements TaskRepository {
         SessionModel model = postObject("/auth/login", requestJson, SessionModel.class);
 
         if (model != null) {
+            this.token = model.getToken();
             return model.getDev_id();
         } else {
             return -1;
         }
+    }
+
+    @Override
+    public boolean logout() throws ExecutionException, InterruptedException {
+        if(this.token == null || this.token.isEmpty()){
+            return true;
+        }
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl + "/auth/logout"))
+                .timeout(Duration.ofSeconds(10))
+                .header("authorization", "Bearer "+this.token)
+                .DELETE()
+                .build();
+
+        CompletableFuture<HttpResponse<String>> responseCompletableFuture = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+
+        System.out.println("DELETE JSON: url: /auth/logout");
+        HttpResponse<String> response = responseCompletableFuture.get();
+        System.out.println("res: " + response.statusCode());
+        this.token = "";
+        return response.statusCode() == 200;
     }
 
     @Override
@@ -195,15 +220,20 @@ public class TaskRepositoryApi implements TaskRepository {
 
     @Override
     public Project getProject(int projectID) throws ExecutionException, InterruptedException {
-        ProjectModel projectModel = getObject2("/project/one/" + projectID, ProjectModel.class);
+        ProjectModel projectModel = getObject("/project/one/" + projectID, ProjectModel.class);
         if (projectModel != null)
             return projectModel.convert();
         return null;
     }
 
     @Override
+    public boolean deleteProject(Project project) throws ExecutionException, InterruptedException {
+        return deleteObject("/project/"+project.getId());
+    }
+
+    @Override
     public Map<Integer, DevStatus> getProjectDevs(int projectID) throws ExecutionException, InterruptedException {
-        Participates[] participation = getObject2("/participe/" + projectID, Participates[].class);
+        Participates[] participation = getObject("/participe/" + projectID, Participates[].class);
         Map<Integer, DevStatus> devs = new HashMap<>();
 
         for (Participates participates : participation) {
@@ -214,7 +244,7 @@ public class TaskRepositoryApi implements TaskRepository {
 
     @Override
     public Dev getDev(int id) throws ExecutionException, InterruptedException {
-        DevModel devModel = getObject2("/auth/" + id, DevModel.class);
+        DevModel devModel = getObject("/auth/" + id, DevModel.class);
         if (devModel != null) {
             return devModel.convert();
         } else {
@@ -251,7 +281,7 @@ public class TaskRepositoryApi implements TaskRepository {
 
     @Override
     public List<Integer> getTaskDevsID(int taskID) throws ExecutionException, InterruptedException {
-        DevTaskModel[] devTaskModels = getObject2("/devTask/" + taskID, DevTaskModel[].class);
+        DevTaskModel[] devTaskModels = getObject("/devTask/" + taskID, DevTaskModel[].class);
         return Arrays.stream(devTaskModels).map(DevTaskModel::getDev_id).collect(Collectors.toList());
     }
 
@@ -279,8 +309,8 @@ public class TaskRepositoryApi implements TaskRepository {
 
     @Override
     public List<Column> getColumns(int projectID) throws ExecutionException, InterruptedException {
-        ColumnModel[] cols = getObject2("/column/all/" + projectID, ColumnModel[].class);
-        //System.err.println("getColumns: " + cols.length);
+        ColumnModel[] cols = getObject("/column/all/" + projectID, ColumnModel[].class);
+       //System.err.println("getColumns: " + cols.length);
         return Arrays.stream(cols).map(ColumnModel::convert).collect(Collectors.toList());
     }
 
@@ -326,7 +356,7 @@ public class TaskRepositoryApi implements TaskRepository {
 
     @Override
     public Column getColumn(int id) throws ExecutionException, InterruptedException {
-        ColumnModel model = getObject2("/column/one/" + id, ColumnModel.class);
+        ColumnModel model = getObject("/column/one/" + id, ColumnModel.class);
         if (model != null) {
             return model.convert();
         } else {
@@ -358,13 +388,13 @@ public class TaskRepositoryApi implements TaskRepository {
 
     @Override
     public List<Task> getColumnTasks(int columnId) throws ExecutionException, InterruptedException {
-        TaskModel[] tasksArray = getObject2("/task/all/" + columnId, TaskModel[].class);
+        TaskModel[] tasksArray = getObject("/task/all/" + columnId, TaskModel[].class);
         return Arrays.stream(tasksArray).map(TaskModel::convert).collect(Collectors.toList());
     }
 
     @Override
     public Task getTask(int id) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
-        TaskModel model = getObject2("/task/one/" + id, TaskModel.class);
+        TaskModel model = getObject("/task/one/" + id, TaskModel.class);
         if (model != null) {
             return model.convert();
         } else {

@@ -22,11 +22,6 @@ public class Column extends RepositoryObject<Column> {
         this.projectId = projectId;
         this.name = name;
         this.tasks = tasks;
-        try {
-            updateToRepo();
-        } catch (ExecutionException | InterruptedException | RepositoryEditionConflict | RepositoryObjectDeleted e) {
-            e.printStackTrace();
-        }
     }
 
     public Column(RepositoryManager repository, int id, String name, int projectId) {

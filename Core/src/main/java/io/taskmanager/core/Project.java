@@ -71,8 +71,8 @@ public class Project extends RepositoryObject<Project> {
     }
 
     @Override
-    protected boolean myDelete() {
-        return false;
+    protected boolean myDelete() throws ExecutionException, InterruptedException {
+        return this.repositoryManager.getRepository().deleteProject(this);
     }
 
     @Override
@@ -234,8 +234,14 @@ public class Project extends RepositoryObject<Project> {
         }
     }
 
-    public void addDev(Dev dev, DevStatus devStatus) {
+    public void addDev(Dev dev, DevStatus devStatus) throws ExecutionException, InterruptedException {
         devs.put(dev, devStatus);
+
+        dev.addProject(this);
+        postToRepo();
+        if (repositoryManager != null) {
+            repositoryManager.getRepository().postParticipate(this, dev);
+        }
     }
 
     public void removeDev(Dev dev) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
