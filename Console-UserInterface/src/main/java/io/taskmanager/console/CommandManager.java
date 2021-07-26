@@ -19,14 +19,14 @@ public class CommandManager {
     }
 
     public void apply() {
-        switch (args[0]) {
+        switch (args[1]) {
             case "show" -> show();
             case "create" -> create();
         }
     }
 
     private void show() {
-        switch (args[1]) {
+        switch (args[2]) {
             case "dev" -> showDev();
             case "project" -> showProjects();
             case "column" -> showColumns();
@@ -61,7 +61,7 @@ public class CommandManager {
         try {
             Dev dev = askToLogin();
             List<String> columns = dev.getProjects().stream()
-                    .filter(project -> project.getName().equals(args[2]))
+                    .filter(project -> project.getName().equals(args[3]))
                     .findFirst()
                     .orElseThrow(() -> new RuntimeException("Project not found"))
                     .getColumns().stream()
@@ -79,7 +79,7 @@ public class CommandManager {
         try {
             Dev dev = askToLogin();
             List<Task> tasks = dev.getProjects().stream()
-                    .filter(project -> project.getName().equals(args[2]))
+                    .filter(project -> project.getName().equals(args[3]))
                     .findFirst()
                     .orElseThrow(() -> new RuntimeException("Project not found"))
                     .getColumns().stream()
@@ -95,7 +95,7 @@ public class CommandManager {
     }
 
     private void create() {
-        switch (args[1]) {
+        switch (args[2]) {
             case "dev" -> createDev();
             case "project" -> createProject();
             case "column" -> createColumn();
@@ -129,7 +129,7 @@ public class CommandManager {
         try {
             Dev dev = askToLogin();
             Project project = dev.getProjects().stream()
-                    .filter(project1 -> project1.getName().equals(args[2]))
+                    .filter(project1 -> project1.getName().equals(args[3]))
                     .findFirst()
                     .orElseThrow(() -> new RuntimeException("Project not found"));
             Column column = askColumnInformation(project);
@@ -143,11 +143,11 @@ public class CommandManager {
         try {
             Dev dev = askToLogin();
             Project project = dev.getProjects().stream()
-                    .filter(project1 -> project1.getName().equals(args[2]))
+                    .filter(project1 -> project1.getName().equals(args[3]))
                     .findFirst()
                     .orElseThrow(() -> new RuntimeException("Project not found"));
             Column column = project.getColumns().stream()
-                    .filter(column1 -> column1.getName().equals(args[3]))
+                    .filter(column1 -> column1.getName().equals(args[4]))
                     .findFirst().orElseThrow(() -> new RuntimeException("Column not found"));
             Task task = askTaskInformation();
             column.addTask(task);
