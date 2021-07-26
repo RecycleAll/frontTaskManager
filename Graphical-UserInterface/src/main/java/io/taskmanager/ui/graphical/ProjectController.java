@@ -81,7 +81,7 @@ public class ProjectController extends BorderPane {
         for (Dev dev : project.getDevs()) {
             devsVBox.getChildren().add(new ProjectDevController(this, dev, isProjectDevControllerEditable(dev)));
         }
-        System.out.println("UI col: " + project.getColumns());
+        //System.err.println("UI col: " + project.getColumns());
         for (Column col : project.getColumns()) {
             columnHBox.getChildren().add(new ProjectColumnController(col.getRepository(), this, col));
         }
@@ -122,7 +122,7 @@ public class ProjectController extends BorderPane {
     @SuppressWarnings("unused") //used by fxml
     public void OnAddDev(ActionEvent actionEvent) throws IOException, ExecutionException, InterruptedException, RepositoryObjectDeleted {
         ArrayList<Dev> devs = (ArrayList<Dev>) repositoryManager.getRepository().getAllDev();
-        System.out.println(devs);
+        //System.err.println(devs);
         DevSelectorDialog dialog = new DevSelectorDialog(repositoryManager.getAllDev(), project.getDevs());
 
         Optional<List<Dev>> res = dialog.showAndWait();

@@ -78,11 +78,11 @@ public class ProjectEditorController extends DialogPane implements IObjectEditor
                         Optional<Project> res = dialog.showAndWait();
                         if (res.isPresent()) {
                             project.setAll(res.get());
-                            System.out.println("///////////////////////////////////////////////");
-                            System.out.println("project:name -> " + project.getName());
+                            //System.err.println("///////////////////////////////////////////////");
+                            //System.err.println("project:name -> " + project.getName());
                             project.updateToRepo(true);
-                            System.out.println("project:name -> " + project.getName());
-                            System.out.println("///////////////////////////////////////////////");
+                            //System.err.println("project:name -> " + project.getName());
+                            //System.err.println("///////////////////////////////////////////////");
                         }
                     } catch (ExecutionException | InterruptedException | RepositoryEditionConflict | RepositoryObjectDeleted | IOException e) {
                         e.printStackTrace();

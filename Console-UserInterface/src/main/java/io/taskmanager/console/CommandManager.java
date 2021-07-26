@@ -38,7 +38,6 @@ public class CommandManager {
         try {
             Dev dev = askToLogin();
             System.out.print(dev);
-            //TODO
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -53,7 +52,6 @@ public class CommandManager {
             projects.forEach(pro -> {
                 System.out.println("Project Name : " + pro);
             });
-            //TODO
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -72,7 +70,6 @@ public class CommandManager {
             columns.forEach(column -> {
                 System.out.println("Column Name : " + column);
             });
-            //TODO
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -92,7 +89,6 @@ public class CommandManager {
                 System.out.println("Task Name : " + task.getName());
                 System.out.println("Task Description : " + task.getDescription());
             });
-            //TODO
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -113,7 +109,6 @@ public class CommandManager {
             if (dev != null) {
                 System.out.println("Dev created");
             }
-            //TODO
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -125,7 +120,6 @@ public class CommandManager {
             Project project = askProjectInformation();
             project.addDev(dev, DevStatus.OWNER);
             project.postToRepo();
-            //TODO
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -140,7 +134,6 @@ public class CommandManager {
                     .orElseThrow(() -> new RuntimeException("Project not found"));
             Column column = askColumnInformation(project);
             project.addColumn(column);
-            //TODO
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -158,7 +151,6 @@ public class CommandManager {
                     .findFirst().orElseThrow(() -> new RuntimeException("Column not found"));
             Task task = askTaskInformation();
             column.addTask(task);
-            //TODO
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -171,7 +163,6 @@ public class CommandManager {
         System.out.println("Enter your password:");
         String password = String.valueOf(console.readPassword());
         int devId = repositoryManager.getRepository().loginDev(login, password);
-        //TODO
         return repositoryManager.getDev(devId, true);
     }
 
@@ -188,7 +179,6 @@ public class CommandManager {
         Dev newDev = new Dev(0, firstname, lastname, email, password, 0);
         repositoryManager.getRepository().registerDev(newDev);
         int devId = repositoryManager.getRepository().loginDev(email, password);
-        //TODO
         return repositoryManager.getDev(devId, true);
     }
 

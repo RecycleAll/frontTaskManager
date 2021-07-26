@@ -48,7 +48,7 @@ public class Task extends RepositoryObject<Task> {
 
     public Task(Task task) {
         this(task.repositoryManager, task.getId(), task.getName(), task.getDescription(), task.getLimitDate(), task.getDevs(), task.tags);
-        System.out.println("dev size from copy: " + devs.size());
+        //System.err.println("dev size from copy: " + devs.size());
     }
 
     public Task() {
@@ -75,7 +75,7 @@ public class Task extends RepositoryObject<Task> {
     @Override
     protected boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict, RepositoryObjectDeleted {
         if (!edited) {
-            System.out.println("Task:myUpdateToRepo -> not edited");
+            //System.err.println("Task:myUpdateToRepo -> not edited");
             return true;
         } else {
             Task task;
@@ -85,12 +85,12 @@ public class Task extends RepositoryObject<Task> {
                 repositoryObjectDeleted.addObject(this);
                 throw repositoryObjectDeleted;
             }
-            System.out.println("Task: myUpdateToRepo ->\nlocal: " + updatedAt + "\nrepo: " + task.updatedAt);
+            //System.err.println("Task: myUpdateToRepo ->\nlocal: " + updatedAt + "\nrepo: " + task.updatedAt);
             if (!force && isConflict(task)) {
-                System.out.println("Task:myUpdateToRepo ->conflict");
+                //System.err.println("Task:myUpdateToRepo ->conflict");
                 throw new RepositoryEditionConflict(new RepositoryConflictHandler<>(this, task, repositoryManager));
             } else {
-                System.out.println("Task:myUpdateToRepo -> no conflict (f:" + force + ")");
+                //System.err.println("Task:myUpdateToRepo -> no conflict (f:" + force + ")");
                 return repositoryManager.getRepository().updateTask(this);
             }
         }
@@ -100,12 +100,12 @@ public class Task extends RepositoryObject<Task> {
     protected boolean myUpdateFromRepo() throws RepositoryEditionConflict, ExecutionException, InterruptedException, RepositoryObjectDeleted {
         Task task = repositoryManager.getRepository().getTask(id);
         if (edited) {
-            System.out.println("Task:myUpdateFromRepo -> edited");
+            //System.err.println("Task:myUpdateFromRepo -> edited");
             throw new RepositoryEditionConflict(new RepositoryConflictHandler<>(this, task, repositoryManager));
         } else if (task == null) {
             throw new RepositoryObjectDeleted(this);
         } else {
-            System.out.println("Task:myUpdateFromRepo -> no conflict");
+            //System.err.println("Task:myUpdateFromRepo -> no conflict");
             setAll(task);
 
             edited = false;
@@ -222,7 +222,7 @@ public class Task extends RepositoryObject<Task> {
     }
 
     public void addDev(Dev dev) throws ExecutionException, InterruptedException, RepositoryObjectDeleted {
-        System.out.println("Task:addDev id:" + dev.getId() + " n:" + dev.getFirstname());
+        //System.err.println("Task:addDev id:" + dev.getId() + " n:" + dev.getFirstname());
         if (!devs.contains(dev)) {
             if (repositoryManager != null) {
                 Dev repoDev = repositoryManager.getRepository().getDev(dev.getId());
@@ -231,7 +231,7 @@ public class Task extends RepositoryObject<Task> {
                     throw new RepositoryObjectDeleted(dev);
                 }
 
-                System.out.println("posting to repo");
+                //System.err.println("posting to repo");
                 devs.add(dev);
                 repositoryManager.getRepository().postDevTask(this, dev);
             } else {
@@ -241,7 +241,7 @@ public class Task extends RepositoryObject<Task> {
     }
 
     public void removeDev(Dev dev) throws ExecutionException, InterruptedException {
-        System.out.println("Task:removeDev id:" + dev.getId() + " n:" + dev.getFirstname());
+        //System.err.println("Task:removeDev id:" + dev.getId() + " n:" + dev.getFirstname());
         if (devs.remove(dev) && repositoryManager != null) {
             repositoryManager.getRepository().deleteDevTAsk(this, dev);
         }

@@ -78,19 +78,19 @@ public class Project extends RepositoryObject<Project> {
     @Override
     protected boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict, RepositoryObjectDeleted {
         if (!edited) {
-            System.out.println("Project:myUpdateToRepo -> not edited");
+            //System.err.println("Project:myUpdateToRepo -> not edited");
             return true;
         } else {
             Project project = repositoryManager.getRepository().getProject(id);
             if (project == null) {
                 throw new RepositoryObjectDeleted(this);
             }
-            System.out.println("Project: myUpdateToRepo ->\nlocal: " + updatedAt + "\nrepo: " + project.updatedAt);
+            //System.err.println("Project: myUpdateToRepo ->\nlocal: " + updatedAt + "\nrepo: " + project.updatedAt);
             if (!force && isConflict(project)) {
-                System.out.println("Project:myUpdateToRepo ->conflict");
+                //System.err.println("Project:myUpdateToRepo ->conflict");
                 throw new RepositoryEditionConflict(new RepositoryConflictHandler<>(this, project, repositoryManager));
             } else {
-                System.out.println("Project:myUpdateToRepo -> no conflict (f:" + force + ")");
+                //System.err.println("Project:myUpdateToRepo -> no conflict (f:" + force + ")");
                 edited = false;
                 return repositoryManager.getRepository().updateProject(this);
             }
@@ -101,13 +101,13 @@ public class Project extends RepositoryObject<Project> {
     protected boolean myUpdateFromRepo() throws ExecutionException, InterruptedException, RepositoryEditionConflict, RepositoryObjectDeleted {
         Project project = repositoryManager.getRepository().getProject(id);
         if (edited) {
-            System.out.println("Project:myUpdateFromRepo -> edited");
+            //System.err.println("Project:myUpdateFromRepo -> edited");
             throw new RepositoryEditionConflict(new RepositoryConflictHandler<>(this, project, repositoryManager));
         } else if (project == null) {
-            System.out.println("Project:myUpdateFromRepo -> deleted");
+            //System.err.println("Project:myUpdateFromRepo -> deleted");
             throw new RepositoryObjectDeleted(this);
         } else {
-            System.out.println("Project:myUpdateFromRepo -> no conflict");
+            //System.err.println("Project:myUpdateFromRepo -> no conflict");
             setAll(project);
             edited = false;
             return true;
@@ -137,7 +137,7 @@ public class Project extends RepositoryObject<Project> {
     }
 
     public void setDevs(Map<Dev, DevStatus> devs) {
-        System.out.println("setDevs: " + devs.size());
+        //System.err.println("setDevs: " + devs.size());
         this.devs = devs;
     }
 
@@ -170,7 +170,7 @@ public class Project extends RepositoryObject<Project> {
     }
 
     public void addColumn(Column column) throws ExecutionException, InterruptedException {
-        System.out.println("addCOl" + columns + " " + column);
+        //System.err.println("addCOl" + columns + " " + column);
         if (!columns.contains(column)) {
 
             column.setProjectId(this.id);
@@ -185,7 +185,7 @@ public class Project extends RepositoryObject<Project> {
 
     public void removeColumn(Column column) throws ExecutionException, InterruptedException {
         columns.remove(column);
-        System.out.println("removeColumn: " + column.getName());
+        //System.err.println("removeColumn: " + column.getName());
         column.deleteFromRepo();
     }
 

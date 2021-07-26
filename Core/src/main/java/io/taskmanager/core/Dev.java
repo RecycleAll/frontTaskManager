@@ -82,15 +82,15 @@ public class Dev extends RepositoryObject<Dev> {
     @Override
     protected boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict, RepositoryObjectDeleted {
         if (!edited) {
-            System.out.println("Dev:myUpdateToRepo -> not edited");
+            //System.err.println("Dev:myUpdateToRepo -> not edited");
             return true;
         } else {
             Dev dev = repositoryManager.getRepository().getDev(id);
             if (!force && isConflict(dev)) {
-                System.out.println("Dev:myUpdateToRepo -> conflict");
+                //System.err.println("Dev:myUpdateToRepo -> conflict");
                 throw new RepositoryEditionConflict(new RepositoryConflictHandler<>(this, dev, repositoryManager));
             } else {
-                System.out.println("Dev:myUpdateToRepo -> no conflict (f:" + force + ")");
+                //System.err.println("Dev:myUpdateToRepo -> no conflict (f:" + force + ")");
                 return repositoryManager.getRepository().updateDev(this);
             }
         }

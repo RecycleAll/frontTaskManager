@@ -64,19 +64,19 @@ public class Column extends RepositoryObject<Column> {
     @Override
     protected boolean myUpdateToRepo(boolean force) throws ExecutionException, InterruptedException, RepositoryEditionConflict, RepositoryObjectDeleted {
         if (!edited) {
-            System.out.println("Column:myUpdateToRepo -> not edited");
+            //System.err.println("Column:myUpdateToRepo -> not edited");
             return true;
         } else {
             Column column = repositoryManager.getRepository().getColumn(id);
-            //System.out.println("Column: myUpdateToRepo ->\nlocal: "+updatedAt+"\nrepo: "+column.updatedAt);
+            //System.err.println("Column: myUpdateToRepo ->\nlocal: "+updatedAt+"\nrepo: "+column.updatedAt);
             if (column == null) {
-                System.out.println("Column:myUpdateToRepo -> deleted");
+                //System.err.println("Column:myUpdateToRepo -> deleted");
                 throw new RepositoryObjectDeleted(this);
             } else if (!force && isConflict(column)) {
-                System.out.println("Column:myUpdateToRepo -> conflict\blocal: " + updatedAt + "\nrepo: " + column.updatedAt);
+                //System.err.println("Column:myUpdateToRepo -> conflict\blocal: " + updatedAt + "\nrepo: " + column.updatedAt);
                 throw new RepositoryEditionConflict(new RepositoryConflictHandler<>(this, column, repositoryManager));
             } else {
-                System.out.println("Column:myUpdateToRepo -> no conflict (f:" + force + ")");
+                //System.err.println("Column:myUpdateToRepo -> no conflict (f:" + force + ")");
                 return repositoryManager.getRepository().putColumn(this);
             }
         }
@@ -84,7 +84,6 @@ public class Column extends RepositoryObject<Column> {
 
     @Override
     protected boolean myUpdateFromRepo() {
-        //TODO
         return false;
     }
 

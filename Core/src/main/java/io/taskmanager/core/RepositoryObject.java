@@ -104,9 +104,7 @@ public abstract class RepositoryObject<T> {
     public void setRepositoryManager(RepositoryManager repositoryManager) {
         if( this.repositoryManager == null)
             this.repositoryManager = repositoryManager;
-        else{
-            //TODO
-        }
+
     }
     public final void setAll(RepositoryObject<T> object){
         id = object.id;

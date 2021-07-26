@@ -73,10 +73,10 @@ public class ColumnEditor extends DialogPane implements IObjectEditor<Column> {
                         Optional<Column> res = conflictDialog.showAndWait();
                         if (res.isPresent()) {
                             column.setAll(res.get());
-                            System.out.println("///////////////////////////////////////////////");
-                            System.out.println("column:name -> " + column.getName());
+                            //System.err.println("///////////////////////////////////////////////");
+                            //System.err.println("column:name -> " + column.getName());
                             column.updateToRepo(true);
-                            System.out.println("///////////////////////////////////////////////");
+                            //System.err.println("///////////////////////////////////////////////");
                         }
                     } catch (IOException | InterruptedException | RepositoryObjectDeleted | ExecutionException | RepositoryEditionConflict e) {
                         e.printStackTrace();

@@ -45,17 +45,15 @@ public class LoginController extends BorderPane {
     @FXML
     @SuppressWarnings("unused") //used by fxml loader
     public void OnConnect(ActionEvent actionEvent) throws Exception {
-        System.out.println(emailField.getText());
-        System.out.println(passwordField.getText());
+        //System.err.println(emailField.getText());
+        //System.err.println(passwordField.getText());
         int devID = repositoryManager.getRepository().loginDev(emailField.getText(), passwordField.getText());
         if (devID >= 1) {
             dev = repositoryManager.getDev(devID, true);
-            System.out.println("longed dev: " + dev);
+            //System.err.println("longed dev: " + dev);
             if (dev != null) {
                 app.setDevViewerScene(dev);
             }
-        } else {
-            //TODO
         }
     }
 
